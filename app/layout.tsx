@@ -33,6 +33,9 @@ export const metadata: Metadata = {
       ],
       type: "website",
   },
+  icons: {
+      icon: "/app/icon.svg", 
+    },
   twitter: {
       card: "summary_large_image",
       title: "AfriqGig | Hire African Talent",
