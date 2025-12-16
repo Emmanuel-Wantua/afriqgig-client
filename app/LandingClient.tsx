@@ -523,7 +523,7 @@ export default function LandingContent() {
                       {t.landing.ctaText}
                   </p>
                   <div className="flex flex-col sm:flex-row justify-center gap-6">
-                      <Link href="/register" className="bg-gold text-navy px-12 py-5 rounded-2xl font-bold text-xl hover:bg-white hover:text-navy transition-all hover:scale-105 shadow-xl flex items-center justify-center gap-3">
+                      <Link href="/signup" className="bg-gold text-navy px-12 py-5 rounded-2xl font-bold text-xl hover:bg-white hover:text-navy transition-all hover:scale-105 shadow-xl flex items-center justify-center gap-3">
                           {t.auth.createAccount} <ArrowRight className="text-2xl"/>
                       </Link>
                       <Link href="/login" className="bg-white/10 border border-white/20 px-12 py-5 rounded-2xl font-bold text-xl hover:bg-white/20 transition-all backdrop-blur-sm">

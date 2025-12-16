@@ -114,7 +114,7 @@ export async function POST(req: Request) {
     // --- 7. SEND VERIFICATION EMAIL (UPDATED) ---
     
     // Construct the link (Detects if running locally or on VPS)
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://afriqgig.com';
     const verifyLink = `${baseUrl}/verify-email?token=${verifyToken}`;
 
     // A. LOG TO CONSOLE (For immediate testing without email delivery lag)
