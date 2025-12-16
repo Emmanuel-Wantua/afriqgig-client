@@ -1,26 +1,78 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@layer base {
+  body {
+    /* DEFAULT (Light Mode) */
+    @apply bg-light text-navy transition-colors duration-300;
+  }
+
+  /* --- DARK MODE GLOBAL OVERRIDES --- */
+  
+  /* 1. Base Background & Text */
+  .dark body {
+    @apply bg-navy-dark text-white;
+  }
+
+  /* 2. Containers (Cards, Modals, Sidebar) */
+  /* Automatically turns white containers into Dark Navy */
+  .dark .bg-white {
+    @apply bg-navy border-navy-light text-white;
+  }
+
+  /* 3. Inputs & Secondary Backgrounds */
+  /* Turns gray backgrounds (like inputs/headers) into transparent white */
+  .dark .bg-gray-50, 
+  .dark .bg-gray-100, 
+  .dark .bg-gray-200 {
+    @apply bg-white/5 border-white/10 text-white;
+  }
+
+  /* 4. Borders */
+  /* Softens harsh gray borders */
+  .dark .border-gray-100, 
+  .dark .border-gray-200, 
+  .dark .border-gray-300 {
+    @apply border-white/10;
+  }
+
+  /* 5. Text Colors */
+  /* Ensures dark text turns white/light gray */
+  .dark .text-navy {
+    @apply text-white;
+  }
+  
+  .dark .text-gray-500, 
+  .dark .text-gray-600, 
+  .dark .text-gray-700 {
+    @apply text-gray-300;
+  }
+
+  /* REMOVED: .dark .bg-navy block to fix circular dependency error. 
+     If you want a darker sidebar in dark mode, add 'dark:bg-navy-dark' 
+     directly to the <aside> tag in layout.tsx instead. */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Custom Scrollbar (Optional Polish) */
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-white/20;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* REDUCE MOTION UTILITY */
+.reduce-motion * {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
 }

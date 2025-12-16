@@ -10,6 +10,10 @@
 !.yarn/releases
 !.yarn/versions
 
+.env.local
+.env.production
+dist
+
 # testing
 /coverage
 
