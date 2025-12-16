@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
 
+// Access the environment variable
 const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
-}
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -23,14 +20,20 @@ if (!cached) {
 }
 
 export const connectToDB = async () => {
+  // ✅ FIX: Check for the variable INSIDE the function, not at the top level.
+  // This prevents the build from crashing during static generation.
+  if (!MONGODB_URI) {
+    throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
+  }
+
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: true, // Wait for connection before throwing errors
-      maxPoolSize: 10,      // Maintain up to 10 socket connections
+      bufferCommands: true,
+      maxPoolSize: 10,
     };
 
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
