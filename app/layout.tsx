@@ -14,10 +14,24 @@ const inter = Inter({
   display: "swap",
 });
 
-// --- BEAUTIFUL SOCIAL PREVIEWS ---
+// --- BEAUTIFUL SOCIAL PREVIEWS & SEO ---
 export const metadata: Metadata = {
   title: "AfriqGig | Freelance Simplified for Africa",
   description: "Connect with top freelance talent across Africa. Secure payments, verified pros.",
+  
+  // ✅ FIX 1: Favicon Configuration
+  icons: {
+    icon: "/assets/images/logo-symbol.png",
+    shortcut: "/assets/images/logo-symbol.png",
+    apple: "/assets/images/logo-symbol.png",
+  },
+
+  // ✅ FIX 2: Google Ownership Verification
+  verification: {
+    // 👇 PASTE YOUR GOOGLE CODE INSIDE THESE QUOTES 👇
+    google: "lzwSVF39OJ7PjaO9gF0ymwr0BlDy7kwUL97sNc9gQFM", 
+  },
+
   openGraph: {
       title: "Join me on AfriqGig! 🚀",
       description: "Get 50% off your first job. The safest way to hire freelancers in Africa.",
@@ -25,7 +39,7 @@ export const metadata: Metadata = {
       siteName: "AfriqGig",
       images: [
           {
-              url: "https://afriqgig.com/assets/images/social-preview.png", // Ensure this image exists in public/assets/images/
+              url: "https://afriqgig.com/assets/images/social-preview.png",
               width: 1200,
               height: 630,
               alt: "AfriqGig Referral Preview"
@@ -33,9 +47,6 @@ export const metadata: Metadata = {
       ],
       type: "website",
   },
-  icons: {
-      icon: "/app/icon.svg", 
-    },
   twitter: {
       card: "summary_large_image",
       title: "AfriqGig | Hire African Talent",
@@ -51,7 +62,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* FIX: Add 'inter.className' to ensure font loads if variable fails */}
       <body className={`${inter.variable} ${inter.className} font-sans bg-light dark:bg-navy-dark text-navy dark:text-white transition-colors duration-300`}>
         <Provider>
               <LanguageProvider>
@@ -66,4 +76,3 @@ export default function RootLayout({
     </html>
   );
 }
-
