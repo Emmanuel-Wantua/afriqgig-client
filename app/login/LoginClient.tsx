@@ -118,8 +118,13 @@ export default function LoginContent() {
 
   if (checkingAuth) return <div className="py-20"><PageLoader /></div>;
 
-  const handleSocialLogin = (provider: string) => {
-    signIn(provider.toLowerCase(), { callbackUrl: "/dashboard/community" });
+  const handleSocialLogin = async (e: React.MouseEvent, provider: string) => {
+    e.preventDefault(); // Stop any form submission behavior
+    console.log(`📱 [Login] Clicking ${provider}...`);
+    await logToServer("LOGIN", `User clicked ${provider} button`);
+    
+    // Explicitly call signIn
+    await signIn(provider.toLowerCase(), { callbackUrl: "/dashboard/community" });
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -165,6 +170,9 @@ export default function LoginContent() {
 
       if (session?.user) {
           localStorage.setItem("afriqUser", JSON.stringify(session.user));
+          
+          // ✅ ADD THIS: Force Context to update instantly
+          window.dispatchEvent(new Event("afriq-user-update"));
           
           const target = returnUrl ? decodeURIComponent(returnUrl) : "/dashboard/community";
           await logToServer("LOGIN", `Redirecting user to: ${target}`);
@@ -416,13 +424,13 @@ export default function LoginContent() {
                     </div>
 
                     <div className="mt-6 grid grid-cols-3 gap-3">
-                    <button type="button" onClick={() => handleSocialLogin("Google")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                    <button type="button" onClick={(e) => handleSocialLogin(e, "Google")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
                         <GoogleLogo />
                     </button>
-                    <button type="button" onClick={() => handleSocialLogin("GitHub")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                    <button type="button" onClick={(e) => handleSocialLogin(e, "GitHub")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
                         <GitHubLogo />
                     </button>
-                    <button type="button" onClick={() => handleSocialLogin("LinkedIn")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                    <button type="button" onClick={(e) => handleSocialLogin(e, "LinkedIn")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
                         <LinkedInLogo />
                     </button>
                     </div>

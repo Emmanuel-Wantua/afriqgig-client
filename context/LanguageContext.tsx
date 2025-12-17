@@ -78,6 +78,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => { refreshUser(); }, []);
 
+  // ✅ ADD THIS: Listen for storage changes to sync across tabs/pages
+  useEffect(() => {
+      const handleStorageChange = () => {
+          refreshUser();
+      };
+      window.addEventListener("storage", handleStorageChange);
+      // Custom event for same-tab updates (Login page can dispatch this)
+      window.addEventListener("afriq-user-update", handleStorageChange);
+      
+      return () => {
+          window.removeEventListener("storage", handleStorageChange);
+          window.removeEventListener("afriq-user-update", handleStorageChange);
+      };
+  }, []);
+
   // 6. Handle Reduced Motion
   useEffect(() => {
       if (settings.reduceAnimations) document.documentElement.classList.add("reduce-motion");

@@ -7,7 +7,8 @@ import { connectToDB } from "@/lib/db";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import speakeasy from "speakeasy";
-import crypto from "crypto"; // Needed for referral code generation
+import crypto from "crypto"; 
+import { cookies } from "next/headers";
 
 // --- Helper: Generate Referral Code (Duplicated to avoid import issues) ---
 function generateReferralCode() {
@@ -46,12 +47,14 @@ export const authOptions: NextAuthOptions = {
 
         await connectToDB();
         const cleanIdentifier = credentials.identifier.trim();
+        const cleanPhone = cleanIdentifier.replace(/\s+/g, '');
 
         // 1. Find User
         const user = await User.findOne({
           $or: [
             { email: cleanIdentifier },
-            { phone: cleanIdentifier } 
+            { phone: cleanIdentifier },
+            { phone: cleanPhone } 
           ]
         }).select("+password +twoFactorSecret +twoFactorEnabled"); 
 
@@ -89,8 +92,13 @@ export const authOptions: NextAuthOptions = {
                 
                 if (!existingUser) {
                     // --- CREATE NEW USER VIA SOCIAL ---
+                    
+                    // 1. Retrieve the role from the cookie we set on the client
+                    const cookieStore = await cookies();
+                    const roleCookie = cookieStore.get("afriq_signup_role");
+                    const userRole = roleCookie?.value || "freelancer"; // Default fallback
+
                     let newCode = generateReferralCode();
-                    // Collision check
                     const codeExists = await User.findOne({ referralCode: newCode });
                     if (codeExists) newCode = generateReferralCode();
 
@@ -98,12 +106,12 @@ export const authOptions: NextAuthOptions = {
                         name: user.name,
                         email: user.email,
                         avatar: user.image,
-                        role: "freelancer", // Default role for social signup
+                        role: userRole, // ✅ USES THE SELECTED ROLE
                         authProvider: account.provider,
                         authProviderId: user.id,
-                        isVerified: false,
+                        isVerified: true, // Social logins are usually trusted/verified by provider
                         country: "Cameroon", // Default
-                        referralCode: newCode, // ✅ FIXED: Generate code for social users
+                        referralCode: newCode, 
                         wallet: { balance: 0, credits: 0 },
                         settings: { language: "en", currency: "XAF", theme: "light" }
                     });

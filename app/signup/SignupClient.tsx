@@ -82,7 +82,17 @@ function SignupForm() {
     }
   };
 
-  const handleSocialLogin = (provider: string) => {
+  const setRoleCookie = (role: string) => {
+      document.cookie = `afriq_signup_role=${role}; path=/; max-age=300`; // Expires in 5 mins
+  };
+
+  const handleSocialLogin = (e: React.MouseEvent, provider: string) => {
+    e.preventDefault();
+    
+    // 1. Save the selected role so the server knows what to create
+    setRoleCookie(userRole);
+    
+    // 2. Trigger Social Sign In
     signIn(provider.toLowerCase(), { callbackUrl: "/dashboard/community" });
   };
 
@@ -305,28 +315,28 @@ function SignupForm() {
       </form>
       
       {/* SOCIALS */}
-      <div className="mt-8">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase font-bold tracking-wider">
-                <span className="bg-white px-4 text-gray-400">{t.auth.orContinue}</span>
-              </div>
-            </div>
+        <div className="mt-8">
+                <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-200" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase font-bold tracking-wider">
+                    <span className="bg-white px-4 text-gray-400">{t.auth.orContinue}</span>
+                </div>
+                </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <button type="button" onClick={() => handleSocialLogin("Google")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
-                <GoogleLogo />
-              </button>
-              <button type="button" onClick={() => handleSocialLogin("GitHub")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
-                <GitHubLogo />
-              </button>
-              <button type="button" onClick={() => handleSocialLogin("LinkedIn")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
-                <LinkedInLogo />
-              </button>
-            </div>
-          </div>
+                <div className="mt-6 grid grid-cols-3 gap-3">
+                <button type="button" onClick={(e) => handleSocialLogin(e, "Google")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                    <GoogleLogo />
+                </button>
+                <button type="button" onClick={(e) => handleSocialLogin(e, "GitHub")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                    <GitHubLogo />
+                </button>
+                <button type="button" onClick={(e) => handleSocialLogin(e, "LinkedIn")} className="flex items-center justify-center py-3 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm">
+                    <LinkedInLogo />
+                </button>
+                </div>
+        </div>
 
       <p className="mt-10 text-center text-sm text-gray-500">
         {t.auth.alreadyHaveAccount} <Link href="/login" className="font-bold text-navy hover:text-gold underline decoration-gold/30 hover:decoration-gold decoration-2 underline-offset-4">{t.auth.login}</Link>

@@ -74,7 +74,7 @@ export async function POST(req: Request) {
     const codeExists = await User.findOne({ referralCode: newReferralCode });
     if (codeExists) newReferralCode = generateReferralCode();
 
-    // --- 5. GENERATE VERIFICATION TOKEN (NEW) ---
+    // --- 5. GENERATE VERIFICATION TOKEN ---
     const verifyToken = crypto.randomBytes(32).toString('hex');
     const verifyTokenExpiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
 
@@ -111,34 +111,30 @@ export async function POST(req: Request) {
       }
     });
 
-    // --- 7. SEND VERIFICATION EMAIL (UPDATED) ---
+    // --- 7. SEND VERIFICATION EMAIL ---
     
-    // Construct the link (Detects if running locally or on VPS)
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://afriqgig.com';
+    // Construct the link (Use NEXT_PUBLIC_APP_URL for consistency if defined, fallback to afriqgig.com)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_URL || 'https://afriqgig.com';
     const verifyLink = `${baseUrl}/verify-email?token=${verifyToken}`;
 
-    // A. LOG TO CONSOLE (For immediate testing without email delivery lag)
+    // A. LOG TO CONSOLE (Crucial for testing)
     console.log("========================================");
     console.log(`📧 VERIFICATION LINK FOR ${email}:`);
     console.log(verifyLink);
     console.log("========================================");
 
-    // B. SEND VIA BREVO (Uncomment this when ready for production)
-    
+    // B. SEND VIA BREVO
     await sendEmail(
         newUser.email, 
         "VERIFY", 
         { 
-            name: newUser.name,
+            name: newUser.name, 
             link: verifyLink 
         }, 
-        "VERIFICATION_TEMPLATE_ID" // If using Brevo templates, or pass raw HTML
+        newUser._id // ✅ Corrected: Pass ID as 4th arg, not a template string
     );
 
-
-    // For now, we still send the Welcome email if you wish, 
-    // BUT usually you only send Welcome AFTER they verify.
-    sendEmail(newUser.email, "WELCOME", { name: newUser.name }, newUser._id);
+    // ❌ REMOVED: Welcome Email (Moved to verification API)
 
     return NextResponse.json({ message: "User created. Please check your email to verify account." }, { status: 201 });
 

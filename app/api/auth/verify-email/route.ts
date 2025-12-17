@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { connectToDB } from '@/lib/db'; // Changed from utils/db to lib/db to match your structure
+import { connectToDB } from '@/lib/db';
 import User from '@/models/User';
+import { sendEmail } from '@/lib/email'; // Import email sender
 
 export async function POST(req: Request) {
     try {
@@ -12,24 +13,32 @@ export async function POST(req: Request) {
 
         const user = await User.findOne({ 
             verificationToken: token, 
-            verificationTokenExpiry: { $gt: Date.now() } // Check expiry
+            verificationTokenExpiry: { $gt: Date.now() }
         });
 
         if (!user) {
-            return NextResponse.json({ message: "Invalid or expired verification link." }, { status: 400 });
+            // FIX: Be less aggressive with the error.
+            return NextResponse.json({ message: "Invalid or expired link. You may already be verified." }, { status: 400 });
         }
 
         // Verify User
         user.isVerified = true;
-        user.verificationToken = undefined;       // Clear token
-        user.verificationTokenExpiry = undefined; // Clear expiry
+        user.verificationToken = undefined;
+        user.verificationTokenExpiry = undefined;
         
-        // Update settings status if it exists
         if (user.settings) {
             user.settings.verificationStatus = 'verified';
         }
 
         await user.save();
+
+        // ✅ NEW: Trigger Welcome Email HERE (After successful verification)
+        try {
+            await sendEmail(user.email, "WELCOME", { name: user.name }, user._id);
+        } catch (emailErr) {
+            console.error("Welcome email failed:", emailErr);
+            // Don't fail the request just because email failed
+        }
 
         return NextResponse.json({ message: "Email verified successfully" }, { status: 200 });
 
