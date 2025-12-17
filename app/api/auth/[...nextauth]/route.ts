@@ -1,16 +1,16 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github"; // Added
-import LinkedInProvider from "next-auth/providers/linkedin"; // Added
+import GitHubProvider from "next-auth/providers/github";
+import LinkedInProvider from "next-auth/providers/linkedin";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { connectToDB } from "@/lib/db";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import speakeasy from "speakeasy";
-import crypto from "crypto"; 
-import { cookies } from "next/headers";
+import crypto from "crypto";
+import { cookies } from "next/headers"; // Import cookies
 
-// --- Helper: Generate Referral Code (Duplicated to avoid import issues) ---
+// --- Helper: Generate Referral Code ---
 function generateReferralCode() {
     const random = crypto.randomBytes(3).toString("hex").toUpperCase();
     return `AFQ-${random}`;
@@ -46,15 +46,17 @@ export const authOptions: NextAuthOptions = {
         }
 
         await connectToDB();
+        
+        // Fix: Clean phone input
         const cleanIdentifier = credentials.identifier.trim();
-        const cleanPhone = cleanIdentifier.replace(/\s+/g, '');
+        const cleanPhone = cleanIdentifier.replace(/\s+/g, ''); 
 
-        // 1. Find User
+        // 1. Find User (Email OR Phone)
         const user = await User.findOne({
           $or: [
             { email: cleanIdentifier },
             { phone: cleanIdentifier },
-            { phone: cleanPhone } 
+            { phone: cleanPhone }
           ]
         }).select("+password +twoFactorSecret +twoFactorEnabled"); 
 
@@ -93,10 +95,15 @@ export const authOptions: NextAuthOptions = {
                 if (!existingUser) {
                     // --- CREATE NEW USER VIA SOCIAL ---
                     
-                    // 1. Retrieve the role from the cookie we set on the client
-                    const cookieStore = await cookies();
-                    const roleCookie = cookieStore.get("afriq_signup_role");
-                    const userRole = roleCookie?.value || "freelancer"; // Default fallback
+                    // 1. Retrieve the role from the cookie (Safe for Next.js 15 & 14)
+                    let userRole = "freelancer";
+                    try {
+                        const cookieStore = await cookies(); // Await is needed for Next.js 15
+                        const roleCookie = cookieStore.get("afriq_signup_role");
+                        if (roleCookie) userRole = roleCookie.value;
+                    } catch (e) {
+                        // Fallback if cookie fails
+                    }
 
                     let newCode = generateReferralCode();
                     const codeExists = await User.findOne({ referralCode: newCode });
@@ -106,11 +113,11 @@ export const authOptions: NextAuthOptions = {
                         name: user.name,
                         email: user.email,
                         avatar: user.image,
-                        role: userRole, // ✅ USES THE SELECTED ROLE
+                        role: userRole, // Uses the cookie role
                         authProvider: account.provider,
                         authProviderId: user.id,
-                        isVerified: true, // Social logins are usually trusted/verified by provider
-                        country: "Cameroon", // Default
+                        isVerified: true, // Social is verified by default
+                        country: "Cameroon",
                         referralCode: newCode, 
                         wallet: { balance: 0, credits: 0 },
                         settings: { language: "en", currency: "XAF", theme: "light" }
@@ -132,14 +139,29 @@ export const authOptions: NextAuthOptions = {
         return true;
     },
 
-    // B. JWT Callback
+    // B. JWT Callback - ✅ FIXED THE CRASH HERE
     async jwt({ token, user, trigger, session }: any) {
         if (user) {
-            token.id = user._id.toString();
-            token.role = user.role;
-            token.picture = user.avatar;
+            // Social logins don't have _id immediately. We must check/fetch it.
+            if (user._id) {
+                // Credentials login (User came from DB)
+                token.id = user._id.toString();
+                token.role = user.role;
+                token.picture = user.avatar;
+            } else {
+                // Social Login (User came from Google)
+                // We need to fetch the real DB ID to prevent crashes
+                await connectToDB();
+                const dbUser = await User.findOne({ email: user.email });
+                if (dbUser) {
+                    token.id = dbUser._id.toString();
+                    token.role = dbUser.role;
+                    token.picture = dbUser.avatar;
+                }
+            }
             token.name = user.name;
         }
+
         if (trigger === "update" && session) {
             return { ...token, ...session.user };
         }
