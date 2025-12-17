@@ -142,33 +142,30 @@ export const authOptions: NextAuthOptions = {
     // B. JWT Callback - ✅ FIXED THE CRASH HERE
     async jwt({ token, user, trigger, session }: any) {
         if (user) {
-            // Social logins don't have _id immediately. We must check/fetch it.
+            // 1. Check if user came from Database (Credentials)
             if (user._id) {
-                // Credentials login (User came from DB)
                 token.id = user._id.toString();
                 token.role = user.role;
                 token.picture = user.avatar;
-            } else {
-                // Social Login (User came from Google)
-                // We need to fetch the real DB ID to prevent crashes
+            } 
+            // 2. Check if user came from Social Provider (No _id yet)
+            else {
                 await connectToDB();
                 const dbUser = await User.findOne({ email: user.email });
                 if (dbUser) {
-                    token.id = dbUser._id.toString();
+                    token.id = dbUser._id.toString(); // Safe access
                     token.role = dbUser.role;
                     token.picture = dbUser.avatar;
                 }
             }
             token.name = user.name;
         }
-
         if (trigger === "update" && session) {
             return { ...token, ...session.user };
         }
         return token;
     },
 
-    // C. Session Callback
     async session({ session, token }: any) {
         if (token) {
             session.user._id = token.id;
@@ -179,13 +176,8 @@ export const authOptions: NextAuthOptions = {
         return session;
     },
   },
-  pages: {
-    signIn: '/login',
-    error: '/login',
-  },
-  session: {
-    strategy: "jwt",
-  },
+  pages: { signIn: '/login', error: '/login' },
+  session: { strategy: "jwt" },
   cookies: {
     sessionToken: {
       name: `afriqgig.session-token`,
