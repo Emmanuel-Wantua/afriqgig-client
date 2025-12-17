@@ -142,24 +142,30 @@ export const authOptions: NextAuthOptions = {
     // B. JWT Callback - ✅ FIXED THE CRASH HERE
     async jwt({ token, user, trigger, session }: any) {
         if (user) {
-            // 1. Check if user came from Database (Credentials)
+            // Strategy 1: Credentials Login (User has _id)
             if (user._id) {
                 token.id = user._id.toString();
                 token.role = user.role;
                 token.picture = user.avatar;
             } 
-            // 2. Check if user came from Social Provider (No _id yet)
-            else {
-                await connectToDB();
-                const dbUser = await User.findOne({ email: user.email });
-                if (dbUser) {
-                    token.id = dbUser._id.toString(); // Safe access
-                    token.role = dbUser.role;
-                    token.picture = dbUser.avatar;
+            // Strategy 2: Social Login (User has no _id, fetch from DB)
+            else if (user.email) {
+                try {
+                    await connectToDB();
+                    const dbUser = await User.findOne({ email: user.email });
+                    if (dbUser && dbUser._id) {
+                        token.id = dbUser._id.toString(); // ✅ Safe access
+                        token.role = dbUser.role;
+                        token.picture = dbUser.avatar;
+                    }
+                } catch (error) {
+                    console.error("JWT DB Lookup Error:", error);
                 }
             }
+            
             token.name = user.name;
         }
+
         if (trigger === "update" && session) {
             return { ...token, ...session.user };
         }
