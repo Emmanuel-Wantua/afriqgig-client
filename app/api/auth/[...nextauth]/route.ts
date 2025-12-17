@@ -8,17 +8,18 @@ import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import speakeasy from "speakeasy";
 import crypto from "crypto";
-import { cookies } from "next/headers"; // Import cookies
+import { cookies } from "next/headers";
 
-// --- Helper: Generate Referral Code ---
 function generateReferralCode() {
     const random = crypto.randomBytes(3).toString("hex").toUpperCase();
     return `AFQ-${random}`;
 }
 
 export const authOptions: NextAuthOptions = {
+  // ✅ 1. Force Secure Cookies (Crucial for Nginx/VPS)
+  useSecureCookies: true,
+
   providers: [
-    // 1. Social Providers
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -31,8 +32,6 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.LINKEDIN_CLIENT_ID!,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET!,
     }),
-    
-    // 2. Credentials Provider
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -44,14 +43,10 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.identifier || !credentials?.password) {
           throw new Error("Invalid credentials");
         }
-
         await connectToDB();
-        
-        // Fix: Clean phone input
         const cleanIdentifier = credentials.identifier.trim();
         const cleanPhone = cleanIdentifier.replace(/\s+/g, ''); 
 
-        // 1. Find User (Email OR Phone)
         const user = await User.findOne({
           $or: [
             { email: cleanIdentifier },
@@ -62,11 +57,9 @@ export const authOptions: NextAuthOptions = {
 
         if (!user || !user.password) throw new Error("User not found");
 
-        // 2. Verify Password
         const isMatch = await bcrypt.compare(credentials.password, user.password);
         if (!isMatch) throw new Error("Invalid password");
 
-        // 3. Verify 2FA
         if (user.twoFactorEnabled) {
             if (!credentials.otp) throw new Error("2FA_REQUIRED");
             const verified = speakeasy.totp.verify({
@@ -76,14 +69,12 @@ export const authOptions: NextAuthOptions = {
             });
             if (!verified) throw new Error("Invalid 2FA Code");
         }
-
         const { password, twoFactorSecret, ...userWithoutSensitive } = user.toObject();
         return userWithoutSensitive;
       }
     })
   ],
   callbacks: {
-    // A. Sign In Callback - Handles Social Login Creation
     async signIn({ user, account }: any) {
         if (account?.provider === "credentials") return true;
         
@@ -91,19 +82,13 @@ export const authOptions: NextAuthOptions = {
             await connectToDB();
             try {
                 const existingUser = await User.findOne({ email: user.email });
-                
                 if (!existingUser) {
-                    // --- CREATE NEW USER VIA SOCIAL ---
-                    
-                    // 1. Retrieve the role from the cookie (Safe for Next.js 15 & 14)
                     let userRole = "freelancer";
                     try {
-                        const cookieStore = await cookies(); // Await is needed for Next.js 15
+                        const cookieStore = await cookies();
                         const roleCookie = cookieStore.get("afriq_signup_role");
                         if (roleCookie) userRole = roleCookie.value;
-                    } catch (e) {
-                        // Fallback if cookie fails
-                    }
+                    } catch (e) {}
 
                     let newCode = generateReferralCode();
                     const codeExists = await User.findOne({ referralCode: newCode });
@@ -113,17 +98,16 @@ export const authOptions: NextAuthOptions = {
                         name: user.name,
                         email: user.email,
                         avatar: user.image,
-                        role: userRole, // Uses the cookie role
+                        role: userRole,
                         authProvider: account.provider,
                         authProviderId: user.id,
-                        isVerified: true, // Social is verified by default
+                        isVerified: true,
                         country: "Cameroon",
                         referralCode: newCode, 
                         wallet: { balance: 0, credits: 0 },
                         settings: { language: "en", currency: "XAF", theme: "light" }
                     });
                 } else {
-                    // --- LINK EXISTING ACCOUNT ---
                     if (!existingUser.authProvider) {
                         existingUser.authProvider = account.provider;
                         existingUser.authProviderId = user.id;
@@ -139,22 +123,18 @@ export const authOptions: NextAuthOptions = {
         return true;
     },
 
-    // B. JWT Callback - ✅ FIXED THE CRASH HERE
     async jwt({ token, user, trigger, session }: any) {
         if (user) {
-            // Strategy 1: Credentials Login (User has _id)
             if (user._id) {
                 token.id = user._id.toString();
                 token.role = user.role;
                 token.picture = user.avatar;
-            } 
-            // Strategy 2: Social Login (User has no _id, fetch from DB)
-            else if (user.email) {
+            } else if (user.email) {
                 try {
                     await connectToDB();
                     const dbUser = await User.findOne({ email: user.email });
                     if (dbUser && dbUser._id) {
-                        token.id = dbUser._id.toString(); // ✅ Safe access
+                        token.id = dbUser._id.toString();
                         token.role = dbUser.role;
                         token.picture = dbUser.avatar;
                     }
@@ -162,10 +142,8 @@ export const authOptions: NextAuthOptions = {
                     console.error("JWT DB Lookup Error:", error);
                 }
             }
-            
             token.name = user.name;
         }
-
         if (trigger === "update" && session) {
             return { ...token, ...session.user };
         }
@@ -182,19 +160,33 @@ export const authOptions: NextAuthOptions = {
         return session;
     },
   },
-  pages: { signIn: '/login', error: '/login' },
-  session: { strategy: "jwt" },
+  
+  // ✅ 2. Define Secure Cookies Explicitly (Solves State Mismatch)
   cookies: {
     sessionToken: {
-      name: `afriqgig.session-token`,
-      options: {
-        httpOnly: true,
-        sameSite: "lax",
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-      },
+      name: `__Secure-next-auth.session-token`,
+      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: true }
+    },
+    callbackUrl: {
+      name: `__Secure-next-auth.callback-url`,
+      options: { sameSite: 'lax', path: '/', secure: true }
+    },
+    csrfToken: {
+      name: `__Secure-next-auth.csrf-token`,
+      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: true }
+    },
+    pkceCodeVerifier: {
+      name: `__Secure-next-auth.pkce.code_verifier`,
+      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: true }
+    },
+    state: {
+      name: `__Secure-next-auth.state`,
+      options: { httpOnly: true, sameSite: 'lax', path: '/', secure: true }
     },
   },
+
+  pages: { signIn: '/login', error: '/login' },
+  session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
 };
 

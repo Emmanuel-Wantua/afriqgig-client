@@ -14,9 +14,10 @@ export async function GET() {
       return NextResponse.json(cachedRates);
     }
 
-    // 2. Fetch from Real API (Base: XAF)
-    const apiKey = process.env.EXCHANGE_RATE_API_KEY;
-    if (!apiKey) throw new Error("Missing API Key");
+    // 2. Fetch from Real API (Check BOTH variable names)
+    const apiKey = process.env.CURRENCY_API_KEY || process.env.EXCHANGE_RATE_API_KEY;
+    
+    if (!apiKey) throw new Error("Missing API Key (Checked CURRENCY_API_KEY & EXCHANGE_RATE_API_KEY)");
 
     const res = await fetch(`https://v6.exchangerate-api.com/v6/${apiKey}/latest/XAF`);
     const data = await res.json();
