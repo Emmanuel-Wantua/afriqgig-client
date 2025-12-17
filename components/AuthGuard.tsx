@@ -1,35 +1,43 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useLanguage } from "@/context/LanguageContext";
+import { useSession } from "next-auth/react"; // ✅ Use NextAuth Hook
 import PageLoader from "@/components/PageLoader";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { user } = useLanguage();
+  // 1. Check the official Session (Cookie) instead of LocalStorage
+  const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
-  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
-    // 1. Check LocalStorage directly for immediate feedback (faster than Context sometimes)
-    const storedUser = localStorage.getItem("afriqUser");
+    // Wait until NextAuth determines if we are logged in or not
+    if (status === "loading") return;
 
-    if (!storedUser) {
-      // Not logged in -> Redirect to Login with return URL
-      // We encode the current path so we can send them back after login
-      const returnUrl = encodeURIComponent(pathname || "/dashboard/client");
+    if (status === "unauthenticated") {
+      // ❌ No Cookie found -> Redirect to Login
+      const returnUrl = encodeURIComponent(pathname || "/dashboard/community");
       router.replace(`/login?returnUrl=${returnUrl}`);
-    } else {
-      // Logged in -> Allow access
-      setIsAuthorized(true);
+    } 
+    else if (status === "authenticated") {
+      // ✅ Cookie found! User is logged in via Google/Email.
+      
+      // SYNC: Ensure LocalStorage matches the Cookie (Helper for your Context)
+      const storedUser = localStorage.getItem("afriqUser");
+      if (!storedUser && session?.user) {
+          localStorage.setItem("afriqUser", JSON.stringify(session.user));
+          // Notify the app that user data is now available
+          window.dispatchEvent(new Event("afriq-user-update"));
+      }
     }
-  }, [router, pathname]);
+  }, [status, session, router, pathname]);
 
-  // Show Loader while checking (prevents "flash" of protected content)
-  if (!isAuthorized) {
+  // Show Loader while NextAuth is checking the cookie
+  if (status === "loading" || status === "unauthenticated") {
     return <PageLoader />;
   }
 
+  // Render the protected page
   return <>{children}</>;
 }
