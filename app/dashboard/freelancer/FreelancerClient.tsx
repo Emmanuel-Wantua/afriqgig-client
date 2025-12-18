@@ -381,12 +381,24 @@ function FreelancerDashboardContent() {
       {/* HEADER */}
       <div className="flex flex-col md:flex-row gap-6 md:items-end justify-between">
         <div>
-           <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
-             {t.dashboard.welcome}, {user && <UserBadge user={user} />}
+           {/* 1. Name is now on its own line */}
+           <h1 className="text-2xl font-bold text-navy mb-2">
+             {t.dashboard.welcome}, <span className="text-gold">{user?.name?.split(' ')[0]}</span>
            </h1>
-           <p className="text-gray-500 text-sm">
-             {t.dashboard.jobCountStart} <span className="text-gold font-bold">{filteredJobs.length} {t.dashboard.jobCountMiddle}</span> {t.dashboard.jobCountEnd}
-           </p>
+           
+           {/* 2. Badge and Job Count are grouped on the second line */}
+           <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
+             {/* Badge moved here */}
+             <div className="scale-90 origin-left">
+                {user && <UserBadge user={user} showRating={true} />}
+             </div>
+             
+             <span className="hidden sm:inline text-gray-300">|</span>
+             
+             <p>
+               {t.dashboard.jobCountStart} <span className="text-gold font-bold">{filteredJobs.length} {t.dashboard.jobCountMiddle}</span> {t.dashboard.jobCountEnd}
+             </p>
+           </div>
         </div>
       </div>
 
@@ -697,9 +709,9 @@ function FreelancerDashboardContent() {
                                             <div className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
                                                 <PlayFill />
                                             </div>
-                                            <div className="flex-1">
+                                            <div className="flex-1 min-w-0">
                                                 <p className="text-xs font-bold text-navy">Voice Note Recorded</p>
-                                                <p className="text-[10px] text-gray-500">Ready to send</p>
+                                                <audio controls src={URL.createObjectURL(audioBlob)} className="h-6 w-full max-w-[150px] mt-1" />
                                             </div>
                                             <button onClick={deleteRecording} className="text-gray-400 hover:text-red-500 p-2 transition-colors">
                                                 <Trash />

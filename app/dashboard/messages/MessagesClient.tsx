@@ -13,7 +13,8 @@ import { uploadToCloudinary } from "@/utils/upload";
 import UserBadge from "@/components/UserBadge";
 import PageLoader from "@/components/PageLoader";
 import { useGoogleTranslate } from "@/hooks/useGoogleTranslate";
-import CallModal from "@/components/CallModal";
+import dynamic from 'next/dynamic';
+const CallModal = dynamic(() => import("@/components/CallModal"), { ssr: false });
 
 // --- PROFESSIONAL VOICE PLAYER COMPONENT ---
 const VoiceMessagePlayer = ({ src, isMe }: { src: string, isMe: boolean }) => {
@@ -201,7 +202,8 @@ export default function MessagesContent() {
   const [callType, setCallType] = useState<'audio' | 'video'>('audio');
 
   const [incomingCall, setIncomingCall] = useState<{ type: 'audio' | 'video', contact: any } | null>(null);
-  const ringtoneRef = useRef<HTMLAudioElement | null>(null); // For sound
+  const ringtoneRef = useRef<HTMLAudioElement | null>(null);
+  const [activeContract, setActiveContract] = useState<any>(null);
 
   useEffect(() => {
     if (user) fetchInbox();
@@ -234,6 +236,60 @@ export default function MessagesContent() {
     }
   }, [messages]);
 
+  // Fetch active contract when contact changes
+  useEffect(() => {
+      const fetchContractInfo = async () => {
+          // LOG 1: Check inputs
+          console.log("🔍 [CONTRACT CHECK] Triggered.");
+          console.log("   - User ID:", user?._id);
+          console.log("   - Contact ID:", activeContact?._id);
+
+          if (!user?._id || !activeContact?._id) {
+              console.log("⚠️ [CONTRACT CHECK] Aborted: Missing User or Contact ID.");
+              return;
+          }
+
+          try {
+              // Construct URL
+              const url = `/api/contracts?freelancer=${user._id}&client=${activeContact._id}&status=active`;
+              console.log("🚀 [CONTRACT CHECK] Fetching URL:", url);
+
+              const res = await fetch(url);
+              
+              // LOG 2: Check Response Status
+              console.log("📡 [CONTRACT CHECK] API Status:", res.status);
+
+              const contentType = res.headers.get("content-type");
+              if (!contentType || !contentType.includes("application/json")) {
+                  console.error("❌ [CONTRACT CHECK] Error: API returned HTML instead of JSON.");
+                  return;
+              }
+
+              const data = await res.json();
+              console.log("📦 [CONTRACT CHECK] Data Received:", data);
+              
+              // LOG 3: Check Logic
+              if (Array.isArray(data) && data.length > 0) {
+                  // Check if we found the contract where specific roles match
+                  // Try to find one where current user is involved
+                  const contract = data[0]; 
+                  console.log("✅ [CONTRACT CHECK] Active Contract Found:", contract._id, "Amount:", contract.amount);
+                  setActiveContract(contract); 
+              } else {
+                  console.log("⚠️ [CONTRACT CHECK] No active contracts found between these users.");
+                  // Fallback: Try swapping IDs in case roles are reversed in URL logic?
+                  // (Usually the API handles 'freelancer OR client' logic, but let's stick to standard first)
+                  setActiveContract(null);
+              }
+          } catch (error) {
+              console.error("❌ [CONTRACT CHECK] Fetch Exception:", error);
+              setActiveContract(null);
+          }
+      };
+
+      if (activeContact) fetchContractInfo();
+  }, [user, activeContact]);
+
   const handleScroll = () => {
       if (!scrollContainerRef.current) return;
       const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
@@ -251,62 +307,7 @@ export default function MessagesContent() {
   // Add a ref to track the last processed message ID to prevent loops
   const lastProcessedMsgId = useRef<string | null>(null);
 
-  // --- INCOMING CALL LISTENER ---
-  useEffect(() => {
-      if (!messages.length || !user) return;
 
-      const lastMsg = messages[messages.length - 1];
-      
-      // OPTIMIZATION: If we already processed this exact message, stop here.
-      if (lastMsg._id === lastProcessedMsgId.current) return;
-
-      const isMe = lastMsg.sender === user._id;
-
-      // Regex to find call tags e.g., [CALL_STARTED:video]
-      const callMatch = lastMsg.content.match(/\[CALL_STARTED:(audio|video)\]/);
-
-      if (callMatch && !isMe) {
-          // Check if call is "fresh" (less than 60 seconds old)
-          const msgTime = new Date(lastMsg.createdAt).getTime();
-          const now = Date.now();
-          const isRecent = (now - msgTime) < 60000; // 60 seconds timeout
-
-          // Only trigger if we aren't already in a call
-          if (isRecent && !showCallModal && !incomingCall) {
-              
-              // Mark as processed so we don't ring again for the same msg
-              lastProcessedMsgId.current = lastMsg._id;
-
-              setIncomingCall({
-                  type: callMatch[1] as 'audio' | 'video',
-                  contact: activeContact
-              });
-              
-              // Play Ringtone
-              try {
-                  if (!ringtoneRef.current) {
-                      ringtoneRef.current = new Audio("/assets/audio/ringtone.mp3");
-                      ringtoneRef.current.loop = true;
-                  }
-                  // Browser Policy: User must have interacted with the document first
-                  const playPromise = ringtoneRef.current.play();
-                  if (playPromise !== undefined) {
-                      playPromise.catch(error => {
-                          console.log("Auto-play prevented by browser policy. User must click to enable audio.");
-                      });
-                  }
-              } catch (e) { console.error(e); }
-          }
-      }
-  }, [messages, user, showCallModal, incomingCall, activeContact]);
-
-  // Stop Ringtone helper
-  const stopRingtone = () => {
-      if (ringtoneRef.current) {
-          ringtoneRef.current.pause();
-          ringtoneRef.current.currentTime = 0;
-      }
-  };
 
   const fetchInbox = async () => {
     try {
@@ -467,14 +468,11 @@ export default function MessagesContent() {
       return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
+  // --- OUTGOING CALL (Initiator Only) ---
   const startCall = async (type: 'audio' | 'video') => {
-      // 1. Send "System Signal" Message to chat
-      // This tells the other user's app to wake up and open the modal
       await sendMessage(`[CALL_STARTED:${type}]`); 
-
-      // 2. Open my Zego Cloud Modal immediately
       setCallType(type);
-      setShowCallModal(true);
+      setShowCallModal(true); // Open modal immediately for caller
   };
 
   // --- UPDATED HELPER: Render Content ---
@@ -586,10 +584,12 @@ export default function MessagesContent() {
                                <img src={activeContact.avatar} className="w-full h-full object-cover" alt="Avatar"/>
                            ) : <PersonCircle className="text-4xl text-gray-400" />}
                        </div>
-                       <div>
-                           <div className="flex items-center">
-                               <UserBadge user={activeContact} showRating={true} />
-                           </div>
+                       <div className="min-w-0 flex-1"> {/* ✅ Enable shrinking */}
+                            <div className="flex items-center">
+                                <span className="truncate max-w-[150px]"> {/* ✅ Force Truncation */}
+                                    <UserBadge user={activeContact} showRating={true} />
+                                </span>
+                            </div>
                            <div className="flex items-center gap-1.5 mt-0.5">
                                <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                                <p className="text-xs text-gray-500">{t.chat.online}</p>
@@ -632,13 +632,31 @@ export default function MessagesContent() {
                    onScroll={handleScroll}
                    className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50"
                >
-                   {/* Currency Bubble */}
-                   <div className="flex justify-center my-4">
-                       <div className="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex items-center gap-3 text-xs text-gray-600">
-                           <CashCoin className="text-xl text-gold" />
-                           <span>{t.chat.offer} <strong>{convertPrice(50000)}</strong></span>
+                   {/* Currency Bubble - Shows ONLY if there is an active contract */}
+                   {activeContract && (
+                       <div className="flex justify-center my-4 sticky top-0 z-10">
+                           <div className="bg-white border border-gray-200 rounded-xl p-3 shadow-sm flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-xs text-gray-600 animate-in fade-in zoom-in backdrop-blur-sm bg-white/90">
+                               <div className="flex items-center gap-2">
+                                   <CashCoin className="text-xl text-gold" />
+                                   <span className="font-bold text-navy uppercase tracking-wide">Active Contract:</span>
+                               </div>
+                               
+                               <div className="flex items-center gap-1">
+                                   <span className="text-base font-bold text-green-600">
+                                       {convertPrice(activeContract.amount)}
+                                   </span>
+                                   
+                                   {/* ✅ FIX: Show Net Amount ONLY to the Freelancer */}
+                                   {/* We check if the current logged-in user's ID matches the freelancer's ID on the contract */}
+                                   {(activeContract.freelancer === user?._id || activeContract.freelancer?._id === user?._id) && (
+                                       <span className="text-gray-400 font-medium ml-1">
+                                           (Net: {convertPrice(activeContract.amount * 0.95)})
+                                       </span>
+                                   )}
+                               </div>
+                           </div>
                        </div>
-                   </div>
+                   )}
 
                    {messages.map((msg, idx) => {
                        const isMe = msg.sender === user?._id;
@@ -744,74 +762,8 @@ export default function MessagesContent() {
          )}
       </div>
 
-      {/* --- INCOMING CALL POPUP --- */}
-      {incomingCall && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
-              <div className="bg-navy w-full max-w-sm rounded-3xl p-8 text-center shadow-2xl border border-white/10 relative overflow-hidden">
-                  
-                  {/* Pulsing Background Animation */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/20 rounded-full animate-ping pointer-events-none"></div>
-                  
-                  <div className="relative z-10">
-                      <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden border-4 border-white/20 shadow-lg">
-                          {incomingCall.contact?.avatar ? (
-                               // eslint-disable-next-line @next/next/no-img-element
-                              <img src={incomingCall.contact.avatar} className="w-full h-full object-cover" alt="Caller" />
-                          ) : <PersonCircle className="w-full h-full text-gray-400 p-2" />}
-                      </div>
-                      
-                      <h3 className="text-2xl font-bold text-white mb-1">{incomingCall.contact?.name || "Unknown"}</h3>
-                      <p className="text-blue-200 text-sm mb-8 flex items-center justify-center gap-2">
-                          {incomingCall.type === 'video' ? <CameraVideo/> : <Telephone/>} 
-                          Incoming {incomingCall.type} call...
-                      </p>
-
-                      <div className="flex items-center justify-center gap-6">
-                          {/* Decline Button */}
-                          <button 
-                              onClick={() => {
-                                  setIncomingCall(null);
-                                  stopRingtone();
-                              }}
-                              className="flex flex-col items-center gap-2 group"
-                          >
-                              <div className="w-14 h-14 bg-red-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg group-hover:scale-110 transition-transform">
-                                  <TelephoneX />
-                              </div>
-                              <span className="text-xs text-white/70 font-bold">Decline</span>
-                          </button>
-
-                          {/* Accept Button */}
-                          <button 
-                              onClick={() => {
-                                  stopRingtone();
-                                  setCallType(incomingCall.type); // Set correct mode (video/audio)
-                                  setIncomingCall(null);          // Close this popup
-                                  setShowCallModal(true);         // Open Zego Modal
-                              }}
-                              className="flex flex-col items-center gap-2 group"
-                          >
-                              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform animate-bounce">
-                                  {incomingCall.type === 'video' ? <CameraVideo /> : <Telephone />}
-                              </div>
-                              <span className="text-xs text-white/70 font-bold">Accept</span>
-                          </button>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      )}
-
-      {/* --- ZEGO CALL MODAL --- */}
-      <CallModal 
-        isOpen={showCallModal} 
-        onClose={() => {
-             setShowCallModal(false);
-             stopRingtone(); // Safety stop
-        }} 
-        contact={activeContact} 
-        type={callType} 
-      />
+      {/* --- OUTGOING CALL MODAL --- */}
+      <CallModal isOpen={showCallModal} onClose={() => setShowCallModal(false)} contact={activeContact} type={callType} />
 
     </div>
   );

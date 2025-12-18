@@ -73,9 +73,18 @@ export default function WalletContent() {
 
           if (!res.ok) throw new Error(data.message || "Deposit failed");
 
-          // 2. Redirect to Swychr Payment Page
+          // 2. Redirect to Swychr Payment Page (New Tab)
           if (data.url) {
-              window.location.href = data.url; 
+              // Show success feedback immediately
+              setFeedback({ type: "success", message: "Payment page opened in a new tab. Please complete the transaction there." });
+              setIsProcessing(false);
+              
+              // Open new tab after a tiny delay to ensure state updates
+              setTimeout(() => {
+                  window.open(data.url, '_blank');
+                  // Optional: Close modal after opening
+                  setShowDepositModal(false); 
+              }, 1000);
           } else {
               throw new Error("No payment link returned");
           }
@@ -181,7 +190,7 @@ export default function WalletContent() {
           <div className="flex-1">
             <h4 className="text-sm font-bold text-navy mb-1">{t.wallet.securityTitle}</h4>
             <p className="text-xs text-gray-600 mb-3 leading-relaxed">{t.wallet.securityText}</p>
-            <Link href="/dashboard/settings" className="text-xs font-bold text-white bg-navy px-4 py-2 rounded-lg hover:bg-navy-light transition-colors inline-block">
+            <Link href="/dashboard/settings#security-section" className="text-xs font-bold text-white bg-navy px-4 py-2 rounded-lg hover:bg-navy-light transition-colors inline-block">
               {t.wallet.enable2fa}
             </Link>
           </div>

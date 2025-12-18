@@ -66,6 +66,16 @@ export default function SettingsContent() {
       if (user) fetchSettings();
   }, [user]);
 
+  useEffect(() => {
+      if (window.location.hash === "#security-section") {
+          setActiveTab("security");
+          // Wait for tab switch, then scroll
+          setTimeout(() => {
+              document.getElementById("security-section")?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+      }
+  }, []);
+
   const fetchSettings = async () => {
       try {
           const res = await fetch(`/api/users/${user._id}`);
@@ -520,7 +530,7 @@ export default function SettingsContent() {
 
               {/* SECURITY */}
               {activeTab === "security" && (
-                  <div className="space-y-6">
+                  <div className="space-y-6" id="security-section">
                       <h3 className="text-lg font-bold text-navy border-b border-gray-100 pb-2">{t.settings.security}</h3>
                       
                       <div>

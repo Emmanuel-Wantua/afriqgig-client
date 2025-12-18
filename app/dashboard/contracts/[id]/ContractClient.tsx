@@ -567,7 +567,14 @@ export default function ContractClient({ id }: { id: string }) {
       {previewFile && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-in fade-in">
               <div className="relative w-full max-w-4xl h-[90vh] flex flex-col justify-center">
-                  <button onClick={() => setPreviewFile(null)} className="absolute top-4 right-4 text-white hover:text-red-500 z-50"><X className="text-4xl" /></button>
+                  {/* ENHANCED CLOSE BUTTON */}
+                  <button 
+                      onClick={() => setPreviewFile(null)} 
+                      className="absolute top-2 right-2 md:top-4 md:right-4 z-50 bg-black/50 hover:bg-red-600 text-white p-2 rounded-full transition-colors backdrop-blur-md"
+                      title="Close Preview"
+                  >
+                      <X className="text-3xl md:text-4xl" />
+                  </button>
                   
                   <div className="flex-1 flex items-center justify-center overflow-hidden">
                       {previewFile.type === 'image' ? (

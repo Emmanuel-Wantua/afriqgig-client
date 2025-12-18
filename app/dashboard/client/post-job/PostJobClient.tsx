@@ -7,7 +7,7 @@ import { ArrowLeft, ChevronRight, Upload, CurrencyExchange, CalendarDate,
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PageLoader from "@/components/PageLoader";
-import { SPECIFIC_JOB_CATEGORIES, AUTO_SUGGEST_MAP } from "@/utils/data";
+import { SPECIFIC_JOB_CATEGORIES, getSuggestedCategory } from "@/utils/data";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function PostJobContent() {
@@ -50,18 +50,16 @@ export default function PostJobContent() {
         return;
     }
 
-    const lowerVal = val.toLowerCase();
-    
-    // 1. Find keywords in the title
+    // 1. Use the new Smart Engine to find the best category match
+    const suggested = getSuggestedCategory(val);
     const matchedCategories = new Set<string>();
-    
-    Object.keys(AUTO_SUGGEST_MAP).forEach(keyword => {
-        if (lowerVal.includes(keyword)) {
-            matchedCategories.add(AUTO_SUGGEST_MAP[keyword]);
-        }
-    });
 
-    // 2. Also search directly within category names
+    if (suggested) {
+        matchedCategories.add(suggested);
+    }
+
+    // 2. Also search directly within category names (Fallback)
+    const lowerVal = val.toLowerCase();
     SPECIFIC_JOB_CATEGORIES.forEach(cat => {
         if (cat.toLowerCase().includes(lowerVal)) {
             matchedCategories.add(cat);
@@ -71,6 +69,8 @@ export default function PostJobContent() {
     // 3. Update Dropdown List
     if (matchedCategories.size > 0) {
         setFilteredCategories(Array.from(matchedCategories));
+        // Optional: Auto-open dropdown if a good match is found
+        if (!isCategoryOpen) setIsCategoryOpen(true);
     } else {
         setFilteredCategories(SPECIFIC_JOB_CATEGORIES);
     }
@@ -305,11 +305,17 @@ export default function PostJobContent() {
                   {selectedFiles.map((file, index) => (
                     <div key={index} className="border border-green-200 bg-green-50 rounded-xl p-3 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-green-600 shadow-sm">
-                          <FileEarmarkText className="text-lg" />
+                        {/* PREVIEW THUMBNAIL */}
+                        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-green-600 shadow-sm overflow-hidden border border-green-100">
+                          {file.type.startsWith("image/") ? (
+                              <img src={URL.createObjectURL(file)} alt="Preview" className="w-full h-full object-cover" />
+                          ) : (
+                              <FileEarmarkText className="text-lg" />
+                          )}
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm font-bold text-navy truncate max-w-[200px]">{file.name}</p>
+                          <p className="text-[10px] text-gray-500">{(file.size / 1024).toFixed(1)} KB</p>
                         </div>
                       </div>
                       <button 

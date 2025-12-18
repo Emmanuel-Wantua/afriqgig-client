@@ -271,9 +271,13 @@ function SignupForm() {
                <label className="block text-xs font-bold text-navy uppercase mb-1">1. {t.auth.chooseField}</label>
                <div className="relative">
                   <Tools className="absolute top-3.5 left-4 text-gray-400" />
-                  <select className="block w-full rounded-xl border-0 py-3 pl-11 text-navy shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-navy sm:text-sm bg-gray-50/50 appearance-none outline-none" value={formData.category} onChange={e => { setFormData({...formData, category: e.target.value}); setSelectedSkills([]); }}>
-                     <option value="">{t.auth.skillCategory}...</option>
-                     {CATEGORY_NAMES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  <select 
+                      className="block w-full rounded-xl border-0 py-3 pl-11 text-navy shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-navy sm:text-sm bg-gray-50/50 appearance-none outline-none" 
+                      value={formData.category} 
+                      onChange={e => { setFormData({...formData, category: e.target.value}); setSelectedSkills([]); }}
+                  >
+                      <option value="">{t.auth.skillCategory}...</option>
+                      {CATEGORY_NAMES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                   </select>
                   <ChevronDown className="absolute right-4 top-4 text-xs text-gray-400 pointer-events-none" />
                </div>
@@ -282,9 +286,34 @@ function SignupForm() {
             {formData.category && SKILLS_BY_CATEGORY[formData.category] && (
               <div className="animate-in slide-in-from-top-2">
                 <label className="block text-xs font-bold text-navy uppercase mb-2">2. {t.auth.selectSkills} (Max 5)</label>
-                <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto pr-2 custom-scrollbar">
+                
+                {/* NEW SEARCH BAR INSIDE SIGNUP */}
+                <input 
+                    type="text" 
+                    placeholder="Search skills..." 
+                    className="w-full mb-2 p-2 text-xs border border-gray-200 rounded-lg focus:border-navy outline-none"
+                    onChange={(e) => {
+                        // Simple local search filter for the displayed list
+                        const term = e.target.value.toLowerCase();
+                        const allButtons = document.querySelectorAll('.skill-btn');
+                        allButtons.forEach((btn: any) => {
+                            if (btn.textContent.toLowerCase().includes(term)) {
+                                btn.style.display = 'flex';
+                            } else {
+                                btn.style.display = 'none';
+                            }
+                        });
+                    }}
+                />
+
+                <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar border border-gray-100 p-2 rounded-lg">
                    {SKILLS_BY_CATEGORY[formData.category].map(skill => (
-                     <button key={skill} type="button" onClick={() => toggleSkill(skill)} className={`text-xs px-3 py-2 rounded-lg border transition-all flex items-center gap-1 ${selectedSkills.includes(skill) ? "bg-navy text-white border-navy shadow-md" : "bg-gray-50 text-gray-600 border-gray-200 hover:border-gold hover:text-navy"}`}>
+                     <button 
+                        key={skill} 
+                        type="button" 
+                        onClick={() => toggleSkill(skill)} 
+                        className={`skill-btn text-xs px-3 py-2 rounded-lg border transition-all flex items-center gap-1 ${selectedSkills.includes(skill) ? "bg-navy text-white border-navy shadow-md" : "bg-gray-50 text-gray-600 border-gray-200 hover:border-gold hover:text-navy"}`}
+                     >
                        {selectedSkills.includes(skill) && <Check />} {skill}
                      </button>
                    ))}

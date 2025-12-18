@@ -6,6 +6,7 @@ const PostSchema = new mongoose.Schema({
   
   // --- MEDIA ---
   mediaUrl: { type: String }, 
+  mediaUrls: { type: [String], default: [] },
   mediaType: { type: String, enum: ["image", "video", "none"], default: "none" },
   
   // --- CATEGORIZATION & PINNING ---

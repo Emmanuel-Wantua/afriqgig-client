@@ -3,13 +3,22 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image"; 
-import { HouseDoor, Briefcase, ChatDots, Wallet2, Person, List, BoxArrowRight, X, Gear, QuestionCircle, InfoCircle, ShieldCheck, People, Search, ChevronDown, Globe, CurrencyExchange, Speedometer2, PeopleFill, ExclamationOctagon, CashStack } from "react-bootstrap-icons";
+import dynamic from 'next/dynamic'; // ✅ Added for dynamic import
+import { 
+    HouseDoor, Briefcase, ChatDots, Wallet2, Person, List, BoxArrowRight,
+    X, Gear, QuestionCircle, InfoCircle, ShieldCheck, People, Search,
+    ChevronDown, Globe, CurrencyExchange, Speedometer2, PeopleFill,
+    ExclamationOctagon, CashStack, PersonCircle, TelephoneX, Telephone, CameraVideo
+} from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 import { Language } from "@/utils/translations";
 import { usePathname, useRouter } from "next/navigation";
 import NotificationBell from "@/components/NotificationBell";
 import ReferralPromo from "@/components/ReferralPromo";
 import AuthGuard from "@/components/AuthGuard";
+
+// ✅ FIX: Dynamically import CallModal to prevent 'self is not defined' error
+const CallModal = dynamic(() => import("@/components/CallModal"), { ssr: false });
 
 // --- CUSTOM DROPDOWN COMPONENT ---
 const CustomDropdown = ({ 
@@ -75,36 +84,96 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const router = useRouter();
   
   const { t, language, setLanguage, currency, setCurrency, user } = useLanguage();
-
   const [unreadMsgCount, setUnreadMsgCount] = useState(0);
 
+  // --- GLOBAL CALL STATE ---
+  const [incomingCall, setIncomingCall] = useState<{ type: 'audio' | 'video', contact: any } | null>(null);
+  const [showCallModal, setShowCallModal] = useState(false);
+  const [callType, setCallType] = useState<'audio' | 'video'>('audio');
+  const ringtoneRef = useRef<HTMLAudioElement | null>(null);
+  const lastProcessedMsgId = useRef<string | null>(null);
+
+  // --- GLOBAL MESSAGE POLLING (For Calls & Unread Count) ---
   useEffect(() => {
       if (!user) return;
-      const fetchUnread = async () => {
+      
+      const pollMessages = async () => {
           try {
-              const res = await fetch(`/api/messages/stats?userId=${user._id}`);
-              const data = await res.json();
-              setUnreadMsgCount(data.unread || 0);
+              // 1. Fetch Unread Count
+              const resStats = await fetch(`/api/messages/stats?userId=${user._id}`);
+              const stats = await resStats.json();
+              setUnreadMsgCount(stats.unread || 0);
+
+              // 2. Fetch Latest Message (For Call Detection)
+              const resLast = await fetch(`/api/messages/latest?userId=${user._id}`);
+              const lastMsg = await resLast.json();
+
+              // Check if we have a new message that is NOT from me
+              if (lastMsg && lastMsg._id !== lastProcessedMsgId.current) {
+                   const isMe = lastMsg.sender._id === user._id;
+                   
+                   if (!isMe) {
+                       lastProcessedMsgId.current = lastMsg._id; // Mark handled
+
+                       // Check for Call Tag
+                       const callMatch = lastMsg.content.match(/\[CALL_STARTED:(audio|video)\]/);
+
+                       if (callMatch) {
+                           // --- CASE A: INCOMING CALL ---
+                           const msgTime = new Date(lastMsg.createdAt).getTime();
+                           const isRecent = (Date.now() - msgTime) < 60000;
+
+                           if (isRecent && !showCallModal && !incomingCall) {
+                               setIncomingCall({
+                                   type: callMatch[1] as 'audio' | 'video',
+                                   contact: lastMsg.sender
+                               });
+
+                               // Play Ringtone Loop
+                               if (!ringtoneRef.current) {
+                                   ringtoneRef.current = new Audio("/assets/audio/ringtone.mp3");
+                                   ringtoneRef.current.loop = true;
+                               }
+                               ringtoneRef.current.play().catch(() => {});
+                           }
+                       } else {
+                           // --- CASE B: STANDARD MESSAGE (Sound Alert) ---
+                           const ping = new Audio("/assets/audio/message.mp3");
+                           ping.play().catch(() => {});
+                       }
+                   }
+              }
           } catch (e) { console.error(e); }
       };
+
+      pollMessages(); // Initial run
+      const interval = setInterval(pollMessages, 3000); // Poll every 3s
       
-      fetchUnread();
-      const interval = setInterval(fetchUnread, 10000); 
-      return () => clearInterval(interval);
-  }, [user]);
+      return () => {
+          clearInterval(interval);
+          if (ringtoneRef.current) {
+              ringtoneRef.current.pause();
+              ringtoneRef.current = null;
+          }
+      };
+  }, [user, showCallModal, incomingCall]);
+
+  const stopRingtone = () => {
+      if (ringtoneRef.current) {
+          ringtoneRef.current.pause();
+          ringtoneRef.current.currentTime = 0;
+      }
+  };
 
   // --- LOGOUT HANDLER ---
   const handleLogout = () => {
-      // 1. Clear Local Storage
       localStorage.removeItem("afriqUser");
-      
-      // 2. Redirect to Login
       router.replace("/login");
   };
 
   const getNavItems = () => {
       const common = [
-          { name: t.nav.community, icon: <People />, href: "/dashboard/community" }, // UPDATED
+          { name: t.nav.community, icon: <People />, href: "/dashboard/community" },
       ];
 
       const clientLinks = [
@@ -113,15 +182,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       ];
 
       const freelancerLinks = [
-          { name: t.nav.findWork, icon: <Search />, href: "/dashboard/freelancer" }, // UPDATED
-          { name: t.nav.contracts, icon: <Briefcase />, href: "/dashboard/freelancer/contracts" }, // UPDATED
+          { name: t.nav.findWork, icon: <Search />, href: "/dashboard/freelancer" },
+          { name: t.nav.contracts, icon: <Briefcase />, href: "/dashboard/freelancer/contracts" },
       ];
 
       const adminLinks = [
-          { name: t.nav.overview, icon: <Speedometer2 />, href: "/dashboard/admin" }, // UPDATED
-          { name: t.nav.disputes, icon: <ExclamationOctagon />, href: "/dashboard/admin/disputes" }, // UPDATED
-          { name: t.nav.users, icon: <PeopleFill />, href: "/dashboard/admin/users" }, // UPDATED
-          { name: t.nav.financials, icon: <CashStack />, href: "/dashboard/admin/finance" }, // UPDATED
+          { name: t.nav.overview, icon: <Speedometer2 />, href: "/dashboard/admin" },
+          { name: t.nav.disputes, icon: <ExclamationOctagon />, href: "/dashboard/admin/disputes" },
+          { name: t.nav.users, icon: <PeopleFill />, href: "/dashboard/admin/users" },
+          { name: t.nav.financials, icon: <CashStack />, href: "/dashboard/admin/finance" },
       ];
 
     let roleLinks: any[] = [];
@@ -141,10 +210,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const secondaryNavItems = [
     { name: t.nav.profile, icon: <Person />, href: "/dashboard/profile" },
-    { name: t.nav.settings, icon: <Gear />, href: "/dashboard/settings" }, // UPDATED
-    { name: t.nav.support, icon: <QuestionCircle />, href: "/dashboard/support" }, // UPDATED
-    { name: t.nav.about, icon: <InfoCircle />, href: "/about" }, // UPDATED
-    { name: t.nav.legal, icon: <ShieldCheck />, href: "/legal" }, // UPDATED
+    { name: t.nav.settings, icon: <Gear />, href: "/dashboard/settings" },
+    { name: t.nav.support, icon: <QuestionCircle />, href: "/dashboard/support" },
+    { name: t.nav.about, icon: <InfoCircle />, href: "/about" },
+    { name: t.nav.legal, icon: <ShieldCheck />, href: "/legal" },
   ];
 
   const isActive = (path: string) => {
@@ -198,7 +267,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             
             {/* Navigation */}
             <nav className="space-y-1.5">
-              <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">{t.nav.menu}</p> {/* UPDATED */}
+              <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">{t.nav.menu}</p>
               {mainNavItems.map((item) => (
                 <Link 
                     key={item.name} 
@@ -223,7 +292,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
               <div className="h-px bg-white/10 my-6 mx-4"></div>
 
-              <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">{t.nav.general}</p> {/* UPDATED */}
+              <p className="px-4 text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">{t.nav.general}</p>
               {secondaryNavItems.map((item) => (
                 <Link 
                     key={item.name} 
@@ -240,7 +309,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Footer */}
         <div className="p-6 border-t border-white/5 bg-navy shrink-0">
           <button 
-            onClick={handleLogout} // <--- Added onClick handler
+            onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-400 hover:bg-red-500/10 hover:text-red-300 w-full rounded-xl transition-colors"
           >
             <BoxArrowRight className="text-xl" />
@@ -272,7 +341,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="bg-white p-6 flex items-center justify-between shadow-sm shrink-0">
                     <div className="w-8"></div>
                     <div className="relative w-32 h-10">
-                       <Image src="/logo-full.png" alt="AfriqGig" fill className="object-contain" sizes="200px" />
+                        <Image src="/logo-full.png" alt="AfriqGig" fill className="object-contain" sizes="200px" />
                     </div>
                     <button onClick={() => setIsMobileMenuOpen(false)} className="bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-500 p-1.5 rounded-full transition-colors">
                         <X className="text-xl" />
@@ -282,7 +351,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-thin scrollbar-thumb-white/20">
                     <div>
                         <p className="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider flex items-center gap-2">
-                            <Gear className="text-gold" /> {t.settings.preferences} {/* UPDATED */}
+                            <Gear className="text-gold" /> {t.settings.preferences}
                         </p>
                         <div className="space-y-3">
                             <CustomDropdown icon={<Globe />} value={language} onChange={(val) => setLanguage(val as Language)} options={[{ value: "en", label: "English", flag: "🇺🇸" }, { value: "fr", label: "Français", flag: "🇫🇷" }, { value: "es", label: "Español", flag: "🇪🇸" }, { value: "ar", label: "العربية", flag: "🇸🇦" }, { value: "sw", label: "Kiswahili", flag: "🇰🇪" }]} />
@@ -291,7 +360,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </div>
 
                     <div>
-                        <p className="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">{t.settings.account}</p> {/* UPDATED */}
+                        <p className="text-xs font-bold text-gray-400 uppercase mb-3 tracking-wider">{t.settings.account}</p>
                         <nav className="space-y-1">
                             {secondaryNavItems.map((item) => (
                                 <Link key={item.name} href={item.href} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 px-3 py-3.5 rounded-xl transition-all active:scale-95 text-gray-300 hover:text-white hover:bg-white/10">
@@ -305,7 +374,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
                 <div className="p-6 border-t border-white/10 shrink-0">
                     <button 
-                        onClick={handleLogout} // <--- Added onClick handler
+                        onClick={handleLogout}
                         className="flex items-center justify-center gap-3 text-red-300 hover:text-white hover:bg-red-500/20 w-full py-3 rounded-xl font-bold transition-all"
                     >
                         <BoxArrowRight className="text-xl" /> {t.nav.logout}
@@ -360,7 +429,65 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </nav>
       
     </div>
+
+    {/* --- GLOBAL CALL POPUP --- */}
+    {incomingCall && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+            <div className="bg-navy w-full max-w-sm rounded-3xl p-8 text-center shadow-2xl border border-white/10 relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/20 rounded-full animate-ping pointer-events-none"></div>
+                <div className="relative z-10">
+                    <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden border-4 border-white/20 shadow-lg">
+                        {incomingCall.contact?.avatar ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={incomingCall.contact.avatar} className="w-full h-full object-cover" alt="Caller" />
+                        ) : <PersonCircle className="w-full h-full text-gray-400 p-2" />}
+                    </div>
+                    
+                    <h3 className="text-2xl font-bold text-white mb-1">{incomingCall.contact?.name || "Unknown"}</h3>
+                    <p className="text-blue-200 text-sm mb-8 flex items-center justify-center gap-2">
+                        {incomingCall.type === 'video' ? <CameraVideo/> : <Telephone/>} 
+                        Incoming {incomingCall.type} call...
+                    </p>
+
+                    <div className="flex items-center justify-center gap-6">
+                        <button 
+                            onClick={() => { setIncomingCall(null); stopRingtone(); }}
+                            className="flex flex-col items-center gap-2 group"
+                        >
+                            <div className="w-14 h-14 bg-red-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg group-hover:scale-110 transition-transform">
+                                <TelephoneX />
+                            </div>
+                            <span className="text-xs text-white/70 font-bold">Decline</span>
+                        </button>
+
+                        <button 
+                            onClick={() => { 
+                                stopRingtone(); 
+                                setCallType(incomingCall.type);
+                                setIncomingCall(null);
+                                setShowCallModal(true);
+                            }}
+                            className="flex flex-col items-center gap-2 group"
+                        >
+                            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform animate-bounce">
+                                {incomingCall.type === 'video' ? <CameraVideo /> : <Telephone />}
+                            </div>
+                            <span className="text-xs text-white/70 font-bold">Accept</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )}
+
+    {/* --- ZEGO CALL MODAL --- */}
+    <CallModal 
+        isOpen={showCallModal} 
+        onClose={() => setShowCallModal(false)} 
+        contact={incomingCall?.contact || { _id: "unknown", name: "User" }} 
+        type={callType} 
+    />
+    
     </AuthGuard>
   );
 }
-

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectToDB } from '@/lib/db';
 import User from '@/models/User';
-import { sendEmail } from '@/lib/email'; // Import email sender
+import { sendEmail } from '@/lib/email'; 
 
 export async function POST(req: Request) {
     try {
@@ -13,18 +13,21 @@ export async function POST(req: Request) {
 
         const user = await User.findOne({ 
             verificationToken: token, 
-            verificationTokenExpiry: { $gt: Date.now() }
+            verificationTokenExpiry: { $gt: Date.now() } 
         });
 
         if (!user) {
-            // FIX: Be less aggressive with the error.
-            return NextResponse.json({ message: "Invalid or expired link. You may already be verified." }, { status: 400 });
+            // FIX: If token not found, assume user might already be verified
+            return NextResponse.json({ 
+                message: "Link expired or already used. Please try logging in.",
+                code: "ALREADY_VERIFIED" // Special code for frontend
+            }, { status: 400 });
         }
 
         // Verify User
         user.isVerified = true;
-        user.verificationToken = undefined;
-        user.verificationTokenExpiry = undefined;
+        user.verificationToken = undefined;       
+        user.verificationTokenExpiry = undefined; 
         
         if (user.settings) {
             user.settings.verificationStatus = 'verified';
@@ -32,12 +35,11 @@ export async function POST(req: Request) {
 
         await user.save();
 
-        // ✅ NEW: Trigger Welcome Email HERE (After successful verification)
+        // ✅ Trigger Welcome Email (Fail-safe)
         try {
             await sendEmail(user.email, "WELCOME", { name: user.name }, user._id);
         } catch (emailErr) {
-            console.error("Welcome email failed:", emailErr);
-            // Don't fail the request just because email failed
+            console.error("Welcome email warning:", emailErr);
         }
 
         return NextResponse.json({ message: "Email verified successfully" }, { status: 200 });

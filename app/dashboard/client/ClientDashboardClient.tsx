@@ -187,14 +187,29 @@ export default function ClientDashboardContent() {
           </div>
       </div>
 
-      {/* Animated FAB (Mobile) */}
+      {/* Animated FAB */}
       <motion.button 
         onClick={() => router.push("/dashboard/client/post-job")}
         layout
-        className="md:hidden fixed bottom-24 right-4 h-14 bg-gold text-navy rounded-full shadow-xl flex items-center justify-center z-40 overflow-hidden"
+        className="fixed bottom-10 right-10 h-14 bg-gold text-navy rounded-full shadow-xl flex items-center justify-center z-50 overflow-hidden"
         style={{ borderRadius: 28 }} 
-        animate={{ width: isExpanded ? 140 : 56 }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        // 1. Expansion Animation (Scroll based)
+        animate={{ 
+            width: isExpanded ? 140 : 56,
+            // 2. Pulse Animation (Constant loop)
+            scale: [1, 1.05, 1],
+            boxShadow: [
+                "0px 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                "0px 20px 25px -5px rgba(255, 215, 0, 0.4)", // Glow effect
+                "0px 10px 15px -3px rgba(0, 0, 0, 0.1)"
+            ]
+        }}
+        // 3. Transition Config
+        transition={{ 
+            width: { type: "spring", stiffness: 300, damping: 30 },
+            scale: { duration: 2, repeat: Infinity, ease: "easeInOut" }, // Infinite Loop
+            boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+        }}
       >
         <div className="flex items-center justify-center px-4 whitespace-nowrap">
             <PlusLg className="text-2xl font-bold flex-shrink-0" />

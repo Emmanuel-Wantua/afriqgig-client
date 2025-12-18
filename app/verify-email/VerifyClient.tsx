@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react"; // Added useRef
+import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { CheckCircleFill, XCircleFill, } from "react-bootstrap-icons";
+import { CheckCircleFill, ExclamationCircleFill } from "react-bootstrap-icons"; // Changed icon
 import Link from "next/link";
 import PageLoader from "@/components/PageLoader";
 
@@ -11,10 +11,9 @@ export default function VerifyContent() {
     const router = useRouter();
     const token = searchParams.get("token");
     
-    // Track if we have already attempted verification (Fixes double-call/expired bug)
     const verificationAttempted = useRef(false);
-    
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
+    const [message, setMessage] = useState("");
 
     useEffect(() => {
         if (!token) {
@@ -22,7 +21,6 @@ export default function VerifyContent() {
             return;
         }
 
-        // FIX: Prevent double execution
         if (verificationAttempted.current) return;
         verificationAttempted.current = true;
 
@@ -34,13 +32,19 @@ export default function VerifyContent() {
                     body: JSON.stringify({ token })
                 });
 
+                const data = await res.json();
+
                 if (res.ok) {
                     setStatus('success');
-                    // FIX: Auto-redirect to Login after 2 seconds
+                    // Auto-redirect
                     setTimeout(() => {
                         router.push("/login?verified=true"); 
                     }, 2000);
                 } else {
+                    // Check if it's the "Already Verified" case
+                    if (data.code === "ALREADY_VERIFIED") {
+                        setMessage("This link has already been used. You can log in.");
+                    }
                     setStatus('error');
                 }
             } catch (e) {
@@ -69,15 +73,17 @@ export default function VerifyContent() {
                     </>
                 ) : (
                     <>
-                        <div className="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-5xl mx-auto mb-6">
-                            <XCircleFill />
+                        {/* Friendly Error State */}
+                        <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-5xl mx-auto mb-6">
+                            <ExclamationCircleFill />
                         </div>
-                        <h1 className="text-2xl font-bold mb-2">Link Expired or Invalid</h1>
+                        <h1 className="text-2xl font-bold mb-2">Verification Link Expired</h1>
                         <p className="text-gray-500 mb-8">
-                            This link may have already been used. <br/> Try logging in directly.
+                            {message || "This link is invalid or has already been used."} <br/>
+                            Please try logging in directly.
                         </p>
                         <Link href="/login" className="block w-full py-3 bg-navy text-white font-bold rounded-xl hover:bg-navy-light transition-colors">
-                            Go to Login
+                            Continue to Login
                         </Link>
                     </>
                 )}

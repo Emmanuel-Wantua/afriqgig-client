@@ -10,19 +10,17 @@ export async function GET(req: Request) {
     await connectToDB();
     
     const posts = await Post.find()
-      .populate("author", "name avatar title isVerified rating reviewsCount") // Populates Post Author
+      .populate("author", "name avatar title isVerified rating reviewsCount") 
       .populate({
           path: "comments.user",
-          select: "name avatar isVerified" // <--- FIX: Added isVerified here for Comments
+          select: "name avatar isVerified" 
       })
       .sort({ createdAt: -1 });
 
-    // FIX: Use 'posts || []' to guarantee an array return
     return NextResponse.json(posts || [], { status: 200 });
 
   } catch (error) {
     console.error("Feed Fetch Error:", error);
-    // FIX: Return empty array [] on error, NOT an error object
     return NextResponse.json([], { status: 200 }); 
   }
 }
@@ -32,24 +30,39 @@ export async function POST(req: Request) {
     const body = await req.json();
     await connectToDB();
 
-    // Validate
-    if (!body.author || !body.content) {
-        return NextResponse.json({ message: "Missing fields" }, { status: 400 });
+    if (!body.author) {
+        return NextResponse.json({ message: "Author is required" }, { status: 400 });
     }
+
+    // Validate Content OR Media
+    const hasContent = body.content && body.content.trim().length > 0;
+    // Check both single URL (old) and array (new)
+    const hasMedia = (body.mediaUrl && body.mediaUrl.trim().length > 0) || (body.mediaUrls && body.mediaUrls.length > 0);
+
+    if (!hasContent && !hasMedia) {
+        return NextResponse.json({ message: "Post must contain text or media" }, { status: 400 });
+    }
+
+    const finalContent = hasContent ? body.content : (hasMedia ? " " : "");
 
     const newPost = await Post.create({
         author: body.author,
-        content: body.content,
-        // --- SAVE MEDIA ---
-        mediaUrl: body.mediaUrl || null,
+        content: finalContent, 
+        category: body.category || "General",
         mediaType: body.mediaType || "none",
-        // ------------------
+        mediaUrl: body.mediaUrl || "",       // Save primary for backward compat
+        mediaUrls: body.mediaUrls || [],     // ✅ Save full array
+        likes: [],
+        comments: [],
         createdAt: new Date()
     });
+
+    await newPost.populate("author", "name avatar title isVerified");
 
     return NextResponse.json(newPost, { status: 201 });
 
   } catch (error: any) {
-    return NextResponse.json({ message: "Error creating post" }, { status: 500 });
+    console.error("Create Post Error:", error);
+    return NextResponse.json({ message: error.message || "Error creating post" }, { status: 500 });
   }
 }

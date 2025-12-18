@@ -49,6 +49,192 @@ const TranslatableText = ({ text, className = "" }: { text: string, className?: 
     );
 };
 
+// --- HELPER: CROPPER UI ---
+// --- HELPER: CROPPER UI (Interactive Pan & Zoom) ---
+const CropModal = ({ file, aspect, onClose, onComplete }: { file: File, aspect: number, onClose: () => void, onComplete: (croppedFile: File) => void }) => {
+    const [imageSrc, setImageSrc] = useState<string | null>(null);
+    const imgRef = useRef<HTMLImageElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    
+    // Transform State
+    const [scale, setScale] = useState(1);
+    const [offset, setOffset] = useState({ x: 0, y: 0 });
+    const [isDragging, setIsDragging] = useState(false);
+    const dragStart = useRef({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => setImageSrc(reader.result as string);
+    }, [file]);
+
+    // --- DRAG HANDLERS ---
+    const handlePointerDown = (e: React.PointerEvent) => {
+        e.preventDefault();
+        setIsDragging(true);
+        // Record where the click happened relative to the current image position
+        dragStart.current = { x: e.clientX - offset.x, y: e.clientY - offset.y };
+    };
+
+    const handlePointerMove = (e: React.PointerEvent) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        // Calculate new position
+        setOffset({
+            x: e.clientX - dragStart.current.x,
+            y: e.clientY - dragStart.current.y
+        });
+    };
+
+    const handlePointerUp = () => {
+        setIsDragging(false);
+    };
+
+    // --- CROP LOGIC ---
+    const handleCrop = () => {
+        const img = imgRef.current;
+        const container = containerRef.current;
+        if (!img || !container) return;
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        // 1. Setup Canvas (High Quality Output)
+        const targetWidth = 1000 * aspect; // e.g. 1000px or 3000px
+        const targetHeight = 1000;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
+        // 2. Calculate Ratios
+        // The container is the "Crop Box". The image moves relative to it.
+        const containerRect = container.getBoundingClientRect();
+        const imgRect = img.getBoundingClientRect();
+
+        // Calculate the intersection: where is the Crop Box relative to the Image?
+        // (x, y) must be positive if the crop box is inside the image
+        const cropX = containerRect.left - imgRect.left;
+        const cropY = containerRect.top - imgRect.top;
+
+        // Ratio: Natural Image Pixels per Screen Pixel
+        // We use imgRect.width because it accounts for the CSS scale transform
+        const ratioW = img.naturalWidth / imgRect.width;
+        const ratioH = img.naturalHeight / imgRect.height;
+
+        // 3. Draw
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.drawImage(
+            img,
+            cropX * ratioW,           // Source X (on original image)
+            cropY * ratioH,           // Source Y
+            containerRect.width * ratioW,  // Source Width
+            containerRect.height * ratioH, // Source Height
+            0,                        // Dest X (on canvas)
+            0,                        // Dest Y
+            targetWidth,              // Dest Width
+            targetHeight              // Dest Height
+        );
+
+        canvas.toBlob((blob) => {
+            if (blob) {
+                const croppedFile = new File([blob], file.name, { type: file.type });
+                onComplete(croppedFile);
+            }
+        }, file.type, 0.95);
+    };
+
+    if (!imageSrc) return null;
+
+    return (
+        <div 
+            className="fixed inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-4 animate-in fade-in select-none"
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerUp} // Stop drag if mouse leaves window
+        >
+            <div className="relative w-full max-w-2xl bg-gray-900 rounded-xl overflow-hidden flex flex-col shadow-2xl">
+                
+                {/* Header */}
+                <div className="p-4 border-b border-gray-800 flex justify-between items-center text-white bg-gray-900 z-10">
+                    <h3 className="font-bold">Adjust Image</h3>
+                    <button onClick={onClose}><X className="text-2xl hover:text-red-500 transition-colors"/></button>
+                </div>
+
+                {/* Viewport / Crop Area */}
+                <div className="relative w-full h-[50vh] bg-black flex items-center justify-center overflow-hidden touch-none cursor-move bg-[radial-gradient(#333_1px,transparent_1px)] [background-size:16px_16px]"
+                     onPointerDown={handlePointerDown}
+                     onPointerMove={handlePointerMove}
+                >
+                    {/* The Draggable Image */}
+                    <img 
+                        ref={imgRef}
+                        src={imageSrc}
+                        alt="Crop"
+                        draggable={false}
+                        className="absolute max-w-none max-h-none origin-center transition-transform duration-75 ease-linear will-change-transform"
+                        style={{ 
+                            transform: `translate(${offset.x}px, ${offset.y}px) scale(${scale})`,
+                            // Base size: Contain within view initially, let user zoom out/in
+                            height: '70%', 
+                        }}
+                    />
+
+                    {/* The Crop Box Frame (Fixed Center overlay) */}
+                    <div 
+                        ref={containerRef}
+                        className="relative z-10 border-2 border-white shadow-[0_0_0_9999px_rgba(0,0,0,0.7)] pointer-events-none"
+                        style={{ 
+                            aspectRatio: `${aspect}/1`,
+                            width: aspect > 1 ? '90%' : 'auto', 
+                            height: aspect > 1 ? 'auto' : '70%'
+                        }}
+                    >
+                        {/* Grid Lines */}
+                        <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 opacity-30">
+                            <div className="border-r border-white/50"></div>
+                            <div className="border-r border-white/50"></div>
+                            <div className="border-r border-transparent"></div>
+                            <div className="col-span-3 border-t border-white/50 h-0 my-auto row-start-2"></div>
+                            <div className="col-span-3 border-t border-white/50 h-0 my-auto row-start-3"></div>
+                        </div>
+                    </div>
+                    
+                    <div className="absolute bottom-4 bg-black/60 text-white text-[10px] px-3 py-1 rounded-full pointer-events-none">
+                        Drag to move • Pinch/Slider to zoom
+                    </div>
+                </div>
+
+                {/* Controls */}
+                <div className="p-6 space-y-6 bg-gray-900 z-10">
+                    <div className="flex items-center gap-4 text-white">
+                        <span className="text-xs font-bold w-12">Zoom</span>
+                        <input 
+                            type="range" 
+                            min="0.5" 
+                            max="3" 
+                            step="0.01" 
+                            value={scale} 
+                            onChange={(e) => setScale(parseFloat(e.target.value))}
+                            className="flex-1 accent-gold h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                        />
+                        <span className="text-xs font-mono w-8 text-right">{Math.round(scale * 100)}%</span>
+                    </div>
+
+                    <div className="flex gap-3">
+                        <button onClick={onClose} className="flex-1 py-3 bg-gray-800 text-white rounded-xl font-bold hover:bg-gray-700 transition-colors">
+                            Cancel
+                        </button>
+                        <button onClick={handleCrop} className="flex-1 py-3 bg-gold text-navy rounded-xl font-bold hover:bg-gold-light shadow-lg transition-colors flex items-center justify-center gap-2">
+                            <CheckCircleFill/> Save & Upload
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 export default function ProfileContent() {
   const { t, user: contextUser, convertPrice } = useLanguage();
   
@@ -88,6 +274,9 @@ export default function ProfileContent() {
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const portfolioInputRef = useRef<HTMLInputElement>(null);
+
+  // --- CROP STATE ---
+  const [fileToCrop, setFileToCrop] = useState<{ file: File, type: "avatar" | "cover" | "portfolio" } | null>(null);
 
   useEffect(() => {
     if (contextUser?._id) fetchProfile();
@@ -184,20 +373,33 @@ export default function ProfileContent() {
       setFormData(prev => ({ ...prev, skills: prev.skills.filter(s => s !== skill) }));
   };
 
-  const handleFileUpload = async (type: "avatar" | "cover" | "portfolio", file: File) => {
+  // 1. Intercept Selection
+  const onSelectFile = (type: "avatar" | "cover" | "portfolio", file: File) => {
+      if (type === "portfolio") {
+          // Portfolio usually doesn't need strict cropping, upload directly
+          handleUploadConfirmed(type, file);
+      } else {
+          // Open Cropper for Avatar/Cover
+          setFileToCrop({ file, type });
+      }
+  };
+
+  // 2. Perform Actual Upload (Called after Crop)
+  const handleUploadConfirmed = async (type: "avatar" | "cover" | "portfolio", file: File) => {
+      setFileToCrop(null); // Close modal
+      // Show loading indicator here if you want (e.g. setFeedback({ type: 'info', message: 'Uploading...' }))
+      
       const secureUrl = await uploadToCloudinary(file);
       
       if (!secureUrl) {
-          alert(t.workspace.errorUpload);
+          setFeedback({ type: 'error', message: t.workspace.errorUpload });
           return;
       }
 
       if (type === "avatar") {
           setFormData(prev => ({ ...prev, avatar: secureUrl }));
-          setProfile((prev: any) => ({ ...prev, avatar: secureUrl })); 
       } else if (type === "cover") {
           setFormData(prev => ({ ...prev, coverPhoto: secureUrl }));
-          setProfile((prev: any) => ({ ...prev, coverPhoto: secureUrl }));
       } else if (type === "portfolio") {
           const newProject = {
               title: "New Project",
@@ -347,7 +549,7 @@ export default function ProfileContent() {
                       <Camera />
                   </button>
               )}
-              <input type="file" ref={coverInputRef} className="hidden" onChange={e => e.target.files && handleFileUpload("cover", e.target.files[0])} />
+              <input type="file" ref={coverInputRef} className="hidden" onChange={e => e.target.files && onSelectFile("cover", e.target.files[0])} />
           </div>
           
           <div className="px-6 pb-6 relative">
@@ -369,7 +571,7 @@ export default function ProfileContent() {
                               <Camera />
                           </button>
                       )}
-                      <input type="file" ref={avatarInputRef} className="hidden" onChange={e => e.target.files && handleFileUpload("avatar", e.target.files[0])} />
+                      <input type="file" ref={avatarInputRef} className="hidden" onChange={e => e.target.files && onSelectFile("avatar", e.target.files[0])} />
                   </div>
 
                   <div className="flex-1 mb-2">
@@ -586,7 +788,7 @@ export default function ProfileContent() {
                                   <PlusLg /> {t.profile.addProject}
                               </button>
                           )}
-                          <input type="file" ref={portfolioInputRef} className="hidden" onChange={e => e.target.files && handleFileUpload("portfolio", e.target.files[0])} />
+                          <input type="file" ref={portfolioInputRef} className="hidden" onChange={e => e.target.files && onSelectFile("portfolio", e.target.files[0])} />
                       </div>
 
                       {/* External Link Input */}
@@ -889,6 +1091,17 @@ export default function ProfileContent() {
                 </div>
           </div>
       </div>
+
+      {/* --- CROP MODAL --- */}
+      {fileToCrop && (
+          <CropModal 
+              file={fileToCrop.file} 
+              aspect={fileToCrop.type === "avatar" ? 1 : 3} // Square for Avatar, Wide for Cover
+              onClose={() => setFileToCrop(null)} 
+              onComplete={(croppedFile) => handleUploadConfirmed(fileToCrop.type, croppedFile)} 
+          />
+      )}
+
     </div>
   );
 }
