@@ -744,7 +744,7 @@ export default function CommunityContent() {
 
       {/* --- LIGHTBOX MODAL (Full Screen View) --- */}
       {lightboxPost && (
-          <div className="fixed inset-0 z-[200] bg-black animate-in fade-in flex flex-col md:flex-row">
+          <div className="fixed inset-0 bg-black animate-in fade-in flex flex-col md:flex-row z-[450] pt-[70px] md:z-[9999] md:pt-0">
               {/* Media Area (Left/Top) */}
               <div className="flex-1 relative flex items-center justify-center bg-black h-1/2 md:h-full">
                   <button onClick={closeLightbox} className="absolute top-4 left-4 z-50 text-white p-2 bg-black/50 rounded-full hover:bg-white/20"><X className="text-3xl"/></button>

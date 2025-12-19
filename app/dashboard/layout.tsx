@@ -386,7 +386,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* --- MAIN CONTENT --- */}
       {/* FIX: Added 'pt-16' to push content below fixed mobile header */}
-      <main className="flex-1 md:ml-72 relative flex flex-col h-screen overflow-hidden pt-16 md:pt-0"> 
+      <main className="flex-1 md:ml-72 relative flex flex-col h-screen overflow-hidden pt-10 md:pt-0"> 
         <div className="hidden md:flex justify-end items-center gap-6 p-4 px-8 bg-white border-b border-gray-100 shrink-0 shadow-sm z-40">
             <div className="flex items-center gap-4">
                 <NotificationBell />
