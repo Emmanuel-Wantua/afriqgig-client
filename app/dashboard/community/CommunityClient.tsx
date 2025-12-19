@@ -207,6 +207,11 @@ export default function CommunityContent() {
 
   const [uploadProgress, setUploadProgress] = useState(0);
 
+  // --- LIGHTBOX STATE ---
+  const [showMobileComments, setShowMobileComments] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
   // Detect Scroll Direction
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() || 0;
@@ -223,6 +228,37 @@ export default function CommunityContent() {
       window.addEventListener("click", handleClick);
       return () => window.removeEventListener("click", handleClick);
   }, []);
+
+  // --- SWIPE LOGIC ---
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+      setTouchEnd(null);
+      setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+      setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+      if (!touchStart || !touchEnd) return;
+      const distance = touchStart - touchEnd;
+      const isLeftSwipe = distance > minSwipeDistance;
+      const isRightSwipe = distance < -minSwipeDistance;
+      
+      const mediaLen = getPostMedia(lightboxPost).length;
+      if (mediaLen <= 1) return;
+
+      if (isLeftSwipe) {
+          // Next
+          setLightboxIndex(prev => (prev + 1) % mediaLen);
+      }
+      if (isRightSwipe) {
+          // Prev
+          setLightboxIndex(prev => (prev === 0 ? mediaLen - 1 : prev - 1));
+      }
+  };
 
   const fetchPosts = async () => {
     try {
@@ -744,91 +780,171 @@ export default function CommunityContent() {
 
       {/* --- LIGHTBOX MODAL (Full Screen View) --- */}
       {lightboxPost && (
-          <div className="fixed inset-0 bg-black animate-in fade-in flex flex-col md:flex-row z-[450] pt-[70px] md:z-[9999] md:pt-0">
-              {/* Media Area (Left/Top) */}
-              <div className="flex-1 relative flex items-center justify-center bg-black h-1/2 md:h-full">
-                  <button onClick={closeLightbox} className="absolute top-4 left-4 z-50 text-white p-2 bg-black/50 rounded-full hover:bg-white/20"><X className="text-3xl"/></button>
-                  
-                  {/* Previous Button */}
-                  {getPostMedia(lightboxPost).length > 1 && (
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); setLightboxIndex(prev => prev > 0 ? prev - 1 : getPostMedia(lightboxPost).length - 1); }}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-black/30 p-2 rounded-full z-10 hover:scale-110 transition-transform"
-                      >
-                          <ChevronLeft className="text-3xl" />
-                      </button>
-                  )}
+          <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl animate-in fade-in flex flex-col md:flex-row">
+              
+              {/* --- MEDIA AREA (Full Screen Mobile / Split Desktop) --- */}
+              <div 
+                  className={`relative flex items-center justify-center bg-transparent h-full w-full ${showMobileComments ? 'hidden md:flex md:w-[calc(100%-400px)]' : 'flex-1'}`}
+                  onTouchStart={onTouchStart}
+                  onTouchMove={onTouchMove}
+                  onTouchEnd={onTouchEnd}
+              >
+                  {/* 1. DYNAMIC BLURRED BACKGROUND */}
+                  <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+                        {lightboxPost.mediaType === "image" || !getPostMedia(lightboxPost)[lightboxIndex].includes(".mp4") ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img 
+                                src={getPostMedia(lightboxPost)[lightboxIndex]} 
+                                className="w-full h-full object-cover blur-3xl opacity-40 scale-110" 
+                                alt="blur-bg"
+                            />
+                        ) : (
+                            <div className="w-full h-full bg-gray-900/80 backdrop-blur-3xl" />
+                        )}
+                  </div>
 
-                  {/* Main Media */}
-                  <div className="w-full h-full flex items-center justify-center p-4">
-                        {/* Determine type of current media item */}
+                  {/* 2. TOP OVERLAY (User Info & Close) */}
+                  <div className="absolute top-0 left-0 right-0 p-4 z-20 flex justify-between items-start bg-gradient-to-b from-black/60 to-transparent">
+                      <div className="flex items-center gap-3">
+                          <button onClick={closeLightbox} className="text-white/90 hover:text-white p-1 rounded-full bg-black/20 backdrop-blur-md">
+                              <X className="text-3xl"/>
+                          </button>
+                          {/* Mobile User Info (Only visible if not commented sidebar on desktop) */}
+                          <div className="flex items-center gap-2 md:hidden text-white drop-shadow-md">
+                                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20">
+                                    {lightboxPost.author?.avatar ? <img src={lightboxPost.author.avatar} className="w-full h-full object-cover" /> : <PersonCircle className="w-full h-full"/>}
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold leading-none">{lightboxPost.author?.name}</p>
+                                    <p className="text-[10px] opacity-80">{new Date(lightboxPost.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                                </div>
+                          </div>
+                      </div>
+
+                      {/* Pagination Badge */}
+                      {getPostMedia(lightboxPost).length > 1 && (
+                          <div className="bg-black/30 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/10">
+                              {lightboxIndex + 1} / {getPostMedia(lightboxPost).length}
+                          </div>
+                      )}
+                  </div>
+
+                  {/* 3. MAIN MEDIA CONTENT */}
+                  <div className="relative z-10 w-full h-full max-h-screen flex items-center justify-center p-0 md:p-8">
                         {getPostMedia(lightboxPost)[lightboxIndex].includes(".mp4") || getPostMedia(lightboxPost)[lightboxIndex].includes(".webm") || lightboxPost.mediaType === "video" ? (
                             <video 
                                 src={getPostMedia(lightboxPost)[lightboxIndex]} 
                                 controls 
-                                className="max-w-full max-h-full object-contain shadow-2xl" 
+                                className="max-w-full max-h-full object-contain drop-shadow-2xl" 
                                 autoPlay
+                                playsInline
                             />
                         ) : (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img 
                                 src={getPostMedia(lightboxPost)[lightboxIndex]} 
-                                className="max-w-full max-h-full object-contain shadow-2xl" 
+                                className="max-w-full max-h-full object-contain drop-shadow-2xl" 
                                 alt="Fullscreen"
                             />
                         )}
                   </div>
 
-                  {/* Next Button */}
+                  {/* 4. DESKTOP NAVIGATION BUTTONS (Hidden on Mobile) */}
                   {getPostMedia(lightboxPost).length > 1 && (
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); setLightboxIndex(prev => (prev + 1) % getPostMedia(lightboxPost).length); }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-black/30 p-2 rounded-full z-10 hover:scale-110 transition-transform"
-                      >
-                          <ChevronRight className="text-3xl" />
-                      </button>
+                      <>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); setLightboxIndex(prev => prev > 0 ? prev - 1 : getPostMedia(lightboxPost).length - 1); }}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full z-20 backdrop-blur-md hidden md:block"
+                          >
+                              <ChevronLeft className="text-3xl" />
+                          </button>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); setLightboxIndex(prev => (prev + 1) % getPostMedia(lightboxPost).length); }}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full z-20 backdrop-blur-md hidden md:block"
+                          >
+                              <ChevronRight className="text-3xl" />
+                          </button>
+                      </>
                   )}
+
+                  {/* 5. MOBILE BOTTOM ACTIONS (Floating) */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 z-20 flex justify-between items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent md:hidden">
+                      <div className="flex items-center gap-6">
+                          <button 
+                              onClick={() => handleInteract(lightboxPost._id, "like")} 
+                              className="flex flex-col items-center gap-1 text-white"
+                          >
+                              {user && lightboxPost.likes.includes(user?._id) ? <HeartFill className="text-2xl text-red-500 drop-shadow-sm"/> : <Heart className="text-2xl drop-shadow-sm"/>} 
+                              <span className="text-[10px] font-bold">{lightboxPost.likes.length}</span>
+                          </button>
+
+                          <button 
+                              onClick={() => setShowMobileComments(true)} 
+                              className="flex flex-col items-center gap-1 text-white"
+                          >
+                              <Chat className="text-2xl drop-shadow-sm"/>
+                              <span className="text-[10px] font-bold">{lightboxPost.comments.length}</span>
+                          </button>
+
+                          <button onClick={() => handleShare(lightboxPost)} className="flex flex-col items-center gap-1 text-white">
+                              <Share className="text-2xl drop-shadow-sm"/>
+                              <span className="text-[10px] font-bold">Share</span>
+                          </button>
+                      </div>
+                  </div>
               </div>
 
-              {/* Sidebar (Comments/Details) - Right/Bottom */}
-              <div className="w-full md:w-96 bg-white h-1/2 md:h-full flex flex-col border-l border-gray-800">
+              {/* --- SIDEBAR / MOBILE DRAWER (Comments & Details) --- */}
+              {/* Desktop: Always visible on right. Mobile: Slides up when requested */}
+              <div className={`
+                  bg-white flex flex-col border-l border-gray-800 transition-transform duration-300 ease-in-out
+                  ${showMobileComments ? 'fixed inset-0 z-30 translate-y-0' : 'hidden translate-y-full'} 
+                  md:flex md:static md:w-[400px] md:translate-y-0
+              `}>
                   {/* Header: User Info & Timestamp */}
-                  <div className="p-4 border-b border-gray-100 flex items-center gap-3 shrink-0">
-                        <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
-                            {lightboxPost.author?.avatar ? <img src={lightboxPost.author.avatar} className="w-full h-full object-cover" /> : <PersonCircle className="text-4xl text-gray-400" />}
+                  <div className="p-4 border-b border-gray-100 flex items-center justify-between shrink-0 bg-white z-10">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
+                                {lightboxPost.author?.avatar ? <img src={lightboxPost.author.avatar} className="w-full h-full object-cover" /> : <PersonCircle className="text-4xl text-gray-400" />}
+                            </div>
+                            <div>
+                                <UserBadge user={lightboxPost.author} showRating={true} />
+                                <p className="text-xs text-gray-500 mt-0.5">
+                                    {new Date(lightboxPost.createdAt).toLocaleDateString()} at {new Date(lightboxPost.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            {/* ✅ SHOW RATING: Updated to true */}
-                            <UserBadge user={lightboxPost.author} showRating={true} />
-                            {/* ✅ TIMESTAMP: Added Time */}
-                            <p className="text-xs text-gray-500 mt-0.5">
-                                {new Date(lightboxPost.createdAt).toLocaleDateString()} at {new Date(lightboxPost.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                            </p>
-                        </div>
+                        {/* Mobile Close Button for Drawer */}
+                        <button onClick={() => setShowMobileComments(false)} className="md:hidden p-2 text-gray-500 hover:text-navy bg-gray-100 rounded-full">
+                            <X className="text-xl" />
+                        </button>
                   </div>
 
-                  {/* Scrollable Content: Caption + Comments */}
-                  <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                      <p className="text-sm text-gray-800 mb-6 whitespace-pre-wrap leading-relaxed">{lightboxPost.content}</p>
+                  {/* Scrollable Content */}
+                  <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-gray-50">
+                      {lightboxPost.content && (
+                          <div className="mb-6 bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                              <p className="text-sm text-gray-800 whitespace-pre-wrap leading-relaxed">{lightboxPost.content}</p>
+                          </div>
+                      )}
                       
                       <div className="space-y-4">
                           {lightboxPost.comments?.length === 0 ? (
-                              <p className="text-xs text-gray-400 text-center italic mt-10">No comments yet. Be the first!</p>
+                              <p className="text-xs text-gray-400 text-center italic mt-10">No comments yet. Start the conversation!</p>
                           ) : (
                               lightboxPost.comments?.map((comment: any, idx: number) => (
                                   <div key={idx} className="flex gap-3">
-                                      <div className="w-8 h-8 bg-gray-100 rounded-full overflow-hidden flex-shrink-0">
+                                      <div className="w-8 h-8 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
                                           {comment.user?.avatar ? <img src={comment.user.avatar} className="w-full h-full object-cover" /> : <PersonCircle className="text-3xl text-gray-300" />}
                                       </div>
                                       <div>
                                           <div className="flex items-center gap-2">
                                               <span className="font-bold text-xs text-navy">{comment.user?.name || "User"}</span>
-                                              {/* ✅ UPDATED TIMESTAMP */}
-                                          <span className="text-[10px] text-gray-400">
-                                              {new Date(comment.date).toLocaleDateString()} at {new Date(comment.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                          </span>
+                                              <span className="text-[10px] text-gray-400">
+                                                  {new Date(comment.date).toLocaleDateString()} {new Date(comment.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                              </span>
                                           </div>
-                                          <p className="text-xs text-gray-700 mt-0.5">{comment.text}</p>
+                                          <p className="text-xs text-gray-700 mt-0.5 bg-white p-2 rounded-lg shadow-sm border border-gray-100 inline-block">{comment.text}</p>
                                       </div>
                                   </div>
                               ))
@@ -837,9 +953,9 @@ export default function CommunityContent() {
                   </div>
 
                   {/* Footer: Likes & Comment Input */}
-                  <div className="p-4 border-t border-gray-100 bg-gray-50 shrink-0">
-                        <div className="flex items-center justify-between mb-3 text-sm text-gray-500 px-1">
-                            {/* ✅ INTERACTIVE LIKE BUTTON */}
+                  <div className="p-4 border-t border-gray-100 bg-white shrink-0">
+                        {/* Desktop Likes (Hidden on Mobile since they are on the image overlay) */}
+                        <div className="hidden md:flex items-center justify-between mb-3 text-sm text-gray-500 px-1">
                             <button 
                                 onClick={() => handleInteract(lightboxPost._id, "like")} 
                                 className={`flex items-center gap-1.5 transition-colors font-bold ${
@@ -849,7 +965,6 @@ export default function CommunityContent() {
                                 {user && lightboxPost.likes.includes(user?._id) ? <HeartFill className="text-lg"/> : <Heart className="text-lg"/>} 
                                 <span>{lightboxPost.likes.length} Likes</span>
                             </button>
-
                             <span className="flex items-center gap-1.5"><Chat className="text-lg"/> {lightboxPost.comments.length} Comments</span>
                         </div>
                         
@@ -859,12 +974,12 @@ export default function CommunityContent() {
                                 value={commentText} 
                                 onChange={(e) => setCommentText(e.target.value)} 
                                 placeholder={t.community.writeComment} 
-                                className="flex-1 bg-white border border-gray-200 rounded-full px-4 py-2 text-sm outline-none focus:border-navy shadow-sm" 
+                                className="flex-1 bg-gray-100 border-0 rounded-full px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-navy/20 transition-all" 
                                 onKeyDown={(e) => e.key === 'Enter' && commentText.trim() && handleInteract(lightboxPost._id, "comment", commentText)}
                             />
                             <button 
                                 onClick={() => handleInteract(lightboxPost._id, "comment", commentText)} 
-                                className="bg-navy text-white p-2 rounded-full hover:bg-navy-light transition-colors shadow-md disabled:opacity-50" 
+                                className="bg-navy text-white p-2.5 rounded-full hover:bg-navy-light transition-colors shadow-md disabled:opacity-50 flex-shrink-0" 
                                 disabled={!commentText.trim()}
                             >
                                 <Send className="text-sm" />
