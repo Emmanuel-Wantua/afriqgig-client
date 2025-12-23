@@ -6,7 +6,6 @@ import bcrypt from "bcryptjs";
 import { sendEmail } from "@/lib/email";
 import crypto from "crypto";
 
-// --- HELPER: Generate Unique Referral Code ---
 function generateReferralCode() {
     const random = crypto.randomBytes(3).toString("hex").toUpperCase();
     return `AFQ-${random}`;
@@ -42,7 +41,7 @@ export async function POST(req: Request) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // 3. Handle Referral LOGIC
+    // 3. Handle Referral LOGIC (✅ UPDATED: Credit only if NEW user is CLIENT)
     let referrerId = null;
     let initialCredits = 0; 
 
@@ -53,19 +52,24 @@ export async function POST(req: Request) {
             console.log(`Referral Valid: ${referrer.name} referred ${name}`);
             referrerId = referrer.referralCode;
             
-            referrer.wallet.credits = (referrer.wallet.credits || 0) + 1;
-            await referrer.save();
+            // ✅ FIX: Only award credits if the NEW user is a CLIENT
+            // (Bringing in freelancers is good, but you only pay for clients)
+            if (role === 'client') {
+                referrer.wallet.credits = (referrer.wallet.credits || 0) + 1;
+                await referrer.save();
 
-            await Notification.create({
-                user: referrer._id,
-                type: "system",
-                title: "New Referral Signup! 🎉",
-                message: `Your friend ${name} just joined. You earned 1 Commission-Free Job Credit!`,
-                link: "/dashboard/referrals",
-                isRead: false
-            });
-
-            initialCredits = 2;
+                await Notification.create({
+                    user: referrer._id,
+                    type: "system",
+                    title: "New Referral Reward! 🎁",
+                    message: `You referred a new Client (${name})! You earned 1 Commission Discount Credit.`,
+                    link: "/dashboard/referrals",
+                    isRead: false
+                });
+                
+                // Bonus for the new user (incentive to use the code)
+                initialCredits = 2; 
+            }
         }
     }
 
@@ -74,9 +78,9 @@ export async function POST(req: Request) {
     const codeExists = await User.findOne({ referralCode: newReferralCode });
     if (codeExists) newReferralCode = generateReferralCode();
 
-    // --- 5. GENERATE VERIFICATION TOKEN ---
+    // 5. Generate Verification Token
     const verifyToken = crypto.randomBytes(32).toString('hex');
-    const verifyTokenExpiry = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+    const verifyTokenExpiry = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 Days
 
     // 6. Create User
     const newUser = await User.create({
@@ -91,7 +95,6 @@ export async function POST(req: Request) {
       referralCode: newReferralCode,
       referredBy: referrerId,
       
-      // Verification Fields
       isVerified: false, 
       verificationToken: verifyToken,
       verificationTokenExpiry: verifyTokenExpiry,
@@ -111,19 +114,10 @@ export async function POST(req: Request) {
       }
     });
 
-    // --- 7. SEND VERIFICATION EMAIL ---
-    
-    // Construct the link (Use NEXT_PUBLIC_APP_URL for consistency if defined, fallback to afriqgig.com)
+    // 7. Send Verification Email
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_URL || 'https://afriqgig.com';
     const verifyLink = `${baseUrl}/verify-email?token=${verifyToken}`;
 
-    // A. LOG TO CONSOLE (Crucial for testing)
-    console.log("========================================");
-    console.log(`📧 VERIFICATION LINK FOR ${email}:`);
-    console.log(verifyLink);
-    console.log("========================================");
-
-    // B. SEND VIA BREVO
     await sendEmail(
         newUser.email, 
         "VERIFY", 
@@ -131,12 +125,10 @@ export async function POST(req: Request) {
             name: newUser.name, 
             link: verifyLink 
         }, 
-        newUser._id // ✅ Corrected: Pass ID as 4th arg, not a template string
+        newUser._id
     );
 
-    // ❌ REMOVED: Welcome Email (Moved to verification API)
-
-    return NextResponse.json({ message: "User created. Please check your email to verify account." }, { status: 201 });
+    return NextResponse.json({ message: "User created. Please verify your email." }, { status: 201 });
 
   } catch (error: any) {
     console.error("Registration Error:", error);

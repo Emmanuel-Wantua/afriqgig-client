@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { 
     PeopleFill, CashCoin, BriefcaseFill, ExclamationTriangleFill, 
-    ArrowUpRight, ShieldCheck, ChatQuote, Wallet2, Headset, EnvelopeOpen 
+    ArrowUpRight, ShieldCheck, ChatQuote, Wallet2, Headset, EnvelopeOpen, GraphUp 
 } from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 import Link from "next/link";
@@ -129,6 +129,14 @@ export default function AdminDashboardContent() {
                 <div className="ml-auto text-gray-300">
                     <ArrowUpRight />
                 </div>
+            </Link>
+            {/* 7. Analytics */}
+            <Link href="/dashboard/admin/analytics" className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
+                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform mb-4">
+                    <GraphUp />
+                </div>
+                <h3 className="font-bold text-navy text-lg">Traffic Analytics</h3>
+                <p className="text-gray-500 text-xs mt-1">View daily visitors & growth charts.</p>
             </Link>
         </div>
 

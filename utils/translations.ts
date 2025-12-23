@@ -335,6 +335,9 @@ export const translations = {
       disputeError: "Failed to file dispute",
       submitDeliverables: "Submit Deliverables",
       uploading: "Uploading...",
+      importantInfo: "Important Info",
+      compressionWarning: "Images (.jpg, .png) will be compressed for web viewing.",
+      zipTip: "To maintain original quality or upload Videos without compression, please archive them in a .ZIP file.",
     },
     chat: {
       title: "Messages",
@@ -1134,6 +1137,9 @@ export const translations = {
       disputeError: "Échec du dépôt du litige",
       submitDeliverables: "Soumettre les Livrables",
       uploading: "Téléchargement...",
+      importantInfo: "Informations importantes",
+      compressionWarning: "Les images (.jpg, .png) seront compressées pour l'affichage web.",
+      zipTip: "Pour conserver la qualité originale ou télécharger des vidéos sans compression, veuillez les archiver dans un fichier .ZIP.",
     },
     chat: {
       title: "Messages",
@@ -1930,6 +1936,9 @@ export const translations = {
       disputeError: "Error al presentar la disputa",
       submitDeliverables: "Enviar Entregables",
       uploading: "Subiendo...",
+      importantInfo: "Información importante",
+      compressionWarning: "Las imágenes (.jpg, .png) se comprimirán para su visualización web.",
+      zipTip: "Para mantener la calidad original o subir videos sin compresión, archívelos en un archivo .ZIP.",
     },
     chat: {
       title: "Mensajes",
@@ -2726,6 +2735,9 @@ export const translations = {
       disputeError: "فشل في تقديم النزاع",
       submitDeliverables: "تسليم الأعمال",
       uploading: "جارٍ الرفع...",
+      importantInfo: "معلومات هامة",
+      compressionWarning: "سيتم ضغط الصور (.jpg، .png) للعرض على الويب.",
+      zipTip: "للحفاظ على الجودة الأصلية أو رفع مقاطع فيديو بدون ضغط، يرجى أرشفتها في ملف .ZIP.",
     },
     chat: {
       title: "الرسائل",
@@ -3522,6 +3534,9 @@ export const translations = {
       disputeError: "Imeshindwa kuwasilisha mzozo",
       submitDeliverables: "Wasilisha Viwasilishwaji",
       uploading: "Inapakia...",
+      importantInfo: "Taarifa Muhimu",
+      compressionWarning: "Picha (.jpg, .png) zitabanwa kwa ajili ya kutazamwa kwenye wavuti.",
+      zipTip: "Ili kudumisha ubora halisi au kupakia Video bila kubanwa, tafadhali ziweke kwenye faili la .ZIP.",
     },
     chat: {
       title: "Ujumbe",

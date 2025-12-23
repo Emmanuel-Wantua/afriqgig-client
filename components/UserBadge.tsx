@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { PatchCheckFill, StarFill } from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -9,9 +10,10 @@ export default function UserBadge({ user, showRating = true }: { user: any, show
   if (!user) return null;
 
   return (
-    <div className="flex items-center gap-1.5 align-middle inline-flex">
+    // ✅ WRAPPER: Makes the entire badge clickable to public profile
+    <Link href={`/profile/${user._id}`} className="flex items-center gap-1.5 align-middle inline-flex hover:opacity-80 transition-opacity cursor-pointer group">
       {/* Name */}
-      <span className="font-bold text-navy truncate">{user.name}</span>
+      <span className="font-bold text-navy truncate group-hover:underline">{user.name}</span>
       
       {/* Verified Badge */}
       {user.isVerified && (
@@ -26,6 +28,6 @@ export default function UserBadge({ user, showRating = true }: { user: any, show
             <span className="text-gray-400 font-normal">({user.reviewsCount})</span>
         </div>
       )}
-    </div>
+    </Link>
   );
 }

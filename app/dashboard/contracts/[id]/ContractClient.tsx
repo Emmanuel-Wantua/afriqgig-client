@@ -101,7 +101,8 @@ export default function ContractClient({ id }: { id: string }) {
   useEffect(() => { if (id) fetchContract(); }, [id]);
 
   const getFileType = (fileName: string) => {
-      if (fileName.match(/\.(jpg|jpeg|png|gif|webp)$/i)) return "image";
+      if (fileName.match(/\.(jpg|jpeg|png|gif|webp|svg)$/i)) return "image";
+      if (fileName.match(/\.(mp4|webm|ogg|mov)$/i)) return "video"; // ✅ Added Video Support
       return "file";
   };
 
@@ -160,10 +161,21 @@ export default function ContractClient({ id }: { id: string }) {
 
       try {
           const fileUrls: string[] = [];
+          
           for (let i = 0; i < deliverableFiles.length; i++) {
               setUploadProgress(10 + Math.round(((i + 1) / deliverableFiles.length) * 80));
-              const secureUrl = await uploadToCloudinary(deliverableFiles[i], "raw");
+              const file = deliverableFiles[i];
+              
+              // ✅ LOGIC: Images = Optimized ("compress"). Everything else (Video/ZIP/PDF) = Original ("raw").
+              // This ensures videos are NOT compressed/transcoded by the image engine.
+              const isImage = file.type.startsWith("image");
+              const uploadMode = isImage ? "compress" : "raw";
+
+              console.log(`Uploading ${file.name} as ${uploadMode}...`); 
+
+              const secureUrl = await uploadToCloudinary(file, uploadMode);
               if (secureUrl) fileUrls.push(secureUrl);
+              else throw new Error(`Upload failed for file: ${file.name}`);
           }
 
           const res = await fetch(`/api/contracts/${id}`, {
@@ -174,7 +186,7 @@ export default function ContractClient({ id }: { id: string }) {
               })
           });
 
-          if (!res.ok) throw new Error("API Failed");
+          if (!res.ok) throw new Error("Submission API Failed");
 
           setUploadProgress(100);
           setSubmitStatus("success");
@@ -187,8 +199,9 @@ export default function ContractClient({ id }: { id: string }) {
           }, 1500);
 
       } catch (error: any) {
+          console.error("Submit Work Error:", error);
           setSubmitStatus("error");
-          setErrorMessage(t.workspace.errorUpload);
+          setErrorMessage(error.message || t.workspace.errorUpload);
       }
   };
 
@@ -526,6 +539,17 @@ export default function ContractClient({ id }: { id: string }) {
                                 </div>
                             )}
 
+                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 mb-4 text-xs text-blue-800">
+                                <div className="flex items-center gap-2 font-bold mb-1">
+                                    <InfoCircle /> {t.workspace.importantInfo || "Important Info:"}
+                                </div>
+                                <p className="leading-relaxed opacity-90">
+                                    • {t.workspace.compressionWarning || "Images (.jpg, .png) will be compressed for web viewing."}
+                                    <br/>
+                                    • {t.workspace.zipTip || "To maintain original quality or upload Videos without compression, please archive them in a .ZIP file."}
+                                </p>
+                            </div>
+
                             <div>
                                 <label className="block text-xs font-bold text-navy uppercase mb-2">{t.workspace.uploadFiles}</label>
                                 
@@ -565,38 +589,74 @@ export default function ContractClient({ id }: { id: string }) {
 
       {/* --- PREVIEW MODAL --- */}
       {previewFile && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-in fade-in">
-              <div className="relative w-full max-w-4xl h-[90vh] flex flex-col justify-center">
-                  {/* ENHANCED CLOSE BUTTON */}
-                  <button 
-                      onClick={() => setPreviewFile(null)} 
-                      className="absolute top-2 right-2 md:top-4 md:right-4 z-50 bg-black/50 hover:bg-red-600 text-white p-2 rounded-full transition-colors backdrop-blur-md"
-                      title="Close Preview"
-                  >
-                      <X className="text-3xl md:text-4xl" />
-                  </button>
-                  
-                  <div className="flex-1 flex items-center justify-center overflow-hidden">
+          <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl animate-in fade-in flex items-center justify-center">
+              
+              {/* 1. DYNAMIC BLURRED BACKGROUND */}
+              {previewFile.type === 'image' || previewFile.type === 'video' ? (
+                  <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
                       {previewFile.type === 'image' ? (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={previewFile.url} className="max-w-full max-h-full object-contain shadow-2xl rounded-lg" alt="Preview" />
+                          <img src={previewFile.url} className="w-full h-full object-cover blur-3xl scale-110" alt="blur-bg"/>
                       ) : (
-                          <div className="bg-white p-10 rounded-2xl text-center">
+                          <video src={previewFile.url} className="w-full h-full object-cover blur-3xl scale-110" muted />
+                      )}
+                  </div>
+              ) : null}
+
+              <div className="relative w-full max-w-5xl h-full md:h-[90vh] flex flex-col justify-center p-4 z-10">
+                  {/* CLOSE BUTTON */}
+                  <button 
+                      onClick={() => setPreviewFile(null)} 
+                      className="absolute top-4 right-4 z-50 bg-black/40 hover:bg-red-600 text-white p-2.5 rounded-full transition-colors backdrop-blur-md border border-white/10"
+                      title="Close"
+                  >
+                      <X className="text-3xl" />
+                  </button>
+                  
+                  {/* CONTENT AREA */}
+                  <div className="flex-1 flex items-center justify-center overflow-hidden w-full h-full">
+                      {previewFile.type === 'image' ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img 
+                              src={previewFile.url} 
+                              className="max-w-full max-h-full object-contain shadow-2xl drop-shadow-2xl rounded-lg" 
+                              alt="Preview" 
+                          />
+                      ) : previewFile.type === 'video' ? (
+                          // ✅ VIDEO PLAYER
+                          <video 
+                              src={previewFile.url} 
+                              controls 
+                              className="max-w-full max-h-full object-contain shadow-2xl drop-shadow-2xl rounded-lg bg-black"
+                              autoPlay
+                          />
+                      ) : (
+                          // GENERIC FILE (Docs, Zip, etc.)
+                          <div className="bg-white p-10 rounded-2xl text-center shadow-2xl max-w-sm w-full mx-4">
                               <FileEarmarkText className="text-6xl text-gray-300 mx-auto mb-4" />
-                              <p className="text-navy font-bold text-xl truncate max-w-md">{previewFile.name}</p>
-                              <p className="text-sm text-gray-500">{t.workspace.previewUnavailable}</p>
+                              <p className="text-navy font-bold text-xl truncate max-w-md mb-2">{previewFile.name}</p>
+                              <p className="text-sm text-gray-500 mb-6">{t.workspace.previewUnavailable || "Preview not available for this file type."}</p>
+                              <button 
+                                onClick={() => handleDownload(previewFile.url, previewFile.name)}
+                                className="bg-navy text-white px-6 py-2.5 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 hover:bg-navy-light transition-all w-full"
+                              >
+                                  <Download /> {t.workspace.downloadFile}
+                              </button>
                           </div>
                       )}
                   </div>
 
-                  <div className="mt-4 flex justify-center pb-4">
-                      <button 
-                        onClick={() => handleDownload(previewFile.url, previewFile.name)}
-                        className="bg-white text-navy px-8 py-3 rounded-full font-bold shadow-xl flex items-center gap-2 hover:bg-gold transition-colors"
-                      >
-                          <Download /> {t.workspace.downloadFile}
-                      </button>
-                  </div>
+                  {/* DOWNLOAD BUTTON (For Images/Videos too) */}
+                  {(previewFile.type === 'image' || previewFile.type === 'video') && (
+                      <div className="mt-4 flex justify-center pb-safe">
+                          <button 
+                            onClick={() => handleDownload(previewFile.url, previewFile.name)}
+                            className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-8 py-3 rounded-full font-bold shadow-xl flex items-center gap-2 hover:bg-white hover:text-navy transition-all"
+                          >
+                              <Download /> {t.workspace.downloadFile}
+                          </button>
+                      </div>
+                  )}
               </div>
           </div>
       )}

@@ -7,6 +7,7 @@ import Provider from "@/components/SessionProvider";
 import LiveChatWidget from "@/components/LiveChatWidget";
 import ReferralTracker from "@/components/ReferralTracker";
 import { ToastProvider } from "@/context/ToastContext";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -64,6 +65,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${inter.className} font-sans bg-light dark:bg-navy-dark text-navy dark:text-white transition-colors duration-300`}>
         <Provider>
+          <AnalyticsTracker />
               <LanguageProvider>
                   <ReferralTracker /> 
                   <LiveChatWidget />
