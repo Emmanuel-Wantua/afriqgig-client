@@ -624,6 +624,30 @@ export default function MessagesContent() {
                    </div>
                </div>
 
+               {/* ✅ INSERT THIS BLOCK HERE: STRICT SAFETY WARNING */}
+               {showSafetyWarning && (
+                   <div className="bg-red-50 border-b border-red-100 p-3 flex items-start gap-3 relative animate-in slide-in-from-top-2 z-20">
+                       <div className="bg-red-100 p-1.5 rounded-full shrink-0 mt-0.5">
+                           <ShieldExclamation className="text-red-600 text-lg" />
+                       </div>
+                       <div className="flex-1">
+                           <p className="text-xs text-red-800 font-bold uppercase tracking-wide mb-0.5">
+                               {t.chat.securityTitle || "Account Security Warning"}
+                           </p>
+                           <p className="text-[11px] text-red-700 leading-snug">
+                               {t.chat.securityText || "Do NOT share phone numbers, emails, or external links. Detection will lead to immediate account deactivation. Keep all communication inside AfriqGig for your protection."}
+                           </p>
+                       </div>
+                       <button 
+                           onClick={() => setShowSafetyWarning(false)} 
+                           className="text-red-400 hover:text-red-600 p-1 hover:bg-red-100 rounded-lg transition-colors"
+                       >
+                           <X className="text-lg"/>
+                       </button>
+                   </div>
+               )}
+               {/* ✅ END INSERT */}
+
                {/* Messages Feed */}
                <div ref={scrollContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 relative">
                    {/* Currency Bubble */}
