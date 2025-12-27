@@ -6,7 +6,8 @@ import User from "@/models/User";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { clientId, title, category, description, budget, deadline } = body;
+    // ✅ FIX: Added 'attachments' to the destructuring so it is captured
+    const { clientId, title, category, description, budget, deadline, attachments } = body;
 
     // 1. Connect to DB
     await connectToDB();
@@ -23,8 +24,10 @@ export async function POST(req: Request) {
       title,
       category,
       description,
-      budget: Number(budget), // Ensure it's a number
+      budget: Number(budget),
       deadline: new Date(deadline),
+      // ✅ FIX: Explicitly save the attachments array (or empty array if null)
+      attachments: attachments || [], 
       status: "open"
     });
 
@@ -39,4 +42,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
-

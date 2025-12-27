@@ -4,7 +4,7 @@ const NotificationSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Who gets the alert
   type: { 
     type: String, 
-    enum: ["message", "hired", "submission", "payment", "security", "like", "comment", "system", "dispute", "alert", 'proposal', 'admin_alert'],
+    enum: ["message", "hired", "submission", "payment", "security", "like", "comment", "system", "dispute", "alert", 'proposal', 'admin_alert', "job_update", "security"],
     required: true 
   },
   title: { type: String, required: true },

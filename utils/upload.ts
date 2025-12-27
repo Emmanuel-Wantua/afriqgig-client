@@ -1,4 +1,4 @@
-export const uploadToCloudinary = async (file: File, mode: "compress" | "raw" = "compress") => {
+export const uploadToCloudinary = async (file: File, mode: "raw" | "compress" = "compress") => {
   const cloudName = "dt5hhcu9s"; 
   
   // Define Presets
@@ -12,8 +12,18 @@ export const uploadToCloudinary = async (file: File, mode: "compress" | "raw" = 
   formData.append("file", file);
   formData.append("upload_preset", preset);
 
-  // Debugging Log (Check console to see if file is valid)
-  console.log(`[Cloudinary] Uploading ${file.name} (${file.type}) to ${cloudName} using preset ${preset}`);
+  // ✅ FIX: Manually generate a readable 'public_id' instead of using 'use_filename'
+  // 1. Remove extension from name (e.g. "my-logo.png" -> "my-logo")
+  const fileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+  // 2. Sanitize (replace spaces/special chars with underscores)
+  const cleanName = fileName.replace(/[^a-zA-Z0-9]/g, "_");
+  // 3. Add timestamp for uniqueness
+  const publicId = `${cleanName}_${Date.now()}`;
+
+  formData.append("public_id", publicId); 
+
+  // Debugging Log
+  console.log(`[Cloudinary] Uploading ${file.name} as ${publicId} to ${cloudName}`);
 
   try {
     // Explicitly use "auto" to let Cloudinary decide if it's image/video/raw

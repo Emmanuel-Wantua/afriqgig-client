@@ -55,6 +55,44 @@ const PostContent = ({ text }: { text: string }) => {
     );
 };
 
+// --- SUB-COMPONENT: COMMENT CONTENT ---
+const CommentContent = ({ text }: { text: string }) => {
+    const { t, language } = useLanguage();
+    const { translate, loading } = useGoogleTranslate();
+    const [translatedText, setTranslatedText] = useState("");
+    const [showTranslated, setShowTranslated] = useState(false);
+
+    const handleTranslate = async () => {
+        if (showTranslated) {
+            setShowTranslated(false);
+            return;
+        }
+        if (!translatedText) {
+            const res = await translate(text);
+            setTranslatedText(res);
+        }
+        setShowTranslated(true);
+    };
+
+    return (
+        <div className="flex flex-col items-start gap-1">
+            <p className="text-xs text-gray-700 mt-0.5 leading-relaxed bg-white p-2 rounded-lg shadow-sm border border-gray-100 inline-block">
+                {showTranslated ? translatedText : text}
+            </p>
+            {language !== "en" && (
+                <button 
+                    onClick={handleTranslate} 
+                    disabled={loading}
+                    className="text-[10px] text-blue-500 font-bold hover:underline flex items-center gap-1 opacity-80 hover:opacity-100 transition-opacity ml-1"
+                >
+                    <Globe className="text-[9px]" />
+                    {loading ? "..." : showTranslated ? t.community.showOriginal : t.community.translate}
+                </button>
+            )}
+        </div>
+    );
+};
+
 // --- SUB-COMPONENT: MEDIA CAROUSEL ---
 const PostMediaCarousel = ({ mediaUrls, mediaType, onOpenLightbox }: { mediaUrls: string[], mediaType: string, onOpenLightbox: (idx: number) => void }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -766,7 +804,7 @@ export default function CommunityContent() {
                                                 {new Date(comment.date).toLocaleDateString()} at {new Date(comment.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                             </span>
                                         </div>
-                                        <p className="text-xs text-gray-700 mt-0.5 leading-relaxed">{comment.text}</p>
+                                        <CommentContent text={comment.text} />
                                     </div>
                                 </div>
                             ))}
@@ -944,7 +982,7 @@ export default function CommunityContent() {
                                                   {new Date(comment.date).toLocaleDateString()} {new Date(comment.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                               </span>
                                           </div>
-                                          <p className="text-xs text-gray-700 mt-0.5 bg-white p-2 rounded-lg shadow-sm border border-gray-100 inline-block">{comment.text}</p>
+                                          <CommentContent text={comment.text} />
                                       </div>
                                   </div>
                               ))

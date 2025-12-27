@@ -5,11 +5,13 @@ import { Bell, ArrowRight, Globe } from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 import Link from "next/link";
 import { useGoogleTranslate } from "@/hooks/useGoogleTranslate";
+import { useRouter } from "next/navigation";
 
 // --- SUB-COMPONENT: Notification Item ---
 const NotificationItem = ({ notif, markAsRead, setShowDropdown }: { notif: any, markAsRead: (id: string) => void, setShowDropdown: (v: boolean) => void }) => {
     const { t, language } = useLanguage();
     const { translate, loading } = useGoogleTranslate();
+    const router = useRouter(); // ✅ Added Router
     const [translatedTitle, setTranslatedTitle] = useState("");
     const [translatedMessage, setTranslatedMessage] = useState("");
     const [showTranslated, setShowTranslated] = useState(false);
@@ -31,8 +33,20 @@ const NotificationItem = ({ notif, markAsRead, setShowDropdown }: { notif: any, 
         setShowTranslated(true);
     };
 
+    // ✅ CLICK HANDLER FOR ENTIRE CARD
+    const handleCardClick = () => {
+        markAsRead(notif._id);
+        if (notif.link) {
+            router.push(notif.link);
+            setShowDropdown(false);
+        }
+    };
+
     return (
-        <div className={`p-3 border-b border-gray-50 hover:bg-gray-50 transition-colors flex gap-3 ${!notif.isRead ? 'bg-blue-50/40' : ''}`}>
+        <div 
+            onClick={handleCardClick} // ✅ Make div clickable
+            className={`p-3 border-b border-gray-50 hover:bg-gray-50 transition-colors flex gap-3 cursor-pointer ${!notif.isRead ? 'bg-blue-50/40' : ''}`}
+        >
             <div className="mt-1.5">
                 <div className={`w-2 h-2 rounded-full ${!notif.isRead ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
             </div>
@@ -48,21 +62,15 @@ const NotificationItem = ({ notif, markAsRead, setShowDropdown }: { notif: any, 
                     <div className="flex items-center gap-2">
                         <p className="text-[10px] text-gray-400">{new Date(notif.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
                         {language !== "en" && (
-                            <button onClick={handleTranslate} className="text-blue-400 hover:text-blue-600 transition-colors" title={t.chat.translate}>
+                            <button 
+                                onClick={handleTranslate} 
+                                className="text-blue-400 hover:text-blue-600 transition-colors z-10 relative" // z-10 ensures button clicks don't trigger card click immediately
+                                title={t.chat.translate}
+                            >
                                 <Globe className={`text-[10px] ${loading ? "animate-spin" : ""}`} />
                             </button>
                         )}
                     </div>
-
-                    {notif.link && (
-                        <Link 
-                            href={notif.link}
-                            onClick={() => { markAsRead(notif._id); setShowDropdown(false); }}
-                            className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-1"
-                        >
-                            {t.manage.view} <ArrowRight className="text-[9px]" />
-                        </Link>
-                    )}
                 </div>
             </div>
         </div>
@@ -79,6 +87,14 @@ export default function NotificationBell() {
   // Audio ref for notification sound
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastNotifCount = useRef(0);
+
+  // ✅ FIX: Initialize Audio ONCE on mount to prevent caching errors
+  useEffect(() => {
+      if (!audioRef.current) {
+          audioRef.current = new Audio("/assets/audio/notification.mp3");
+          audioRef.current.volume = 0.5; // Optional: Set volume
+      }
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -105,12 +121,15 @@ export default function NotificationBell() {
                   const newUnread = data.filter((n: any) => !n.isRead).length;
                   setUnreadCount(newUnread);
 
-                  // ✅ PLAY SOUND IF NEW NOTIFICATION ARRIVES
+                  // ✅ PLAY SOUND (Using pre-loaded ref)
                   if (newUnread > lastNotifCount.current) {
-                      if (!audioRef.current) {
-                          audioRef.current = new Audio("/assets/audio/notification.mp3"); // Ensure this file exists
+                      // Only play if we have a valid ref
+                      if (audioRef.current) {
+                          audioRef.current.currentTime = 0; // Reset sound to start
+                          audioRef.current.play().catch(() => {
+                              // Autoplay might be blocked by browser, safely ignore
+                          }); 
                       }
-                      audioRef.current.play().catch(() => {}); // Catch autoplay errors
                   }
                   lastNotifCount.current = newUnread;
               }

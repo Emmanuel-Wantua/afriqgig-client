@@ -288,7 +288,7 @@ export default function PostJobContent() {
                 onChange={handleFileChange}
                 className="hidden" 
                 multiple 
-                accept=".pdf,.jpg,.png,.docx"
+                accept=".pdf,.jpg,.png,.docx, .mp4, .webm, .ogg, .mov)"
               />
 
               <div 

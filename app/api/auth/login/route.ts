@@ -14,10 +14,22 @@ export async function POST(req: Request) {
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
-      return NextResponse.json({ message: "Invalid email or password" }, { status: 401 });
+        return NextResponse.json({ message: "Invalid credentials" }, { status: 400 });
     }
 
-    // 3. Compare the typed password with the encrypted password in DB
+    // ✅ FIX: Security Check for Suspended/Deactivated Accounts
+    if (user.status === 'suspended') {
+        return NextResponse.json({ 
+            message: "Account suspended. Please contact support." 
+        }, { status: 403 }); // 403 Forbidden
+    }
+    
+    if (user.status === 'deactivated') {
+        return NextResponse.json({ 
+            message: "Account deactivated." 
+        }, { status: 403 });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {

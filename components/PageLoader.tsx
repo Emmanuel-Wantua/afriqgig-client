@@ -1,51 +1,47 @@
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
+import ReferralPromo from "./ReferralPromo";
 
 export default function PageLoader() {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-md">
-      <div className="relative flex flex-col items-center">
-        {/* Pulsing Logo Container */}
-        <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [1, 0.8, 1],
-          }}
-          transition={{
-            duration: 1.5,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="relative z-10"
-        >
-          <Image 
-            src="/icon.svg" 
-            alt="AfriqGig Loading" 
-            width={80} 
-            height={80} 
-            priority 
-            className="w-20 h-20 object-contain drop-shadow-xl"
-          />
-        </motion.div>
+    // 1. Main Container: Fixed full screen, flex column
+    // The loader renders immediately with zero JS wait time
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white/90 backdrop-blur-md">
+      
+      {/* 2. Visual Centerpiece: Stack Logo & Spinner */}
+      <div className="relative flex items-center justify-center w-32 h-32">
         
-        {/* Spinning Ring (Gold) */}
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="absolute w-32 h-32 border-4 border-gray-100 border-t-gold rounded-full"
-        />
-
-        <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="mt-12 text-xs font-bold text-navy tracking-[0.2em] uppercase animate-pulse"
-        >
-            Loading...
-        </motion.p>
+        {/* Layer A: The Spinning Ring (Outer) - Starts spinning instantly via CSS */}
+        <div className="absolute inset-0 w-full h-full border-4 border-gray-100 border-t-gold rounded-full animate-spin"></div>
+        
+        {/* Layer B: The Logo (Inner & Pulsing) */}
+        {/* Applied animation to the parent DIV so it starts before the image even decodes */}
+        <div className="relative z-10 w-16 h-16 animate-pulse-slow flex items-center justify-center">
+          {/* ✅ SPEED FIX: Used standard <img> tag for instant rendering without hydration delay */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src="/icon.svg" 
+            alt="Loading" 
+            className="w-full h-full object-contain drop-shadow-sm"
+          />
+        </div>
       </div>
+
+      {/* 3. Text: Pushed down with margin to avoid touching the spinner */}
+      <p className="mt-8 text-[10px] font-extrabold text-[#0A1929] tracking-[0.3em] uppercase animate-pulse">
+          Loading...
+      </p>
+
+      {/* Custom Pulse Animation */}
+      <style jsx>{`
+        @keyframes pulse-slow {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+      `}</style>
     </div>
   );
 }

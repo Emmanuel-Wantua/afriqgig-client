@@ -16,8 +16,17 @@ const UserSchema = new mongoose.Schema({
   // FIX: New fields for Social Login
   authProvider: { type: String, default: null }, 
   authProviderId: { type: String, default: null },
+
+  isOnline: { type: Boolean, default: false },
+  lastSeen: { type: Date, default: Date.now },
   
   role: { type: String, enum: ["client", "freelancer", "admin"], required: true },
+
+  status: { 
+      type: String, 
+      default: "active", 
+      enum: ["active", "suspended", "deactivated"] 
+  },
   
   // Identity
   avatar: { type: String },

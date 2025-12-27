@@ -83,6 +83,8 @@ export default function LiveChatWidget() {
   
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  const [isMounted, setIsMounted] = useState(false);
+
   // Ref for drag constraints
   const constraintsRef = useRef(null);
 
@@ -104,6 +106,12 @@ export default function LiveChatWidget() {
           setSessionId(storedSession);
           setChatStarted(true);
       }
+  }, []);
+
+  useEffect(() => {
+      // Delay mounting by 4 seconds to prioritize main content loading
+      const timer = setTimeout(() => setIsMounted(true), 4000);
+      return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -243,8 +251,7 @@ export default function LiveChatWidget() {
       return <CheckAll className="text-[12px] text-blue-300" />;
   };
   
-
-  if (isAdminPage) return null; 
+  if (isAdminPage || !isMounted) return null;
 
   return (
     <>

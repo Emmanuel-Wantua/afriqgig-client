@@ -80,6 +80,9 @@ export default function ContractClient({ id }: { id: string }) {
   const [submitStatus, setSubmitStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const [isUploadingClientFile, setIsUploadingClientFile] = useState(false);
+  const clientFileRef = useRef<HTMLInputElement>(null);
+
   // --- RATING STATE ---
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [rating, setRating] = useState(0);
@@ -315,6 +318,36 @@ export default function ContractClient({ id }: { id: string }) {
       }
   };
 
+  const handleClientUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0]) {
+          const file = e.target.files[0];
+          setIsUploadingClientFile(true);
+          try {
+              // Always use 'raw' to preserve quality for documents/zips
+              // If you want images to be viewable, you can use the dynamic logic here too.
+              const isImage = file.type.startsWith("image");
+              const mode = isImage ? "compress" : "raw";
+              
+              const url = await uploadToCloudinary(file, mode);
+              
+              if (url) {
+                  // Send to Backend
+                  await fetch(`/api/contracts/${id}`, {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ newAttachment: url })
+                  });
+                  fetchContract(); // Refresh to show new file
+              }
+          } catch (err) { 
+              console.error(err); 
+              alert(t.workspace.errorUpload);
+          } finally { 
+              setIsUploadingClientFile(false); 
+          }
+      }
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       
@@ -405,6 +438,32 @@ export default function ContractClient({ id }: { id: string }) {
                       <h4 className="text-xs font-bold text-navy mb-3 uppercase flex items-center gap-2">
                           <FileEarmarkText /> {t.workspace.originalFiles}
                       </h4>
+
+                      {/* ✅ CLIENT UPLOAD BUTTON */}
+                          {user?.role === 'client' && contract.status !== 'completed' && (
+                              <div>
+                                  <button 
+                                      onClick={() => clientFileRef.current?.click()}
+                                      disabled={isUploadingClientFile}
+                                      className="text-[10px] bg-white border border-blue-200 text-blue-600 px-3 py-1.5 rounded-lg font-bold hover:bg-blue-50 flex items-center gap-1 transition-colors disabled:opacity-50"
+                                  >
+                                      {isUploadingClientFile ? (
+                                          <span className="animate-pulse">Uploading...</span>
+                                      ) : (
+                                          <>
+                                              <CloudUpload /> {t.postJob.uploadClick || "Add File"}
+                                          </>
+                                      )}
+                                  </button>
+                                  <input 
+                                      type="file" 
+                                      ref={clientFileRef} 
+                                      className="hidden" 
+                                      onChange={handleClientUpload} 
+                                  />
+                              </div>
+                          )}
+                      
                       {contract.job?.attachments && contract.job.attachments.length > 0 ? (
                           <div className="flex flex-col gap-2">
                               {contract.job.attachments.map((file: string, idx: number) => {
@@ -509,9 +568,13 @@ export default function ContractClient({ id }: { id: string }) {
 
       {/* --- SUBMIT WORK MODAL --- */}
       {showSubmitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/60 backdrop-blur-sm">
-            <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6">
-                <div className="flex justify-between items-center mb-4">
+        // ✅ FIX: Increased Z-Index to 100 to cover mobile headers
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-navy/60 backdrop-blur-sm">
+            
+            {/* ✅ FIX: Added responsive max-height calculation to avoid overlapping mobile header/footer */}
+            <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 flex flex-col max-h-[calc(100vh-150px)] md:max-h-[90vh]">
+                
+                <div className="flex justify-between items-center mb-4 shrink-0">
                     <h3 className="font-bold text-navy">{t.workspace.submitDeliverables}</h3>
                     <button onClick={() => setShowSubmitModal(false)} className="text-gray-400 hover:text-red-500"><X className="text-2xl" /></button>
                 </div>
@@ -531,7 +594,7 @@ export default function ContractClient({ id }: { id: string }) {
                     </div>
                 ) : (
                     <>
-                        <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+                        <div className="space-y-4 overflow-y-auto custom-scrollbar flex-1">
                             
                             {submitStatus === "error" && (
                                 <div className="bg-red-50 p-3 rounded-lg flex items-center gap-2 text-red-600 text-sm">
@@ -539,6 +602,7 @@ export default function ContractClient({ id }: { id: string }) {
                                 </div>
                             )}
 
+                            {/* --- INFO MESSAGE --- */}
                             <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 mb-4 text-xs text-blue-800">
                                 <div className="flex items-center gap-2 font-bold mb-1">
                                     <InfoCircle /> {t.workspace.importantInfo || "Important Info:"}
@@ -577,7 +641,7 @@ export default function ContractClient({ id }: { id: string }) {
                             <textarea value={deliverableNote} onChange={e => setDeliverableNote(e.target.value)} placeholder={t.workspace.addNote} className="w-full border p-3 rounded-lg text-sm text-navy bg-white focus:border-navy outline-none focus:border-navy h-24 resize-none"></textarea>
                         </div>
 
-                        <div className="flex gap-3 mt-4 pt-4 border-t border-gray-100">
+                        <div className="flex gap-3 mt-4 pt-4 border-t border-gray-100 shrink-0">
                             <button onClick={() => setShowSubmitModal(false)} className="flex-1 py-2 text-gray-500 font-bold bg-gray-100 rounded-lg hover:bg-gray-200">{t.proposal.cancel}</button>
                             <button onClick={handleSubmitWork} className="flex-1 py-2 bg-navy text-white font-bold rounded-lg hover:bg-navy-light shadow-lg">{t.proposal.submit}</button>
                         </div>

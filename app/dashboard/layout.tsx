@@ -93,51 +93,80 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const ringtoneRef = useRef<HTMLAudioElement | null>(null);
   const lastProcessedMsgId = useRef<string | null>(null);
 
-  // --- GLOBAL MESSAGE POLLING (For Calls & Unread Count) ---
+  const [activeCallContact, setActiveCallContact] = useState<any>(null);
+
+  // --- HEARTBEAT (Online Status) ---
+  useEffect(() => {
+      if (!user) return;
+      const sendHeartbeat = () => {
+          navigator.sendBeacon("/api/users/status", JSON.stringify({ userId: user._id }));
+      };
+      // Send immediately and then every 2 minutes
+      sendHeartbeat();
+      const interval = setInterval(sendHeartbeat, 120000); 
+      return () => clearInterval(interval);
+  }, [user]);
+
+  // --- GLOBAL MESSAGE POLLING ---
   useEffect(() => {
       if (!user) return;
       
       const pollMessages = async () => {
           try {
-              // 1. Fetch Unread Count
+              // 1. Unread Count
               const resStats = await fetch(`/api/messages/stats?userId=${user._id}`);
               const stats = await resStats.json();
               setUnreadMsgCount(stats.unread || 0);
 
-              // 2. Fetch Latest Message (For Call Detection)
+              // 2. Latest Message (Signals)
               const resLast = await fetch(`/api/messages/latest?userId=${user._id}`);
               const lastMsg = await resLast.json();
 
-              // Check if we have a new message that is NOT from me
               if (lastMsg && lastMsg._id !== lastProcessedMsgId.current) {
                    const isMe = lastMsg.sender._id === user._id;
                    
                    if (!isMe) {
-                       lastProcessedMsgId.current = lastMsg._id; // Mark handled
+                       lastProcessedMsgId.current = lastMsg._id;
 
-                       // Check for Call Tag
+                       // --- SIGNAL: CALL START ---
                        const callMatch = lastMsg.content.match(/\[CALL_STARTED:(audio|video)\]/);
-
                        if (callMatch) {
-                           // --- CASE A: INCOMING CALL ---
+                           // Only accept calls from last 45 seconds
                            const msgTime = new Date(lastMsg.createdAt).getTime();
-                           const isRecent = (Date.now() - msgTime) < 60000;
-
-                           if (isRecent && !showCallModal && !incomingCall) {
+                           if ((Date.now() - msgTime) < 45000) { 
                                setIncomingCall({
                                    type: callMatch[1] as 'audio' | 'video',
                                    contact: lastMsg.sender
                                });
 
-                               // Play Ringtone Loop
+                               // Force Play Ringtone
                                if (!ringtoneRef.current) {
                                    ringtoneRef.current = new Audio("/assets/audio/ringtone.mp3");
                                    ringtoneRef.current.loop = true;
                                }
-                               ringtoneRef.current.play().catch(() => {});
+                               ringtoneRef.current.play().catch(() => console.log("Audio requires interaction"));
                            }
-                       } else {
-                           // --- CASE B: STANDARD MESSAGE (Sound Alert) ---
+                       }
+                       
+                       // --- SIGNAL: STOP EVERYTHING ---
+                       else if (["[CALL_ENDED]", "[CALL_DECLINED]", "[CALL_ACCEPTED]"].includes(lastMsg.content)) {
+                           // 1. Close Incoming Popup
+                           setIncomingCall(null);
+                           
+                           // 2. Stop Ringtone
+                           if (ringtoneRef.current) {
+                               ringtoneRef.current.pause();
+                               ringtoneRef.current.currentTime = 0;
+                           }
+
+                           // 3. Close Call Modal (Only if Remote Ended it)
+                           if (lastMsg.content !== "[CALL_ACCEPTED]") {
+                               setShowCallModal(false);
+                           }
+                       }
+                       
+                       // --- STANDARD MESSAGE ---
+                       else {
                            const ping = new Audio("/assets/audio/message.mp3");
                            ping.play().catch(() => {});
                        }
@@ -146,8 +175,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           } catch (e) { console.error(e); }
       };
 
-      pollMessages(); // Initial run
-      const interval = setInterval(pollMessages, 3000); // Poll every 3s
+      // Poll frequently (1.5s) for responsiveness
+      const interval = setInterval(pollMessages, 1500); 
       
       return () => {
           clearInterval(interval);
@@ -433,48 +462,78 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     {/* --- GLOBAL CALL POPUP --- */}
     {incomingCall && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
-            <div className="bg-navy w-full max-w-sm rounded-3xl p-8 text-center shadow-2xl border border-white/10 relative overflow-hidden">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/20 rounded-full animate-ping pointer-events-none"></div>
-                <div className="relative z-10">
-                    <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden border-4 border-white/20 shadow-lg">
-                        {incomingCall.contact?.avatar ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={incomingCall.contact.avatar} className="w-full h-full object-cover" alt="Caller" />
-                        ) : <PersonCircle className="w-full h-full text-gray-400 p-2" />}
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/90 backdrop-blur-xl animate-in fade-in duration-300">
+            {/* Background Pulse */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/20 rounded-full animate-ping opacity-20 duration-1000"></div>
+            </div>
+
+            <div className="relative z-10 flex flex-col items-center gap-8 w-full max-w-md px-6">
+                
+                {/* Caller Info */}
+                <div className="flex flex-col items-center gap-4">
+                    <div className="relative">
+                        <div className="w-32 h-32 rounded-full border-4 border-white/10 overflow-hidden shadow-2xl relative z-10 bg-gray-800">
+                            {incomingCall.contact?.avatar ? (
+                                <img src={incomingCall.contact.avatar} className="w-full h-full object-cover" alt="Caller" />
+                            ) : <PersonCircle className="w-full h-full text-gray-400 p-6" />}
+                        </div>
                     </div>
                     
-                    <h3 className="text-2xl font-bold text-white mb-1">{incomingCall.contact?.name || "Unknown"}</h3>
-                    <p className="text-blue-200 text-sm mb-8 flex items-center justify-center gap-2">
-                        {incomingCall.type === 'video' ? <CameraVideo/> : <Telephone/>} 
-                        Incoming {incomingCall.type} call...
-                    </p>
+                    <div className="text-center">
+                        <h3 className="text-3xl font-bold text-white tracking-tight">{incomingCall.contact?.name || "Unknown Caller"}</h3>
+                        <p className="text-blue-200/80 font-medium text-sm mt-1 uppercase tracking-widest flex items-center justify-center gap-2">
+                            {incomingCall.type === 'video' ? <CameraVideo className="animate-pulse"/> : <Telephone className="animate-pulse"/>}
+                            Incoming {incomingCall.type} Call...
+                        </p>
+                    </div>
+                </div>
 
-                    <div className="flex items-center justify-center gap-6">
-                        <button 
-                            onClick={() => { setIncomingCall(null); stopRingtone(); }}
-                            className="flex flex-col items-center gap-2 group"
-                        >
-                            <div className="w-14 h-14 bg-red-500 rounded-full flex items-center justify-center text-white text-xl shadow-lg group-hover:scale-110 transition-transform">
-                                <TelephoneX />
-                            </div>
-                            <span className="text-xs text-white/70 font-bold">Decline</span>
-                        </button>
+                {/* Actions */}
+                <div className="flex items-center gap-12 mt-8">
+                    {/* DECLINE */}
+                    <div className="flex flex-col items-center gap-2 group cursor-pointer" 
+                        onClick={async () => { 
+                            // Send Decline Signal
+                            await fetch("/api/messages", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    sender: user?._id,
+                                    receiver: incomingCall.contact._id,
+                                    content: "[CALL_DECLINED]",
+                                    type: "text"
+                                })
+                            });
+                            setIncomingCall(null); 
+                            stopRingtone();
+                        }}
+                    >
+                        <div className="w-16 h-16 rounded-full bg-red-500/20 border border-red-500 text-red-500 flex items-center justify-center text-2xl transition-all duration-300 group-hover:bg-red-600 group-hover:text-white">
+                            <TelephoneX />
+                        </div>
+                        <span className="text-xs text-white/50 font-bold uppercase">Decline</span>
+                    </div>
 
-                        <button 
-                            onClick={() => { 
-                                stopRingtone(); 
-                                setCallType(incomingCall.type);
-                                setIncomingCall(null);
-                                setShowCallModal(true);
-                            }}
-                            className="flex flex-col items-center gap-2 group"
-                        >
-                            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform animate-bounce">
-                                {incomingCall.type === 'video' ? <CameraVideo /> : <Telephone />}
-                            </div>
-                            <span className="text-xs text-white/70 font-bold">Accept</span>
-                        </button>
+                    {/* ACCEPT */}
+                    <div 
+                        className="flex flex-col items-center gap-2 group cursor-pointer"
+                        onClick={() => { 
+                            stopRingtone(); 
+                            // 1. Set Type
+                            setCallType(incomingCall.type);
+                            // 2. ✅ FIX: Save Contact to persistent state BEFORE clearing popup
+                            setActiveCallContact(incomingCall.contact); 
+                            // 3. Open Modal
+                            setShowCallModal(true);
+                            // 4. Clear Popup
+                            setIncomingCall(null);
+                        }}
+                    >
+                        <div className="w-20 h-20 rounded-full bg-green-500 text-white flex items-center justify-center text-3xl transition-all duration-300 group-hover:scale-110 shadow-xl animate-bounce">
+                            {incomingCall.type === 'video' ? <CameraVideo /> : <Telephone />}
+                        </div>
+                        <span className="text-xs text-white/50 font-bold uppercase">Accept</span>
                     </div>
                 </div>
             </div>
@@ -482,12 +541,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     )}
 
     {/* --- ZEGO CALL MODAL --- */}
-    <CallModal 
-        isOpen={showCallModal} 
-        onClose={() => setShowCallModal(false)} 
-        contact={incomingCall?.contact || { _id: "unknown", name: "User" }} 
-        type={callType} 
-    />
+    {/* ✅ FIX: Use activeCallContact instead of incomingCall */}
+    {showCallModal && (
+        <CallModal 
+            isOpen={showCallModal} 
+            onClose={() => {
+                setShowCallModal(false);
+                setActiveCallContact(null); // Cleanup
+            }} 
+            contact={activeCallContact || { _id: "unknown", name: "Unknown" }} 
+            type={callType}
+            isIncoming={true} // It was triggered by an incoming call
+        />
+    )}
     
     </AuthGuard>
   );

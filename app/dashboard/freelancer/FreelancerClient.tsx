@@ -178,6 +178,11 @@ function FreelancerDashboardContent() {
     setFeedback(null);
     if (!user) return setFeedback({ type: 'error', message: t.postJob.errorLogin });
     
+    if (!coverLetter.trim()) {
+        setFeedback({ type: 'error', message: t.proposal?.errorCoverLetter || "A cover letter is required to apply." });
+        return;
+    }
+    
     setIsSubmitting(true);
 
     const clientId = typeof selectedJob.client === 'object' ? selectedJob.client._id : selectedJob.client;

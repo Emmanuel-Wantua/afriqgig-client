@@ -13,10 +13,12 @@ import {
 } from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 import UserBadge from "@/components/UserBadge";
-import FeedbackModal from "@/components/FeedbackModal";
+import dynamic from 'next/dynamic';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PageLoader from "@/components/PageLoader"; // Added PageLoader import just in case
+
+const FeedbackModal = dynamic(() => import('@/components/FeedbackModal'), { ssr: false });
 
 // --- FAQ COMPONENT ---
 const FaqItem = ({ question, answer }: { question: string, answer: string }) => {

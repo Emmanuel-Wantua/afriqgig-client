@@ -10,7 +10,6 @@ export default function UserBadge({ user, showRating = true }: { user: any, show
   if (!user) return null;
 
   return (
-    // ✅ WRAPPER: Makes the entire badge clickable to public profile
     <Link href={`/profile/${user._id}`} className="flex items-center gap-1.5 align-middle inline-flex hover:opacity-80 transition-opacity cursor-pointer group">
       {/* Name */}
       <span className="font-bold text-navy truncate group-hover:underline">{user.name}</span>

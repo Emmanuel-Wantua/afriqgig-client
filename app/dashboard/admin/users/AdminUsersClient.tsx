@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { 
     PersonCircle, CheckCircleFill, XCircleFill, ArrowLeft, 
-    PatchCheckFill, Search, Filter, FileEarmarkText, Eye, FileEarmarkPerson, X
+    PatchCheckFill, Search, Filter, FileEarmarkText, Eye, FileEarmarkPerson, X, Ban
 } from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 import Link from "next/link";
@@ -16,6 +16,7 @@ export default function AdminUsersContent() {
   const [searchTerm, setSearchTerm] = useState("");
   
   const [reviewUser, setReviewUser] = useState<any>(null);
+  const [userToSuspend, setUserToSuspend] = useState<any>(null);
 
   // Feedback State
   const [processingId, setProcessingId] = useState<string | null>(null);
@@ -77,6 +78,52 @@ export default function AdminUsersContent() {
           setProcessingId(null);
       }
   };
+
+  // --- 2. STATUS LOGIC (Suspend/Activate) ---
+  const handleStatusChange = async () => {
+      if (!userToSuspend) return;
+      
+      const newStatus = userToSuspend.status === 'suspended' ? 'active' : 'suspended';
+      const userId = userToSuspend._id;
+
+      // 🔍 DEBUG: Log what we are attempting to do
+      console.log("🛠️ [FRONTEND] Initiating Status Change:", { userId, newStatus });
+
+      setProcessingId(userId);
+      
+      try {
+          const payload = { userId, action: "update_status", status: newStatus };
+          
+          // 🔍 DEBUG: Log the exact payload
+          console.log("🚀 [FRONTEND] Sending Payload:", payload);
+
+          const res = await fetch("/api/admin/users", {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload) 
+          });
+
+          console.log("📡 [FRONTEND] API Status Code:", res.status);
+
+          const data = await res.json();
+          console.log("📦 [FRONTEND] API Response Data:", data);
+
+          if (res.ok) {
+              setFeedback({ type: "success", message: `User marked as ${newStatus}.` });
+              // Optimistic update
+              setUsers(prev => prev.map(u => u._id === userId ? { ...u, status: newStatus } : u));
+              setUserToSuspend(null); // Close modal
+          } else {
+              console.error("❌ [FRONTEND] Error Message:", data.message);
+              setFeedback({ type: "error", message: "Update failed." });
+          }
+      } catch (error) {
+          console.error("🔥 [FRONTEND] Network/Logic Error:", error);
+          setFeedback({ type: "error", message: "Network error." });
+      } finally {
+          setProcessingId(null);
+      }
+  };
   
   // Filter users based on Search Term
   const filteredUsers = users.filter(u => 
@@ -94,6 +141,19 @@ export default function AdminUsersContent() {
                 <h1 className="text-2xl font-bold text-navy">User Management</h1>
             </div>
 
+            {/* ✅ NEW: USER COUNTS DISPLAY */}
+            <div className="hidden md:flex items-center gap-4 bg-white border border-gray-200 px-4 py-2 rounded-xl shadow-sm text-xs font-bold text-gray-500">
+                <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                    <span>Freelancers: <span className="text-navy text-sm ml-1">{users.filter(u => u.role === 'freelancer').length}</span></span>
+                </div>
+                <div className="w-px h-4 bg-gray-200"></div>
+                <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span>Clients: <span className="text-navy text-sm ml-1">{users.filter(u => u.role === 'client').length}</span></span>
+                </div>
+            </div>
+
             {/* SEARCH BAR */}
             <div className="relative w-full md:w-64">
                 <Search className="absolute left-3 top-3.5 text-gray-400" />
@@ -104,6 +164,18 @@ export default function AdminUsersContent() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm outline-none focus:border-navy transition-all shadow-sm"
                 />
+            </div>
+        </div>
+
+        {/* MOBILE COUNTS (Visible only on small screens) */}
+        <div className="flex md:hidden justify-between gap-4 bg-white border border-gray-200 px-4 py-3 rounded-xl shadow-sm text-xs font-bold text-gray-500">
+             <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                <span>Freelancers: <span className="text-navy">{users.filter(u => u.role === 'freelancer').length}</span></span>
+            </div>
+            <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span>Clients: <span className="text-navy">{users.filter(u => u.role === 'client').length}</span></span>
             </div>
         </div>
 
@@ -184,16 +256,28 @@ export default function AdminUsersContent() {
                                     )}
                                 </td>
                                 <td className="p-4 text-right">
-                                    {u.settings?.verificationStatus === 'pending' ? (
-                                        <button 
-                                            onClick={() => setReviewUser(u)}
-                                            className="px-4 py-2 bg-navy text-white text-xs font-bold rounded-lg hover:bg-navy-light shadow-md transition-all flex items-center gap-2 ml-auto"
-                                        >
-                                            <Eye /> Review Request
-                                        </button>
-                                    ) : (
-                                        <span className="text-xs text-gray-400 italic">No actions</span>
-                                    )}
+                                    <div className="flex items-center justify-end gap-2">
+                                        {u.settings?.verificationStatus === 'pending' ? (
+                                            <button 
+                                                onClick={() => setReviewUser(u)}
+                                                className="px-3 py-1.5 bg-blue-50 text-blue-600 text-xs font-bold rounded-lg hover:bg-blue-100 transition-colors flex items-center gap-1"
+                                            >
+                                                <Eye /> Review
+                                            </button>
+                                        ) : (
+                                            // ✅ TOGGLE SUSPEND / ACTIVE
+                                            <button 
+                                                onClick={() => setUserToSuspend(u)}
+                                                className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors border ${
+                                                    u.status === 'suspended' 
+                                                    ? "bg-green-50 text-green-600 border-green-200 hover:bg-green-100" 
+                                                    : "bg-white text-red-600 border-red-200 hover:bg-red-50"
+                                                }`}
+                                            >
+                                                {u.status === 'suspended' ? "Reactivate" : "Suspend"}
+                                            </button>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -293,6 +377,38 @@ export default function AdminUsersContent() {
                         </button>
                     </div>
 
+                </div>
+            </div>
+        )}
+
+        {/* --- SUSPEND CONFIRMATION MODAL --- */}
+        {userToSuspend && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/60 backdrop-blur-sm animate-in fade-in">
+                <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center">
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 ${userToSuspend.status === 'suspended' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                        {userToSuspend.status === 'suspended' ? <CheckCircleFill /> : <Ban />}
+                    </div>
+                    <h3 className="text-xl font-bold text-navy mb-2">
+                        {userToSuspend.status === 'suspended' ? "Reactivate Account?" : "Suspend Account?"}
+                    </h3>
+                    <p className="text-sm text-gray-500 mb-6">
+                        {userToSuspend.status === 'suspended' 
+                            ? "This will restore the user's access to the platform immediately."
+                            : "This will immediately block the user from logging in and hide their profile."
+                        }
+                    </p>
+                    <div className="flex gap-3">
+                        <button onClick={() => setUserToSuspend(null)} className="flex-1 py-2 text-gray-500 font-bold bg-gray-100 rounded-lg hover:bg-gray-200">Cancel</button>
+                        <button 
+                            onClick={handleStatusChange} 
+                            disabled={!!processingId}
+                            className={`flex-1 py-2 text-white font-bold rounded-lg shadow-lg disabled:opacity-50 ${
+                                userToSuspend.status === 'suspended' ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"
+                            }`}
+                        >
+                            {processingId ? "Processing..." : "Confirm"}
+                        </button>
+                    </div>
                 </div>
             </div>
         )}

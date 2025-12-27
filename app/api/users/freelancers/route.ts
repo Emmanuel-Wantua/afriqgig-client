@@ -10,9 +10,12 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("q")?.toLowerCase() || "";
 
-    // FIX: Removed 'isActive: true' so older test accounts show up
+    // ✅ FIX: Filter out Suspended or Deactivated users
+    // We use $nin (Not In) to ensure legacy accounts (with no status) still show up,
+    // while strictly hiding anyone explicitly marked as 'suspended' or 'deactivated'.
     const searchFilter: any = { 
-        role: "freelancer"
+        role: "freelancer",
+        status: { $nin: ["suspended", "deactivated"] }
     };
 
     if (query) {
@@ -27,11 +30,11 @@ export async function GET(req: Request) {
         .select("name avatar title bio skills hourlyRate rateType rating reviewsCount isVerified country")
         .sort({ rating: -1, isVerified: -1 });
 
-    console.log(`Found ${freelancers.length} freelancers`); // Check your terminal for this log
+    console.log(`Found ${freelancers.length} active freelancers`); 
 
     return NextResponse.json(freelancers, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error("Freelancer Fetch Error:", error);
     return NextResponse.json([], { status: 500 });
   }
 }

@@ -3,23 +3,34 @@ import { connectToDB } from "@/lib/db";
 import Transaction from "@/models/Transaction";
 import User from "@/models/User";
 import Notification from "@/models/Notification";
-import { sendEmail } from "@/lib/email"; // <--- 1. Import Email
+import { sendEmail } from "@/lib/email"; 
 
 export const dynamic = "force-dynamic";
 
-// GET: Fetch Pending Withdrawals
-export async function GET() {
+// GET: Fetch Transactions (Supports 'all' for Finance Page, default 'pending' for Withdrawals)
+export async function GET(req: Request) {
   try {
-    await connectToDB();
-    const pending = await Transaction.find({ 
-        type: "withdrawal", 
-        status: "pending" 
-    })
-    .populate("user", "name email avatar")
-    .sort({ date: 1 }); // Oldest first
+    const { searchParams } = new URL(req.url);
+    const filter = searchParams.get("filter"); // 'all' or undefined
 
-    return NextResponse.json(pending, { status: 200 });
+    await connectToDB();
+
+    let query = {};
+    if (filter === 'all') {
+        // Return everything for Financials Page
+        query = {}; 
+    } else {
+        // Default: Only Pending Withdrawals (For Withdrawals Page)
+        query = { type: "withdrawal", status: "pending" };
+    }
+
+    const transactions = await Transaction.find(query)
+    .populate("user", "name email avatar")
+    .sort({ date: -1 }); // Newest first
+
+    return NextResponse.json(transactions, { status: 200 });
   } catch (error) {
+    console.error("Tx Fetch Error:", error);
     return NextResponse.json({ message: "Error" }, { status: 500 });
   }
 }
@@ -27,13 +38,12 @@ export async function GET() {
 // PATCH: Approve or Reject
 export async function PATCH(req: Request) {
     try {
-        const { transactionId, action, reason } = await req.json(); // action: 'approve' | 'reject'
+        const { transactionId, action, reason } = await req.json(); 
         await connectToDB();
 
         const tx = await Transaction.findById(transactionId);
         if (!tx) return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
 
-        // Need the user details for email
         const user = await User.findById(tx.user);
 
         if (action === 'approve') {
@@ -41,7 +51,7 @@ export async function PATCH(req: Request) {
             tx.processedAt = new Date();
             await tx.save();
 
-            // 2. Notify User (In-App)
+            // Notify User (In-App)
             await Notification.create({
                 user: tx.user,
                 type: "payment",
@@ -51,7 +61,7 @@ export async function PATCH(req: Request) {
                 isRead: false
             });
 
-            // 3. 📧 Notify User (EMAIL) - SUCCESS
+            // Notify User (Email)
             if (user && user.email) {
                 sendEmail(
                     user.email,
@@ -62,12 +72,19 @@ export async function PATCH(req: Request) {
             }
         } 
         else if (action === 'reject') {
-            tx.status = 'failed'; // Marks it failed so it doesn't deduct from balance anymore
+            tx.status = 'failed'; 
             tx.description = `${tx.description} [REJECTED: ${reason || 'Admin Action'}]`;
             tx.processedAt = new Date();
             await tx.save();
 
-            // Notify User (In-App)
+            // Refund User Wallet Logic (Important!)
+            if (user) {
+                user.wallet.balance += tx.amount; // Refund the amount back to balance
+                user.wallet.pending -= tx.amount; // Remove from pending
+                await user.save();
+            }
+
+            // Notify User
             await Notification.create({
                 user: tx.user,
                 type: "admin_alert",

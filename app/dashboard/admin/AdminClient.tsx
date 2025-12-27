@@ -67,7 +67,7 @@ export default function AdminDashboardContent() {
         {/* STATS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            {/* 1. Withdrawals (High Priority) */}
+            {/* 1. Withdrawals */}
             <StatCard 
                 title="Pending Withdrawals" 
                 value={stats?.finance?.pendingWithdrawals || 0} 
@@ -107,6 +107,8 @@ export default function AdminDashboardContent() {
                 link="/dashboard/admin/users"
             />
             
+            {/* Row 2 */}
+
             {/* 5. Active Jobs */}
             <StatCard 
                 title="Active Jobs" 
@@ -117,9 +119,23 @@ export default function AdminDashboardContent() {
                 link="/dashboard/client/jobs" 
             />
 
-            {/* 6. User Feedback */}
-            <Link href="/dashboard/admin/feedback" className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex items-center gap-4 group md:col-span-2 lg:col-span-3">
-                <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+            {/* 6. Analytics (New Design) */}
+             <Link href="/dashboard/admin/analytics" className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500 text-indigo-600">
+                    <GraphUp />
+                </div>
+                <div className="relative z-10">
+                    <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                        <GraphUp />
+                    </div>
+                    <h3 className="font-bold text-navy text-lg">Traffic Analytics</h3>
+                    <p className="text-gray-500 text-xs mt-1">View daily visitors & growth charts.</p>
+                </div>
+            </Link>
+
+            {/* 7. User Feedback (Spans 2 cols to fill row) */}
+            <Link href="/dashboard/admin/feedback" className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow flex items-center gap-4 group md:col-span-2">
+                <div className="w-12 h-12 bg-pink-50 text-pink-600 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
                     <ChatQuote />
                 </div>
                 <div>
@@ -129,14 +145,6 @@ export default function AdminDashboardContent() {
                 <div className="ml-auto text-gray-300">
                     <ArrowUpRight />
                 </div>
-            </Link>
-            {/* 7. Analytics */}
-            <Link href="/dashboard/admin/analytics" className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
-                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform mb-4">
-                    <GraphUp />
-                </div>
-                <h3 className="font-bold text-navy text-lg">Traffic Analytics</h3>
-                <p className="text-gray-500 text-xs mt-1">View daily visitors & growth charts.</p>
             </Link>
         </div>
 

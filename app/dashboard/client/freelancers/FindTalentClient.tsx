@@ -6,7 +6,8 @@ import { useLanguage } from "@/context/LanguageContext";
 import Link from "next/link";
 import UserBadge from "@/components/UserBadge";
 import PageLoader from "@/components/PageLoader";
-import HireModal from "@/components/HireModal"; 
+import dynamic from 'next/dynamic';
+const HireModal = dynamic(() => import('@/components/HireModal'), { ssr: false });
 
 export default function FindTalentContent() {
   const { t, convertPrice } = useLanguage(); 

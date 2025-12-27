@@ -8,19 +8,33 @@ export async function GET(req: Request) {
   try {
     await connectToDB();
 
-    // 1. Get records for the last 30 days
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const dateString = thirtyDaysAgo.toISOString().split('T')[0];
+    // 1. Generate last 30 days dates
+    const dates = [];
+    for (let i = 29; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        dates.push(d.toISOString().split('T')[0]);
+    }
 
-    const stats = await Analytics.find({ date: { $gte: dateString } }).sort({ date: 1 });
+    // 2. Fetch real data
+    const startDate = dates[0];
+    const realStats = await Analytics.find({ date: { $gte: startDate } });
 
-    // 2. Format for Frontend
-    // Ensure we return an array even if empty
-    return NextResponse.json(stats || [], { status: 200 });
+    // 3. Merge: Fill missing days with 0 to prevent blank chart gaps
+    const finalStats = dates.map(date => {
+        const found = realStats.find((s: any) => s.date === date);
+        return {
+            date,
+            visits: found ? found.visits : 0, // Fallback to 0 if no data
+            uniqueVisitors: found ? found.uniqueVisitors : 0
+        };
+    });
+
+    return NextResponse.json(finalStats, { status: 200 });
 
   } catch (error) {
     console.error("Analytics API Error:", error);
-    return NextResponse.json([], { status: 500 });
+    // Return empty fallback structure instead of error to keep UI alive
+    return NextResponse.json([], { status: 200 });
   }
 }

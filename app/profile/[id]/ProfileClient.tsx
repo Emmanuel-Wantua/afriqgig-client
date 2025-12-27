@@ -12,8 +12,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import UserBadge from "@/components/UserBadge";
 import PageLoader from "@/components/PageLoader";
-import HireModal from "@/components/HireModal";
+import dynamic from 'next/dynamic';
 import { useGoogleTranslate } from "@/hooks/useGoogleTranslate";
+const HireModal = dynamic(() => import('@/components/HireModal'), { ssr: false });
 
 // --- SUB-COMPONENT: TRANSLATABLE TEXT ---
 const TranslatableText = ({ text, className = "" }: { text: string, className?: string }) => {

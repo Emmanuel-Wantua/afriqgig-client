@@ -23,6 +23,7 @@
     "react-bootstrap-icons": "^1.11.6",
     "react-dom": "19.2.0",
     "speakeasy": "^2.0.0",
+    "swr": "^2.3.8",
     "twilio": "^5.10.7"
   },
   "devDependencies": {
