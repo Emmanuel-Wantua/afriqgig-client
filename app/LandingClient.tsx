@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
     Search, ShieldCheck, Wallet2, 
@@ -205,7 +206,7 @@ export default function LandingContent() {
                         loop 
                         muted 
                         playsInline 
-                        poster="/assets/images/hero-poster.jpg" 
+                        poster="/assets/images/hero-poster.webp" 
                         className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000 rounded-[2.5rem]"
                     >
                         <source src="/assets/video/explainer.mp4" type="video/mp4" />
@@ -281,10 +282,16 @@ export default function LandingContent() {
                                       {/* Top Section */}
                                       <div>
                                           <div className="flex items-center gap-4 mb-4">
-                                              <div className="w-16 h-16 bg-gray-50 rounded-full border-2 border-white shadow-md overflow-hidden shrink-0">
+                                              <div className="w-16 h-16 bg-gray-50 rounded-full border-2 border-white shadow-md overflow-hidden shrink-0 relative">
                                                   {talent.avatar ? (
-                                                      // eslint-disable-next-line @next/next/no-img-element
-                                                      <img src={talent.avatar} alt={talent.name} className="w-full h-full object-cover" />
+                                                      // ✅ FIX: Use Next/Image for optimization with correct sizes
+                                                      <Image 
+                                                        src={talent.avatar} 
+                                                        alt={talent.name} 
+                                                        fill
+                                                        sizes="64px" // Tells browser this is a small icon (64px)
+                                                        className="object-cover" 
+                                                      />
                                                   ) : (
                                                       <div className="w-full h-full flex items-center justify-center text-xl font-bold text-gray-300">{talent.name[0]}</div>
                                                   )}
@@ -354,9 +361,14 @@ export default function LandingContent() {
               {/* NEW: Image above the workflow */}
               <div className="mb-16 rounded-[3rem] overflow-hidden shadow-2xl border-4 border-gray-100 max-h-[400px] relative group">
                   <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-500"></div>
-                  {/* Suggestion: Use a high-quality 3D isometric illustration of digital connection */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/assets/images/workflow.webp" alt="AfriqGig Ecosystem" className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000" />
+                  {/* ✅ FIX: Use Next/Image for optimization */}
+                  <Image 
+                    src="/assets/images/workflow.webp" 
+                    alt="AfriqGig Ecosystem" 
+                    fill
+                    sizes="(max-width: 768px) 100vw, 1200px" // Responsive sizes for large image
+                    className="object-cover transform group-hover:scale-105 transition-transform duration-1000" 
+                  />
               </div>
 
               <div className="text-center mb-16">
@@ -542,4 +554,4 @@ export default function LandingContent() {
 
     </div>
   );
-}
+} 

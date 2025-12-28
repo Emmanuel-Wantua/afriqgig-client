@@ -96,7 +96,7 @@ export default function Header() {
           </div>
 
           {/* Mobile Hamburger (Animated) */}
-          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2 text-navy relative w-10 h-10 flex items-center justify-center">
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2 text-navy relative w-10 h-10 flex items-center justify-center" aria-label="Toggle mobile menu">
               <div className="w-6 h-5 relative flex flex-col justify-between">
                   <motion.span animate={isMobileMenuOpen ? { rotate: 45, y: 10 } : { rotate: 0, y: 0 }} className="w-full h-0.5 bg-navy rounded-full origin-left transition-all" />
                   <motion.span animate={isMobileMenuOpen ? { opacity: 0 } : { opacity: 1 }} className="w-full h-0.5 bg-navy rounded-full transition-all" />
@@ -124,7 +124,7 @@ export default function Header() {
                         <div className="grid grid-cols-2 gap-4">
                              {/* Language Mobile Dropdown - FIXED: Removed absolute positioning */}
                              <div>
-                                 <button onClick={() => setMobileLangOpen(!mobileLangOpen)} className="w-full flex items-center justify-between bg-gray-50 px-4 py-3 rounded-xl font-bold text-sm">
+                                 <button onClick={() => setMobileLangOpen(!mobileLangOpen)} className="w-full flex items-center justify-between bg-gray-50 px-4 py-3 rounded-xl font-bold text-sm" aria-label="Select Language">
                                      <span className="flex items-center gap-2"><Translate/> {language.toUpperCase()}</span>
                                      <ChevronDown className={`transition-transform ${mobileLangOpen ? 'rotate-180' : ''}`} />
                                  </button>
