@@ -142,7 +142,7 @@ export default function PostJobContent() {
 
       if (!res.ok) throw new Error(data.message || t.postJob.errorServer);
 
-      router.push("/dashboard/client?jobPosted=true");
+      router.push("/dashboard/client/jobs?jobPosted=true");
 
     } catch (err: any) {
       console.error("DEBUG: Submission Error:", err);

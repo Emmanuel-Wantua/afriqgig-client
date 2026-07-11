@@ -8,7 +8,8 @@ import {
     HouseDoor, Briefcase, ChatDots, Wallet2, Person, List, BoxArrowRight,
     X, Gear, QuestionCircle, InfoCircle, ShieldCheck, People, Search,
     ChevronDown, Globe, CurrencyExchange, Speedometer2, PeopleFill,
-    ExclamationOctagon, CashStack, PersonCircle, TelephoneX, Telephone, CameraVideo
+    ExclamationOctagon, CashStack, PersonCircle, TelephoneX, Telephone, CameraVideo,
+    ListTask, PlusLg
 } from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 import { Language } from "@/utils/translations";
@@ -202,7 +203,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const getNavItems = () => {
       const common = [
-          { name: t.nav.community, icon: <People />, href: "/dashboard/community" },
+        { name: t.nav.home || "Home", icon: <HouseDoor />, href: "/" }, // Home Link
+        { name: t.nav.community, icon: <People />, href: "/dashboard/community" },
       ];
 
       const clientLinks = [
@@ -211,9 +213,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       ];
 
       const freelancerLinks = [
-          { name: t.nav.findWork, icon: <Search />, href: "/dashboard/freelancer" },
-          { name: t.nav.contracts, icon: <Briefcase />, href: "/dashboard/freelancer/contracts" },
-      ];
+        { name: t.nav.findWork, icon: <Search />, href: "/dashboard/freelancer" },
+        { name: t.nav.contracts, icon: <Briefcase />, href: "/dashboard/freelancer/contracts" },
+        { name: t.nav.postJob || "Post a Job", icon: <PlusLg />, href: "/dashboard/client/post-job" },
+        { name: t.nav.jobs || "My Posted Jobs", icon: <ListTask />, href: "/dashboard/client/jobs" },
+    ];
 
       const adminLinks = [
           { name: t.nav.overview, icon: <Speedometer2 />, href: "/dashboard/admin" },
@@ -246,6 +250,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ];
 
   const isActive = (path: string) => {
+      // Exact match for Home
+      if (path === "/") return pathname === "/";
+      
+      // Exact match for root dashboards
       if (path === "/dashboard/client" || path === "/dashboard/freelancer") {
           return pathname === path;
       }

@@ -60,7 +60,9 @@ const NotificationItem = ({ notif, markAsRead, setShowDropdown }: { notif: any, 
                 
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                        <p className="text-[10px] text-gray-400">{new Date(notif.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                        <p className="text-[10px] text-gray-400">
+                            {new Date(notif.createdAt).toLocaleDateString()} • {new Date(notif.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </p>
                         {language !== "en" && (
                             <button 
                                 onClick={handleTranslate} 
@@ -86,6 +88,7 @@ export default function NotificationBell() {
   
   // Audio ref for notification sound
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isFirstLoad = useRef(true);
   const lastNotifCount = useRef(0);
 
   // ✅ FIX: Initialize Audio ONCE on mount to prevent caching errors
@@ -121,26 +124,22 @@ export default function NotificationBell() {
                   const newUnread = data.filter((n: any) => !n.isRead).length;
                   setUnreadCount(newUnread);
 
-                  // ✅ PLAY SOUND (Using pre-loaded ref)
-                  if (newUnread > lastNotifCount.current) {
-                      // Only play if we have a valid ref
+                  // ✅ FIX: Only play sound if NOT first load AND count increased
+                  if (!isFirstLoad.current && newUnread > lastNotifCount.current) {
                       if (audioRef.current) {
-                          audioRef.current.currentTime = 0; // Reset sound to start
-                          audioRef.current.play().catch(() => {
-                              // Autoplay might be blocked by browser, safely ignore
-                          }); 
+                          audioRef.current.currentTime = 0;
+                          audioRef.current.play().catch(() => {}); 
                       }
                   }
+                  
                   lastNotifCount.current = newUnread;
+                  isFirstLoad.current = false; // Mark first load as done
               }
           } catch (error) { console.error(error); }
       };
 
       fetchNotifications();
-      
-      // ✅ FAST POLLING (Every 2 Seconds)
-      const interval = setInterval(fetchNotifications, 2000);
-
+      const interval = setInterval(fetchNotifications, 5000); // Slowed down slightly to save resources
       return () => clearInterval(interval);
   }, [user]);
 

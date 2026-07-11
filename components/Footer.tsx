@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { 
     Facebook, Twitter, Linkedin, Lightbulb, 
-    GeoAlt, Whatsapp, Envelope 
+    GeoAlt, Whatsapp, Envelope, Phone 
 } from "react-bootstrap-icons";
 import FeedbackModal from "@/components/FeedbackModal";
 import { useLanguage } from "@/context/LanguageContext";
@@ -106,10 +106,10 @@ export default function Footer() {
               </div>
 
               {/* --- MIDDLE SECTION: Contact Info Horizontal Bar --- */}
-              {/* grid-cols-1 ensures Vertical on Mobile */}
-              {/* md:grid-cols-3 ensures Horizontal on Desktop */}
               <div className="border-t border-white/5 py-10 mb-8">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  {/* Changed grid-cols-1 md:grid-cols-3 to flex for better horizontal control on desktop */}
+                  <div className="flex flex-col lg:flex-row justify-between gap-8 lg:gap-4">
+                      
                       {/* Location */}
                       <div className="flex items-start gap-4 group">
                           <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-gold text-xl group-hover:bg-gold group-hover:text-navy transition-all duration-300 shadow-lg shadow-black/10 shrink-0">
@@ -122,12 +122,23 @@ export default function Footer() {
                       </div>
 
                       {/* WhatsApp */}
-                      <a href="https://wa.me/237677079449" target="_blank" className="flex items-start gap-4 group">
+                      <a href="https://wa.me/237677079449" target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 group">
                           <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-gold text-xl group-hover:bg-gold group-hover:text-navy transition-all duration-300 shadow-lg shadow-black/10 shrink-0">
                               <Whatsapp />
                           </div>
                           <div>
                               <h5 className="font-bold text-white text-sm mb-1 group-hover:text-gold transition-colors">Chat Support</h5>
+                              <p className="text-xs text-blue-200/60 group-hover:text-white transition-colors">+237 677 079 449</p>
+                          </div>
+                      </a>
+
+                      {/* Phone Call */}
+                      <a href="tel:+237677079449" className="flex items-start gap-4 group">
+                          <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-gold text-xl group-hover:bg-gold group-hover:text-navy transition-all duration-300 shadow-lg shadow-black/10 shrink-0">
+                              <Phone />
+                          </div>
+                          <div>
+                              <h5 className="font-bold text-white text-sm mb-1 group-hover:text-gold transition-colors">Call Us</h5>
                               <p className="text-xs text-blue-200/60 group-hover:text-white transition-colors">+237 677 079 449</p>
                           </div>
                       </a>

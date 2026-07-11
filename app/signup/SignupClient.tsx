@@ -73,6 +73,24 @@ function SignupForm() {
   // NEW: State to track successful registration
   const [isRegistered, setIsRegistered] = useState(false);
 
+  const [passwordCriteria, setPasswordCriteria] = useState({
+    length: false,
+    upper: false,
+    lower: false,
+    number: false,
+    special: false
+});
+
+const checkPassword = (pass: string) => {
+    setPasswordCriteria({
+        length: pass.length >= 8,
+        upper: /[A-Z]/.test(pass),
+        lower: /[a-z]/.test(pass),
+        number: /[0-9]/.test(pass),
+        special: /[^A-Za-z0-9]/.test(pass)
+    });
+};
+
   const toggleSkill = (skill: string) => {
     if (selectedSkills.includes(skill)) {
       setSelectedSkills(prev => prev.filter(s => s !== skill));
@@ -104,6 +122,12 @@ function SignupForm() {
     if (!acceptedTerms) {
         setLoading(false);
         return setError(t.auth.errorTerms);
+    }
+
+    const isPasswordValid = Object.values(passwordCriteria).every(Boolean);
+    if (!isPasswordValid) {
+        setLoading(false);
+        return setError(t.auth.passWeak || "Password must meet all requirements.");
     }
 
     const finalCountry = formData.country === "Other" ? formData.customCountry : formData.country;
@@ -243,13 +267,43 @@ function SignupForm() {
         {/* Password & Location */}
         <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-navy uppercase mb-1">{t.auth.password}</label>
-              <div className="relative">
-                  <Lock className="absolute top-3.5 left-4 text-gray-400" />
-                  <input type={showPassword ? "text" : "password"} required onChange={e => setFormData({...formData, password: e.target.value})} className="block w-full rounded-xl border-0 py-3 pl-11 pr-10 text-navy shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-navy sm:text-sm bg-gray-50/50 focus:bg-white transition-all outline-none" placeholder="••••••••" />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute top-3.5 right-4 text-gray-400 hover:text-navy"><EyeSlash /></button>
-              </div>
-            </div>
+                    <label className="block text-xs font-bold text-navy uppercase mb-1">{t.auth.password}</label>
+                    <div className="relative">
+                        <Lock className="absolute top-3.5 left-4 text-gray-400" />
+                        <input 
+                            type={showPassword ? "text" : "password"} 
+                            required 
+                            onChange={e => {
+                                setFormData({...formData, password: e.target.value});
+                                checkPassword(e.target.value);
+                            }} 
+                            className="block w-full rounded-xl border-0 py-3 pl-11 pr-10 text-navy shadow-sm ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-navy sm:text-sm bg-gray-50/50 focus:bg-white transition-all outline-none" 
+                            placeholder="••••••••" 
+                        />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute top-3.5 right-4 text-gray-400 hover:text-navy"><EyeSlash /></button>
+                    </div>
+
+                    {/* ✅ NEW: Password Strength Indicator */}
+                    {formData.password && (
+                        <div className="mt-3 grid grid-cols-2 gap-2 text-[10px]">
+                            <span className={`flex items-center gap-1 ${passwordCriteria.length ? "text-green-600 font-bold" : "text-gray-400"}`}>
+                                {passwordCriteria.length ? <CheckCircleFill/> : <div className="w-3 h-3 rounded-full border border-gray-300"/>} {t.auth.passLength || "8+ Characters"}
+                            </span>
+                            <span className={`flex items-center gap-1 ${passwordCriteria.upper ? "text-green-600 font-bold" : "text-gray-400"}`}>
+                                {passwordCriteria.upper ? <CheckCircleFill/> : <div className="w-3 h-3 rounded-full border border-gray-300"/>} {t.auth.passUpper || "Uppercase Letter"}
+                            </span>
+                            <span className={`flex items-center gap-1 ${passwordCriteria.lower ? "text-green-600 font-bold" : "text-gray-400"}`}>
+                                {passwordCriteria.lower ? <CheckCircleFill/> : <div className="w-3 h-3 rounded-full border border-gray-300"/>} {t.auth.passLower || "Lowercase Letter"}
+                            </span>
+                            <span className={`flex items-center gap-1 ${passwordCriteria.number ? "text-green-600 font-bold" : "text-gray-400"}`}>
+                                {passwordCriteria.number ? <CheckCircleFill/> : <div className="w-3 h-3 rounded-full border border-gray-300"/>} {t.auth.passNumber || "Number"}
+                            </span>
+                            <span className={`flex items-center gap-1 ${passwordCriteria.special ? "text-green-600 font-bold" : "text-gray-400"}`}>
+                                {passwordCriteria.special ? <CheckCircleFill/> : <div className="w-3 h-3 rounded-full border border-gray-300"/>} {t.auth.passSpecial || "Special Character"}
+                            </span>
+                        </div>
+                    )}
+                </div>
 
             <div>
                <label className="block text-xs font-bold text-navy uppercase mb-1">{t.auth.location}</label>

@@ -11,6 +11,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useRouter } from "next/navigation";
 import { uploadToCloudinary } from "@/utils/upload";
 import PageLoader from "@/components/PageLoader";
+import { AFRICAN_COUNTRIES } from "@/utils/data";
 
 export default function SettingsContent() {
   const { t, user, setLanguage, refreshUser } = useLanguage(); 
@@ -32,6 +33,7 @@ export default function SettingsContent() {
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const [secretKey, setSecretKey] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
+  const [isCustomCountry, setIsCustomCountry] = useState(false);
 
   const [formData, setFormData] = useState({
       country: "Cameroon",
@@ -356,18 +358,45 @@ export default function SettingsContent() {
                       <h3 className="text-lg font-bold text-navy border-b border-gray-100 pb-2">{t.settings.accountPref}</h3>
                       
                       <div className="grid md:grid-cols-2 gap-6">
-                          <CustomSelect 
-                              label={t.auth.location}
-                              value={formData.country}
-                              onChange={(e: any) => setFormData({...formData, country: e.target.value})}
-                              options={[
-                                  { value: "Cameroon", label: "Cameroon" },
-                                  { value: "Nigeria", label: "Nigeria" },
-                                  { value: "Kenya", label: "Kenya" },
-                                  { value: "Ghana", label: "Ghana" },
-                                  { value: "South Africa", label: "South Africa" }
-                              ]}
-                          />
+                          <div>
+                              <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.auth.location}</label>
+                              
+                              {!isCustomCountry ? (
+                                  <div className="space-y-2">
+                                      <select 
+                                          value={AFRICAN_COUNTRIES.includes(formData.country) ? formData.country : "Other"}
+                                          onChange={(e) => {
+                                              if (e.target.value === "Other") {
+                                                  setIsCustomCountry(true);
+                                                  setFormData({...formData, country: ""});
+                                              } else {
+                                                  setFormData({...formData, country: e.target.value});
+                                              }
+                                          }}
+                                          className="w-full p-3 bg-white border border-gray-200 rounded-xl text-sm text-navy outline-none focus:border-navy appearance-none"
+                                      >
+                                          {AFRICAN_COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                          <option value="Other">Other (Type Manually)</option>
+                                      </select>
+                                  </div>
+                              ) : (
+                                  <div className="flex gap-2">
+                                      <input 
+                                          type="text" 
+                                          value={formData.country} 
+                                          onChange={(e) => setFormData({...formData, country: e.target.value})}
+                                          placeholder="Enter your country"
+                                          className="flex-1 p-3 bg-white border border-gray-200 rounded-xl text-sm text-navy outline-none focus:border-navy"
+                                      />
+                                      <button 
+                                          onClick={() => setIsCustomCountry(false)}
+                                          className="px-3 text-xs font-bold text-red-500 hover:bg-red-50 rounded-lg"
+                                      >
+                                          Cancel
+                                      </button>
+                                  </div>
+                              )}
+                          </div>
                           
                           <div>
                               <span className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.settings.theme}</span>

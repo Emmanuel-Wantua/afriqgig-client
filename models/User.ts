@@ -39,6 +39,8 @@ const UserSchema = new mongoose.Schema({
   title: { type: String },
   bio: { type: String },
   country: { type: String, default: "Cameroon" }, 
+  address: { type: String },
+  categories: { type: [String], default: [] },
   languages: [{ name: String, level: String }],
   externalPortfolio: { type: String },
 
@@ -70,7 +72,7 @@ const UserSchema = new mongoose.Schema({
   portfolio: [{
     title: String,
     link: String,
-    image: String,
+    images: [String],
     description: String
   }],
   
@@ -79,7 +81,7 @@ const UserSchema = new mongoose.Schema({
   reviewsCount: { type: Number, default: 0 },
   jobsCompleted: { type: Number, default: 0 },
 
-  // --- REFERRAL ENGINE (New) ---
+  // --- REFERRAL ENGINE ---
   referralCode: { type: String, unique: true, sparse: true }, // e.g. "AFQ-8X29"
   referredBy: { type: String }, // Code of the referrer
   wallet: {

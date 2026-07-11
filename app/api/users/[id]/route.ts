@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db"; // Changed from dbConnect to match your imports
+import { connectToDB } from "@/lib/db"; 
 import User from "@/models/User";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +27,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     await connectToDB();
 
     // 1. Check if email is being changed (Unique Check)
-    // We check this BEFORE creating the update object
     if (body.email) {
         const emailExists = await User.findOne({ email: body.email, _id: { $ne: id } });
         if (emailExists) {
@@ -36,14 +35,18 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     }
 
     // 2. Define Allowed Updates (Whitelist)
-    // This securely filters the body. We explicitly INCLUDE email and phone here.
+    // ✅ ADDED: address, categories (array), category (legacy string)
     const allowedUpdates: any = {
         name: body.name,
         title: body.title,
         bio: body.bio,
         country: body.country,
-        phone: body.phone, // <--- Explicitly allowed now
-        email: body.email, // <--- Explicitly allowed now
+        address: body.address,       // ✅ Added Address
+        categories: body.categories, // ✅ Added Categories (Array)
+        category: body.category,     // ✅ Added Legacy Category (String)
+
+        phone: body.phone, 
+        email: body.email, 
         skills: body.skills,
         interests: body.interests,
         portfolio: body.portfolio,
@@ -65,9 +68,10 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     );
 
     // 4. Ensure Arrays are Arrays (Data Integrity)
+    // ✅ ADDED: "categories" to this list to ensure it's saved properly
     const arrayFields = [
         "skills", "interests", "portfolio", "certifications", 
-        "experience", "education", "languages"
+        "experience", "education", "languages", "categories" 
     ];
 
     arrayFields.forEach(field => {
@@ -91,7 +95,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
   } catch (error: any) {
     console.error("Update failed:", error);
-    // Handle Duplicate Key Error (MongoDB Code 11000)
     if (error.code === 11000) {
         return NextResponse.json({ message: "Email or Phone already in use." }, { status: 400 });
     }

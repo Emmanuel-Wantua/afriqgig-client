@@ -4,11 +4,11 @@ import "./globals.css";
 // IMPORT CONTEXTS
 import { LanguageProvider } from "@/context/LanguageContext";
 import Provider from "@/components/SessionProvider"; 
-import LiveChatWidget from "@/components/LiveChatWidget";
 import ReferralTracker from "@/components/ReferralTracker";
 import { ToastProvider } from "@/context/ToastContext";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import Script from "next/script"; // ✅ NEW IMPORT
+import LiveChatWrapper from "@/components/LiveChatWrapper";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -99,7 +99,7 @@ export default function RootLayout({
           <AnalyticsTracker />
               <LanguageProvider>
                   <ReferralTracker /> 
-                  <LiveChatWidget />
+                  <LiveChatWrapper />
                   <ToastProvider> 
                     {children}
                   </ToastProvider>

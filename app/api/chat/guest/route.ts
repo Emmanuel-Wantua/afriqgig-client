@@ -33,7 +33,28 @@ export async function GET(req: Request) {
         if (!sessionId) return NextResponse.json({ messages: [] });
 
         await connectToDB();
-        const chat = await GuestChat.findOne({ sessionId }).select('messages status');
+        let chat = await GuestChat.findOne({ sessionId });
+
+        // ✅ ROBUST AUTO-CLOSE LOGIC (Server-Side)
+        // Checks if chat is 'open' but inactive for > 12 hours
+        if (chat && chat.status === 'open') {
+            const lastActivity = new Date(chat.updatedAt).getTime();
+            const twelveHours = 12 * 60 * 60 * 1000;
+            
+            if (Date.now() - lastActivity > twelveHours) {
+                console.log(`⏳ [API] Auto-closing stale session: ${sessionId}`);
+                
+                chat.status = 'closed';
+                chat.messages.push({
+                    sender: 'system',
+                    content: "Chat closed due to inactivity (12h timeout).",
+                    msgType: 'system',
+                    timestamp: new Date()
+                });
+                chat = await chat.save();
+            }
+        }
+
         return NextResponse.json(chat ? chat : { messages: [] });
     } catch (error) {
         return NextResponse.json({ messages: [] }, { status: 500 });
@@ -50,6 +71,9 @@ export async function POST(req: Request) {
             const newChat = await GuestChat.create({
                 guestName: body.name,
                 guestEmail: body.email,
+                guestPhone: body.phone, 
+                guestLocation: body.location,
+                guestAddress: body.address,
                 sessionId: body.sessionId,
                 messages: [{ sender: 'guest', content: body.message, status: 'sent' }]
             });
@@ -69,7 +93,14 @@ export async function POST(req: Request) {
             }
 
             // Add message
-            chat.messages.push({ sender: 'guest', content: body.content, status: 'sent' });
+            chat.messages.push({ 
+                sender: 'guest', 
+                content: body.content, 
+                imageUrl: body.imageUrl,     
+                msgType: body.msgType || 'text',
+                status: 'sent' 
+            });
+
             if (chat.status === 'closed') chat.status = 'open';
             chat.updatedAt = new Date(); // Update time for sorting
             await chat.save();
@@ -81,14 +112,24 @@ export async function POST(req: Request) {
 
         // 3. CLOSE & RATE
         if (body.type === 'close') {
-            await GuestChat.findOneAndUpdate(
-                { sessionId: body.sessionId },
-                { 
-                    status: 'closed',
-                    rating: body.rating,
-                    feedback: body.feedback
-                }
-            );
+            const chat = await GuestChat.findOne({ sessionId: body.sessionId });
+            if (chat) {
+                 if (body.isAutoClose) {
+                     chat.messages.push({
+                         sender: 'system',
+                         content: "Chat closed due to inactivity.",
+                         msgType: 'system',
+                         timestamp: new Date()
+                     });
+                 }
+                 
+                 chat.status = 'closed';
+                 if (body.rating) chat.rating = body.rating;
+                 if (body.feedback) chat.feedback = body.feedback;
+                 
+                 await chat.save();
+            }
+
             return NextResponse.json({ success: true }, { status: 200 });
         }
 

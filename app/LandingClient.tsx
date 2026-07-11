@@ -69,6 +69,10 @@ export default function LandingContent() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [howItWorksIndex, setHowItWorksIndex] = useState(0);
 
+  // NEW: Ecosystem section video state (image shows first, video fades in once ready)
+  const ecosystemVideoRef = useRef<HTMLVideoElement>(null);
+  const [isEcosystemVideoReady, setIsEcosystemVideoReady] = useState(false);
+
   // Derived Data
   const TESTIMONIALS = [
       { text: t.landing.testi1, author: "Chinedu, Business Owner", role: "Client" },
@@ -83,6 +87,7 @@ export default function LandingContent() {
       { q: t.landing.faq2q, a: t.landing.faq2a },
       { q: t.landing.faq3q, a: t.landing.faq3a },
       { q: t.landing.faq4q, a: t.landing.faq4a },
+      { q: t.landing.faq5q || "Can I post a job as a freelancer?", a: t.landing.faq5a || "Yes! Freelancers can switch roles to become clients and hire other talent using the 'Post a Job' button in their dashboard." },
   ];
 
   useEffect(() => {
@@ -275,36 +280,38 @@ export default function LandingContent() {
                         transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
                       >
                           {[...topTalent, ...topTalent].map((talent, i) => (
-                              <Link href={`/profile/${talent._id}`} key={`${i}-${talent._id}`} className="block group">
-                                  {/* UNIFORM CARD SIZE: Fixed width and height, flex-col with justify-between */}
+                              <div key={`${i}-${talent._id}`} className="block group relative">
+                                  {/* UNIFORM CARD SIZE */}
                                   <div className="w-80 h-[340px] bg-white border border-gray-100 p-6 rounded-[2rem] shadow-sm group-hover:shadow-2xl group-hover:scale-105 group-hover:border-blue-100 transition-all duration-300 relative flex flex-col justify-between">
                                       
                                       {/* Top Section */}
                                       <div>
-                                          <div className="flex items-center gap-4 mb-4">
-                                              <div className="w-16 h-16 bg-gray-50 rounded-full border-2 border-white shadow-md overflow-hidden shrink-0 relative">
+                                          <div className="flex items-center gap-4 mb-4 relative z-10">
+                                              {/* Avatar Link (Independent) */}
+                                              <Link href={`/profile/${talent._id}`} className="w-16 h-16 bg-gray-50 rounded-full border-2 border-white shadow-md overflow-hidden shrink-0 relative block">
                                                   {talent.avatar ? (
-                                                      // ✅ FIX: Use Next/Image for optimization with correct sizes
                                                       <Image 
                                                         src={talent.avatar} 
                                                         alt={talent.name} 
                                                         fill
-                                                        sizes="64px" // Tells browser this is a small icon (64px)
+                                                        sizes="64px" 
                                                         className="object-cover" 
                                                       />
                                                   ) : (
                                                       <div className="w-full h-full flex items-center justify-center text-xl font-bold text-gray-300">{talent.name[0]}</div>
                                                   )}
-                                              </div>
+                                              </Link>
+                                              
                                               <div className="min-w-0">
+                                                  {/* UserBadge (Has its own Link) */}
                                                   <UserBadge user={talent} showRating={true} />
                                                   <p className="text-sm text-gray-500 truncate">{talent.title || "Freelancer"}</p>
                                               </div>
                                           </div>
                                       </div>
 
-                                      {/* Bottom Section: Skills (Aligned to bottom) */}
-                                      <div className="flex flex-wrap gap-2 content-end">
+                                      {/* Bottom Section: Skills */}
+                                      <div className="flex flex-wrap gap-2 content-end relative z-10 pointer-events-none">
                                           {talent.skills?.slice(0, 4).map((skill: string, si: number) => (
                                               <span key={si} className="bg-gray-50 text-gray-600 px-3 py-1 rounded-full text-[11px] font-medium border border-gray-100 truncate max-w-full">
                                                   {skill}
@@ -314,8 +321,11 @@ export default function LandingContent() {
                                               <span className="bg-gray-50 text-gray-400 px-2 py-1 rounded-full text-[10px] font-bold">+{talent.skills.length - 4}</span>
                                           )}
                                       </div>
+
+                                      {/* ✅ FIX: Overlay Link for the rest of the card (z-0 behind badge) */}
+                                      <Link href={`/profile/${talent._id}`} className="absolute inset-0 z-0" aria-label={`View ${talent.name}'s profile`}></Link>
                                   </div>
-                              </Link>
+                              </div>
                           ))}
                       </motion.div>
                   </div>
@@ -358,17 +368,33 @@ export default function LandingContent() {
       {/* --- PLATFORM ECOSYSTEM GRAPHIC --- */}
       <section className="py-24 px-6 bg-white overflow-hidden">
           <div className="max-w-7xl mx-auto">
-              {/* NEW: Image above the workflow */}
-              <div className="mb-16 rounded-[3rem] overflow-hidden shadow-2xl border-4 border-gray-100 max-h-[400px] relative group">
-                  <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-500"></div>
-                  {/* ✅ FIX: Use Next/Image for optimization */}
+              {/* Full-viewport video (image shows immediately, video fades in once it can play through) */}
+              <div className="mb-16 relative w-screen h-screen left-1/2 right-1/2 -mx-[50vw] overflow-hidden shadow-2xl group">
+                  <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+
+                  {/* Poster image: visible immediately, fades out once video is ready */}
                   <Image 
                     src="/assets/images/workflow.webp" 
                     alt="AfriqGig Ecosystem" 
                     fill
-                    sizes="(max-width: 768px) 100vw, 1200px" // Responsive sizes for large image
-                    className="object-cover transform group-hover:scale-105 transition-transform duration-1000" 
+                    priority
+                    sizes="100vw"
+                    className={`object-cover transform group-hover:scale-105 transition-all duration-1000 ${isEcosystemVideoReady ? 'opacity-0' : 'opacity-100'}`}
                   />
+
+                  {/* Video: starts loading in the background, cross-fades in once playable */}
+                  <video
+                    ref={ecosystemVideoRef}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    onCanPlayThrough={() => setIsEcosystemVideoReady(true)}
+                    className={`absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-all duration-1000 ${isEcosystemVideoReady ? 'opacity-100' : 'opacity-0'}`}
+                  >
+                      <source src="/assets/video/workflow.mp4" type="video/mp4" />
+                  </video>
               </div>
 
               <div className="text-center mb-16">

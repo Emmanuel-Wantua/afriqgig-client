@@ -75,7 +75,7 @@ export default function ContactContent() {
                           <div>
                               <h4 className="font-bold text-navy">{t.contact.callTitle}</h4>
                               <p className="text-gray-500 text-sm mb-1">{t.contact.callText}</p>
-                              <p className="font-medium text-navy">+237 677 079 449</p>
+                              <a href="tel:+237677079449" className="font-medium text-navy hover:text-gold transition-colors block">+237 677 079 449</a>
                           </div>
                       </div>
                   </div>

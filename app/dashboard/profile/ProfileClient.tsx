@@ -3,12 +3,12 @@
 import { useState, useEffect, useRef } from "react";
 import { PersonCircle, Pencil, Save, GeoAlt, Briefcase, Camera, X, PatchCheckFill,
     PlusLg, Trash, Link45deg, Award, Globe, StarFill, CheckCircleFill,
-    ExclamationTriangleFill, EyeSlashFill, Envelope, Phone
+    ExclamationTriangleFill, EyeSlashFill, Envelope, Phone, ChevronDown
 } from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 import { uploadToCloudinary } from "@/utils/upload";
 import PageLoader from "@/components/PageLoader";
-import { MASTER_SKILL_LIST, INTEREST_TOPICS } from "@/utils/data";
+import { MASTER_SKILL_LIST, INTEREST_TOPICS, SPECIFIC_JOB_CATEGORIES, CATEGORY_MAPPING, SKILLS_BY_CATEGORY } from "@/utils/data";
 import { useGoogleTranslate } from "@/hooks/useGoogleTranslate"; // Import Hook
 
 // --- SUB-COMPONENT: TRANSLATABLE TEXT ---
@@ -243,6 +243,10 @@ export default function ProfileContent() {
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
+  const [catSearch, setCatSearch] = useState("");
+  const [isCatOpen, setIsCatOpen] = useState(false);
+  const catDropdownRef = useRef<HTMLDivElement>(null);
+
   const [formData, setFormData] = useState({
       name: "",
       title: "",
@@ -262,6 +266,8 @@ export default function ProfileContent() {
       externalPortfolio: "",
       email: "", 
       phone: "",
+      address: "",
+      categories: [] as string[],
   });
 
   const [skillInput, setSkillInput] = useState("");
@@ -277,6 +283,16 @@ export default function ProfileContent() {
 
   // --- CROP STATE ---
   const [fileToCrop, setFileToCrop] = useState<{ file: File, type: "avatar" | "cover" | "portfolio" } | null>(null);
+
+  useEffect(() => {
+      const handleClick = (e: MouseEvent) => {
+          if (catDropdownRef.current && !catDropdownRef.current.contains(e.target as Node)) {
+              setIsCatOpen(false);
+          }
+      };
+      document.addEventListener("mousedown", handleClick);
+      return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   useEffect(() => {
     if (contextUser?._id) fetchProfile();
@@ -308,6 +324,8 @@ export default function ProfileContent() {
               externalPortfolio: data.externalPortfolio || "",
               email: data.email || "",
               phone: data.phone || "",
+              address: data.address || "",
+              categories: Array.isArray(data.categories) ? data.categories : (data.category ? [data.category] : []),
           });
       } catch (error) {
           console.error(error);
@@ -352,11 +370,24 @@ export default function ProfileContent() {
   const handleSkillInput = (e: React.ChangeEvent<HTMLInputElement>) => {
       const val = e.target.value;
       setSkillInput(val);
+      
       if (val.length > 1) {
+          // 1. Aggregate priority skills from ALL selected categories
+          const prioritySkills = formData.categories.flatMap(cat => {
+              const broadCat = CATEGORY_MAPPING[cat];
+              return broadCat ? SKILLS_BY_CATEGORY[broadCat] : [];
+          });
+
+          // 2. Filter & Sort
           const matches = MASTER_SKILL_LIST.filter(s => 
               s.toLowerCase().includes(val.toLowerCase()) && 
               !formData.skills.includes(s)
-          ).slice(0, 10);
+          ).sort((a, b) => {
+              const aPrio = prioritySkills.includes(a) ? 1 : 0;
+              const bPrio = prioritySkills.includes(b) ? 1 : 0;
+              return bPrio - aPrio; // Priority skills appear first
+          }).slice(0, 10);
+          
           setSkillSuggestions(matches);
       } else {
           setSkillSuggestions([]);
@@ -404,14 +435,14 @@ export default function ProfileContent() {
           const newProject = {
               title: "New Project",
               link: "",
-              image: secureUrl, 
+              images: [secureUrl], 
               description: "Project Description"
           };
           setFormData(prev => ({ ...prev, portfolio: [...prev.portfolio, newProject] }));
       }
   };
 
-  const updatePortfolioItem = (index: number, field: string, value: string) => {
+  const updatePortfolioItem = (index: number, field: string, value: any) => {
       const updatedPortfolio = [...formData.portfolio];
       updatedPortfolio[index] = { ...updatedPortfolio[index], [field]: value };
       setFormData({ ...formData, portfolio: updatedPortfolio });
@@ -583,7 +614,7 @@ export default function ProfileContent() {
                                 className="text-2xl font-bold text-navy w-full border-b border-gray-300 outline-none bg-transparent"
                               />
                           ) : (
-                              <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
+                              <h1 className="text-2xl font-bold text-navy flex items-center gap-2 md:pt-20">
                                   {profile?.name}
                                   {profile?.isVerified && <PatchCheckFill className="text-blue-500 text-lg" title="Verified" />}
                               </h1>
@@ -674,6 +705,23 @@ export default function ProfileContent() {
                   ) : (
                       <div className="flex items-center gap-2 text-navy font-medium">
                           <Phone /> {profile?.phone || "Not set"}
+                      </div>
+                  )}
+              </div>
+              {/* ADDRESS FIELD */}
+              <div className="md:col-span-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">{t.auth.address || "Street Address / City"}</label>
+                  {isEditing ? (
+                      <input 
+                          type="text" 
+                          value={formData.address || ""} 
+                          onChange={(e) => setFormData({...formData, address: e.target.value})}
+                          className="w-full p-2 border border-gray-200 rounded-lg text-sm text-navy bg-white focus:border-navy outline-none"
+                          placeholder="e.g. Molyko, Buea"
+                      />
+                  ) : (
+                      <div className="flex items-center gap-2 text-navy font-medium">
+                          <GeoAlt /> {profile?.address || "Not set"}
                       </div>
                   )}
               </div>
@@ -779,6 +827,8 @@ export default function ProfileContent() {
                   </div>
               )}
 
+              {/* PORTFOLIO SECTION */}
+
               {isFreelancer && (
                   <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                       <div className="flex justify-between items-center mb-4">
@@ -791,7 +841,7 @@ export default function ProfileContent() {
                           <input type="file" ref={portfolioInputRef} className="hidden" onChange={e => e.target.files && onSelectFile("portfolio", e.target.files[0])} />
                       </div>
 
-                      {/* External Link Input */}
+                      {/* External Link Input (Unchanged) */}
                       <div className="mb-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
                           <div className="flex items-center gap-2 mb-2">
                               <Link45deg className="text-xl text-blue-600"/>
@@ -802,7 +852,7 @@ export default function ProfileContent() {
                                   value={formData.externalPortfolio} 
                                   onChange={(e) => setFormData({...formData, externalPortfolio: e.target.value})}
                                   placeholder="https://behance.net/username"
-                                  className="w-full bg-white border border-gray-200 rounded-lg p-2 text-sm text-navy bg-white focus:border-navy outline-none focus:border-navy"
+                                  className="w-full bg-white border border-gray-200 rounded-lg p-2 text-sm text-navy focus:border-navy outline-none"
                               />
                           ) : formData.externalPortfolio ? (
                               <a href={formData.externalPortfolio} target="_blank" rel="noreferrer" className="text-blue-600 text-sm hover:underline truncate block">
@@ -820,39 +870,112 @@ export default function ProfileContent() {
                       ) : (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               {(isEditing ? formData.portfolio : profile?.portfolio || []).map((project: any, idx: number) => (
-                                  <div key={idx} className="group relative rounded-xl overflow-hidden bg-gray-50 border border-gray-200">
-                                      <div className="aspect-video bg-gray-200 relative">
-                                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                                          <img src={project.image} className="w-full h-full object-cover" alt={project.title} />
-                                          {isEditing && <button onClick={() => removePortfolioItem(idx)} className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded"><Trash /></button>}
+                                  <div key={idx} className="group border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+                                      
+                                      {/* ✅ NEW: MULTI-IMAGE CAROUSEL HEADER */}
+                                      <div className="h-40 bg-gray-100 overflow-hidden relative">
+                                          {/* Use 'images' array if available, fallback to single 'image' */}
+                                          {(project.images && project.images.length > 0) || project.image ? (
+                                              <div className="flex overflow-x-auto snap-x snap-mandatory h-full no-scrollbar">
+                                                  {/* Handle legacy single image */}
+                                                  {project.image && !project.images && (
+                                                      <img src={project.image} className="w-full h-full object-cover shrink-0 snap-center" alt={project.title} />
+                                                  )}
+                                                  {/* Handle new array */}
+                                                  {project.images?.map((img: string, imgIdx: number) => (
+                                                      <img key={imgIdx} src={img} className="w-full h-full object-cover shrink-0 snap-center" alt={`${project.title} ${imgIdx + 1}`} />
+                                                  ))}
+                                              </div>
+                                          ) : (
+                                              <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                  <Briefcase className="text-4xl" />
+                                              </div>
+                                          )}
+
+                                          {/* Project Actions (Edit Mode) */}
+                                          {isEditing && (
+                                              <div className="absolute top-2 right-2 flex gap-2">
+                                                  <button 
+                                                      onClick={() => {
+                                                          const input = document.getElementById(`portfolio-upload-${idx}`) as HTMLInputElement;
+                                                          input?.click();
+                                                      }} 
+                                                      className="bg-white/80 text-navy p-1.5 rounded hover:bg-white transition-colors shadow-sm"
+                                                      title="Add more photos"
+                                                  >
+                                                      <PlusLg />
+                                                  </button>
+                                                  <button onClick={() => removePortfolioItem(idx)} className="bg-red-500 text-white p-1.5 rounded shadow-sm hover:bg-red-600">
+                                                      <Trash />
+                                                  </button>
+                                              </div>
+                                          )}
+                                          
+                                          {/* Hidden input for adding extra images to THIS project */}
+                                          <input 
+                                              type="file" 
+                                              id={`portfolio-upload-${idx}`} 
+                                              className="hidden" 
+                                              multiple
+                                              accept="image/*"
+                                              onChange={async (e) => {
+                                                  if (e.target.files) {
+                                                      // Show loading feedback if possible (simple alert for now or toast)
+                                                      const newImages = [];
+                                                      for (const file of Array.from(e.target.files)) {
+                                                          const url = await uploadToCloudinary(file);
+                                                          if (url) newImages.push(url);
+                                                      }
+                                                      
+                                                      // Update State
+                                                      const updatedPortfolio = [...formData.portfolio];
+                                                      const existingImages = updatedPortfolio[idx].images || (updatedPortfolio[idx].image ? [updatedPortfolio[idx].image] : []);
+                                                      updatedPortfolio[idx].images = [...existingImages, ...newImages];
+                                                      
+                                                      // Clear legacy single image field if migrating
+                                                      if(updatedPortfolio[idx].image) delete updatedPortfolio[idx].image;
+                                                      
+                                                      setFormData({ ...formData, portfolio: updatedPortfolio });
+                                                  }
+                                              }} 
+                                          />
+                                          
+                                          {/* Image Count Badge */}
+                                          {project.images?.length > 1 && (
+                                              <div className="absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full backdrop-blur-sm">
+                                                  1/{project.images.length}
+                                              </div>
+                                          )}
                                       </div>
+                                      
                                       <div className="p-3">
                                           {isEditing ? (
                                               <div className="space-y-2">
                                                   <input 
-                                                    value={project.title} 
-                                                    onChange={e => updatePortfolioItem(idx, "title", e.target.value)}
-                                                    className="w-full text-sm font-bold border-b border-gray-300 text-navy bg-white focus:border-navy outline-none bg-transparent"
-                                                    placeholder="Project Title"
+                                                      value={project.title} 
+                                                      onChange={e => updatePortfolioItem(idx, "title", e.target.value)}
+                                                      className="w-full text-sm font-bold border-b border-gray-300 text-navy bg-transparent focus:border-navy outline-none"
+                                                      placeholder="Project Title"
                                                   />
                                                   <input 
-                                                    value={project.link} 
-                                                    onChange={e => updatePortfolioItem(idx, "link", e.target.value)}
-                                                    className="w-full text-xs text-blue-600 border-b border-gray-300 outline-none bg-transparent"
-                                                    placeholder="Link"
+                                                      value={project.link} 
+                                                      onChange={e => updatePortfolioItem(idx, "link", e.target.value)}
+                                                      className="w-full text-xs text-blue-600 border-b border-gray-300 outline-none bg-transparent"
+                                                      placeholder="Link"
                                                   />
                                                   <input 
-                                                    value={project.description} 
-                                                    onChange={e => updatePortfolioItem(idx, "description", e.target.value)}
-                                                    className="w-full text-xs text-gray-500 border-b border-gray-300 outline-none bg-transparent"
-                                                    placeholder="Desc"
+                                                      value={project.description} 
+                                                      onChange={e => updatePortfolioItem(idx, "description", e.target.value)}
+                                                      className="w-full text-xs text-gray-500 border-b border-gray-300 outline-none bg-transparent"
+                                                      placeholder="Desc"
                                                   />
                                               </div>
                                           ) : (
                                               <>
                                                   <h4 className="font-bold text-sm text-navy truncate">{project.title}</h4>
+                                                  <p className="text-xs text-gray-500 line-clamp-2 mb-2">{project.description}</p>
                                                   {project.link && (
-                                                      <a href={project.link} target="_blank" rel="noreferrer" className="text-xs text-blue-600 flex items-center gap-1 mt-1 hover:underline">
+                                                      <a href={project.link} target="_blank" rel="noreferrer" className="text-xs text-blue-600 flex items-center gap-1 hover:underline">
                                                           <Link45deg /> {t.manage.view}
                                                       </a>
                                                   )}
@@ -867,6 +990,7 @@ export default function ProfileContent() {
               )}
           </div>
 
+          {/* CERTIFICATION SECTION */}
           <div className="space-y-6">
               {isFreelancer && (
                   <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
@@ -929,6 +1053,7 @@ export default function ProfileContent() {
                   </div>
               )}
 
+              {/* HOURLY PRICE SECTION */}
               {isFreelancer && (
                   <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                       <h3 className="font-bold text-navy mb-4">{t.profile.hourly}</h3>
@@ -953,6 +1078,92 @@ export default function ProfileContent() {
                   </div>
               )}
 
+              {/* MAIN JOB CATEGORY SECTION */}
+              {isFreelancer && (
+                  <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm overflow-visible relative z-20">
+                      <h3 className="font-bold text-navy mb-2">{t.auth.chooseField || "Main Job Categories"} ({t.auth.chooseFieldMax || "Max 5"})</h3>
+                      <p className="text-xs text-gray-500 mb-4">{t.auth.chooseFieldText || "Select the main areas you specialize in. This helps us recommend the right skills."}</p>
+                      
+                      {isEditing ? (
+                          <div className="relative" ref={catDropdownRef}>
+                              {/* Selected Tags Area */}
+                              <div className="flex flex-wrap gap-2 mb-2">
+                                  {formData.categories.map(cat => (
+                                      <span key={cat} className="bg-navy text-white px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 animate-in fade-in zoom-in">
+                                          {cat}
+                                          <button 
+                                              onClick={() => setFormData(prev => ({...prev, categories: prev.categories.filter(c => c !== cat)}))}
+                                              className="hover:text-red-300"
+                                          >
+                                              <X />
+                                          </button>
+                                      </span>
+                                  ))}
+                              </div>
+
+                              {/* Search Input */}
+                              <div className="relative">
+                                  <input 
+                                      type="text"
+                                      value={catSearch}
+                                      onFocus={() => setIsCatOpen(true)}
+                                      onChange={(e) => { setCatSearch(e.target.value); setIsCatOpen(true); }}
+                                      placeholder={formData.categories.length >= 5 ? "Max categories reached" : "Search categories (e.g. Web Dev)..."}
+                                      disabled={formData.categories.length >= 5}
+                                      className="w-full p-3 pl-10 border border-gray-200 rounded-xl text-sm text-navy bg-white focus:border-navy outline-none"
+                                  />
+                                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                      <Briefcase className="text-gray-400" />
+                                  </div>
+                                  <ChevronDown className={`absolute right-4 top-4 text-xs text-gray-400 transition-transform ${isCatOpen ? 'rotate-180' : ''}`} />
+                              </div>
+
+                              {/* Dropdown List */}
+                              {isCatOpen && formData.categories.length < 5 && (
+                                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto z-50 custom-scrollbar">
+                                      {SPECIFIC_JOB_CATEGORIES
+                                          .filter(cat => 
+                                              cat.toLowerCase().includes(catSearch.toLowerCase()) && 
+                                              !formData.categories.includes(cat)
+                                          )
+                                          .map(cat => (
+                                              <button 
+                                                  key={cat}
+                                                  onClick={() => {
+                                                      setFormData(prev => ({ ...prev, categories: [...prev.categories, cat] }));
+                                                      setCatSearch("");
+                                                      setIsCatOpen(false);
+                                                  }}
+                                                  className="w-full text-left px-4 py-3 text-sm text-navy hover:bg-blue-50 transition-colors border-b border-gray-50 last:border-0"
+                                              >
+                                                  {cat}
+                                              </button>
+                                          ))
+                                      }
+                                      {/* No results state */}
+                                      {SPECIFIC_JOB_CATEGORIES.filter(c => c.toLowerCase().includes(catSearch.toLowerCase())).length === 0 && (
+                                          <div className="p-4 text-xs text-gray-400 text-center italic">No matching categories found</div>
+                                      )}
+                                  </div>
+                              )}
+                          </div>
+                      ) : (
+                          <div className="flex flex-wrap gap-2">
+                              {formData.categories.length > 0 ? (
+                                  formData.categories.map(cat => (
+                                      <span key={cat} className="flex items-center gap-2 bg-gray-50 text-navy px-3 py-1.5 rounded-lg text-sm font-medium border border-gray-200">
+                                          <Briefcase className="text-gold text-xs" /> {cat}
+                                      </span>
+                                  ))
+                              ) : (
+                                  <span className="text-gray-400 italic">No categories selected</span>
+                              )}
+                          </div>
+                      )}
+                  </div>
+              )}
+
+              {/* SKILLS SECTION */}
                 {isFreelancer && (
                     <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                         <h3 className="font-bold text-navy mb-4">{t.profile.skills}</h3>

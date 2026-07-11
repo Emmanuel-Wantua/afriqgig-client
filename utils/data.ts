@@ -114,9 +114,10 @@ export const SUGGESTED_SKILLS = MASTER_SKILL_LIST.slice(0, 20);
 // This list MUST cover every major niche from the Master List above.
 export const SPECIFIC_JOB_CATEGORIES = [
   // Tech & Dev
-  "Web Development", "Mobile App Development", "Software Engineering", "Game Development", 
+  "Web Development", "Frontend Development", "Backend Development", "Full Stack Development", 
+  "Software Development", "Mobile App Development", "Game Development", 
   "DevOps & Cloud", "Cybersecurity", "Blockchain & Web3", "Data Science & Analytics", "AI & Machine Learning",
-  "QA & Testing", "Database Administration", "System Architecture",
+  "QA & Testing", "Database Administration", "System Architecture", "CMS Development",
 
   // Design & Creative
   "Graphic Design", "UI/UX Design", "Motion Graphics", "Video Editing", "Illustration", 
@@ -219,6 +220,98 @@ export const getSuggestedCategory = (input: string): string => {
   if (matches(["audio", "sound", "mix", "master", "music", "podcast", "edit sound", "beat"])) return "Audio Production";
 
   return "";
+};
+
+export const CATEGORY_MAPPING: Record<string, string> = {
+  "Web Development": "Development & IT",
+  "Frontend Development": "Development & IT",
+  "Backend Development": "Development & IT",
+  "Full Stack Development": "Development & IT",
+  "Software Development": "Development & IT",
+  "Mobile App Development": "Development & IT",
+  "Game Development": "Development & IT",
+  "DevOps & Cloud": "Development & IT",
+  "Cybersecurity": "Development & IT",
+  "Blockchain & Web3": "Development & IT",
+  "Data Science & Analytics": "Development & IT",
+  "AI & Machine Learning": "Development & IT",
+  "QA & Testing": "Development & IT",
+  "Database Administration": "Development & IT",
+  "System Architecture": "Development & IT",
+  "CMS Development": "Development & IT",
+
+  "Graphic Design": "Design & Creative",
+  "UI/UX Design": "Design & Creative",
+  "Motion Graphics": "Design & Creative",
+  "Video Editing": "Design & Creative",
+  "Illustration": "Design & Creative",
+  "3D Modeling & Rendering": "Design & Creative",
+  "Photography (Editing)": "Design & Creative",
+  "Brand Identity": "Design & Creative",
+  "Product Design": "Design & Creative",
+  "Fashion Design": "Design & Creative",
+  "Interior Design": "Design & Creative",
+  "Art & Illustration": "Design & Creative",
+
+  "Architectural Design": "Architecture & Engineering",
+  "Civil Engineering": "Architecture & Engineering",
+  "Structural Engineering": "Architecture & Engineering",
+  "Mechanical Engineering": "Architecture & Engineering",
+  "Electrical Engineering": "Architecture & Engineering",
+  "CAD Drafting": "Architecture & Engineering",
+  "Landscape Design": "Architecture & Engineering",
+  "Urban Planning": "Architecture & Engineering", 
+  "BIM Modeling": "Architecture & Engineering",
+  "Industrial Design": "Architecture & Engineering",
+
+  "Content Writing": "Writing & Translation",
+  "Copywriting": "Writing & Translation",
+  "Technical Writing": "Writing & Translation",
+  "Translation": "Writing & Translation",
+  "Transcription": "Writing & Translation",
+  "Editing & Proofreading": "Writing & Translation",
+  "Scriptwriting": "Writing & Translation",
+  "Ghostwriting": "Writing & Translation",
+  "Grant Writing": "Writing & Translation",
+  "Resume & CV Writing": "Writing & Translation",
+  "Creative Writing": "Writing & Translation",
+
+  "Digital Marketing": "Marketing & Sales",
+  "Social Media Management": "Marketing & Sales",
+  "SEO": "Marketing & Sales",
+  "SEM/PPC": "Marketing & Sales",
+  "Email Marketing": "Marketing & Sales",
+  "Public Relations": "Marketing & Sales",
+  "Affiliate Marketing": "Marketing & Sales",
+  "Lead Generation": "Marketing & Sales",
+  "Telemarketing": "Marketing & Sales",
+  "Market Research": "Marketing & Sales",
+  "Sales Strategy": "Marketing & Sales",
+  "Influencer Marketing": "Marketing & Sales",
+
+  "Virtual Assistant": "Admin & Business",
+  "Data Entry": "Admin & Business",
+  "Project Management": "Admin & Business",
+  "Customer Support": "Admin & Business",
+  "Accounting & Finance": "Admin & Business",
+  "HR & Recruiting": "Admin & Business",
+  "Legal Consulting": "Admin & Business",
+  "Business Analysis": "Admin & Business",
+  "Supply Chain & Logistics": "Admin & Business",
+  "Executive Assistance": "Admin & Business",
+
+  "Voice Over": "Audio & Music",
+  "Audio Production": "Audio & Music",
+  "Music Composition": "Audio & Music",
+  "Podcast Production": "Audio & Music",
+  "Sound Design": "Audio & Music",
+
+  "Tutoring": "Education & Coaching",
+  "Coaching": "Education & Coaching",
+  "Consulting": "Education & Coaching",
+  "Research": "Education & Coaching",
+  "Corporate Training": "Education & Coaching",
+  "Life Coaching": "Education & Coaching"
 };
 
 // --- DUMMY EXPORT TO KEEP OLD CODE WORKING ---

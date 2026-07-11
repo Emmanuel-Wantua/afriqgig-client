@@ -59,10 +59,15 @@ export default function WalletContent() {
       setFeedback(null);
       if (!amount || Number(amount) < 100) return setFeedback({ type: "error", message: t.wallet.errorAmount || "Minimum deposit is 100 XAF" });
       
+      // ✅ 1. Open tab immediately (Synchronous)
+      const paymentWindow = window.open('', '_blank');
+      if (paymentWindow) {
+          paymentWindow.document.write('Loading secure payment...'); // Optional loading text
+      }
+
       setIsProcessing(true);
 
       try {
-          // 1. Request Payment Link
           const res = await fetch("/api/wallet/deposit", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -73,25 +78,23 @@ export default function WalletContent() {
 
           if (!res.ok) throw new Error(data.message || "Deposit failed");
 
-          // 2. Redirect to Swychr Payment Page (New Tab)
           if (data.url) {
-              // Show success feedback immediately
-              setFeedback({ type: "success", message: "Payment page opened in a new tab. Please complete the transaction there." });
-              setIsProcessing(false);
-              
-              // Open new tab after a tiny delay to ensure state updates
-              setTimeout(() => {
-                  window.open(data.url, '_blank');
-                  // Optional: Close modal after opening
-                  setShowDepositModal(false); 
-              }, 1000);
+              // ✅ 2. Redirect the already opened tab
+              if (paymentWindow) {
+                  paymentWindow.location.href = data.url;
+              }
+              setFeedback({ type: "success", message: "Payment page opened in a new tab." });
+              setShowDepositModal(false);
           } else {
+              if (paymentWindow) paymentWindow.close();
               throw new Error("No payment link returned");
           }
 
       } catch (error: any) {
-          setIsProcessing(false);
+          if (paymentWindow) paymentWindow.close(); // Close empty tab on error
           setFeedback({ type: "error", message: error.message || t.wallet.errorGeneric });
+      } finally {
+          setIsProcessing(false);
       }
   };
 
@@ -368,7 +371,7 @@ export default function WalletContent() {
       {/* --- WITHDRAW MODAL (UPDATED: Method Selector) --- */}
       {showWithdrawModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/60 backdrop-blur-sm animate-in fade-in">
-              <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
                   {showSuccess ? (
                       <div className="p-10 flex flex-col items-center justify-center text-center animate-in zoom-in">
                           <CheckCircleFill className="text-6xl text-green-500 mb-4 drop-shadow-sm" />
@@ -384,7 +387,7 @@ export default function WalletContent() {
                               <button onClick={() => setShowWithdrawModal(false)} className="text-gray-400 hover:text-red-500"><X className="text-2xl" /></button>
                           </div>
                           
-                          <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                          <div className="p-6 space-y-4 overflow-y-auto">
                               {feedback && (
                                   <div className={`text-xs p-3 rounded-lg flex items-center gap-2 ${feedback.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
                                       {feedback.type === 'error' ? <ExclamationCircleFill /> : <CheckCircleFill />} {feedback.message}

@@ -13,6 +13,26 @@ type Settings = {
   theme: string; 
 };
 
+
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  role: "client" | "freelancer" | "admin";
+  avatar?: string;
+  isVerified?: boolean;
+  balance?: number;
+  
+  // ✅ Fields required for Auto-fill
+  phone?: string;
+  country?: string;
+  address?: string;
+  
+  twoFactorEnabled?: boolean;
+  settings?: Settings;
+  [key: string]: any; // Allow other loose fields
+}
+
 // 2. Context Type Definition
 type LanguageContextType = {
   language: Language;
@@ -67,12 +87,33 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   // 5. Refresh User Logic
   const refreshUser = async () => {
       const storedUser = localStorage.getItem("afriqUser");
+      
       if (storedUser) {
-          const parsed = JSON.parse(storedUser);
-          setUser(parsed);
+          const localUser = JSON.parse(storedUser);
           
-          if (parsed.settings?.language) setLanguage(parsed.settings.language);
-          if (parsed.settings?.currency) setCurrency(parsed.settings.currency); 
+          // 1. Set initial state from local storage (Instant load)
+          setUser(localUser);
+
+          // 2. Fetch fresh data from API to get missing fields (phone, address, etc.)
+          try {
+              const res = await fetch(`/api/users/${localUser._id}`);
+              if (res.ok) {
+                  const dbUser = await res.json();
+                  
+                  // ✅ Merge DB data with Local data (DB takes precedence)
+                  // This ensures phone/address are present even if not in localStorage
+                  const mergedUser = { ...localUser, ...dbUser };
+                  
+                  setUser(mergedUser);
+                  localStorage.setItem("afriqUser", JSON.stringify(mergedUser));
+                  
+                  // Sync Settings
+                  if (mergedUser.settings?.language) setLanguage(mergedUser.settings.language);
+                  if (mergedUser.settings?.currency) setCurrency(mergedUser.settings.currency);
+              }
+          } catch (e) {
+              console.error("Background user refresh failed", e);
+          }
       }
   };
 

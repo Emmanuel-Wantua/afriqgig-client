@@ -6,7 +6,8 @@ import {
     Send, PersonCircle, Search, Globe, Telephone, CameraVideo, 
     ThreeDotsVertical, ArrowLeft, ChatDots, ShieldExclamation, 
     CashCoin, Mic, StopCircle, PlayFill, PauseFill, MicFill,
-    BoxArrowUpRight, X, Ban, Flag, TelephoneX, ImageFill, Reply, ArrowDown
+    BoxArrowUpRight, X, Ban, Flag, TelephoneX, ImageFill, Reply, ArrowDown,
+    PatchCheckFill, StarFill, ZoomIn, Download
 } from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 import { useSearchParams } from "next/navigation";
@@ -15,6 +16,8 @@ import UserBadge from "@/components/UserBadge";
 import PageLoader from "@/components/PageLoader";
 import { useGoogleTranslate } from "@/hooks/useGoogleTranslate";
 import dynamic from 'next/dynamic';
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 const CallModal = dynamic(() => import("@/components/CallModal"), { ssr: false });
 const fetcher = (url: string) => fetch(url).then(res => res.json());
@@ -170,12 +173,69 @@ const MessageBubble = ({ text, isMe }: { text: string, isMe: boolean }) => {
     );
 };
 
-const ImageMessage = ({ src, isMe }: { src: string, isMe: boolean }) => (
-    <div className={`relative rounded-xl overflow-hidden mb-1 border ${isMe ? 'border-white/20' : 'border-gray-200'}`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt="Shared" className="max-w-[240px] max-h-[300px] object-cover cursor-pointer hover:opacity-90 transition-opacity" onClick={() => window.open(src, '_blank')} />
+const ImageMessage = ({ src, isMe, onClick }: { src: string, isMe: boolean, onClick: (src: string) => void }) => (
+    <div className={`relative rounded-xl overflow-hidden mb-1 border ${isMe ? 'border-white/20' : 'border-gray-200'} group`}>
+        <button 
+            onClick={() => onClick(src)}
+            className="relative block cursor-zoom-in"
+        >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={src} alt="Shared" className="max-w-[240px] max-h-[300px] object-cover transition-transform duration-300 group-hover:scale-105" />
+            
+            {/* Zoom Overlay */}
+            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                <ZoomIn className="text-3xl drop-shadow-md" />
+            </div>
+        </button>
     </div>
 );
+
+// --- HELPER: Client-Side Image Compression ---
+const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+        // If not an image or small enough (< 500KB), skip compression
+        if (!file.type.startsWith("image/") || file.size < 500 * 1024) {
+            resolve(file);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+            const img = document.createElement("img");
+            img.src = event.target?.result as string;
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const MAX_WIDTH = 1024; // Resize for Chat (HD is enough)
+                let width = img.width;
+                let height = img.height;
+
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext("2d");
+                ctx?.drawImage(img, 0, 0, width, height);
+
+                canvas.toBlob((blob) => {
+                    if (blob) {
+                        const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                            type: "image/jpeg",
+                            lastModified: Date.now(),
+                        });
+                        resolve(compressedFile);
+                    } else {
+                        resolve(file); // Fallback to original
+                    }
+                }, "image/jpeg", 0.7); // 70% Quality (Good for chat)
+            };
+        };
+    });
+};
 
 // --- MAIN COMPONENT ---
 export default function MessagesContent() {
@@ -221,6 +281,8 @@ export default function MessagesContent() {
   const [incomingCall, setIncomingCall] = useState<{ type: 'audio' | 'video', contact: any } | null>(null);
   const ringtoneRef = useRef<HTMLAudioElement | null>(null);
   const [activeContract, setActiveContract] = useState<any>(null);
+
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   // --- INITIAL LOAD & ROUTING ---
   useEffect(() => {
@@ -496,14 +558,18 @@ export default function MessagesContent() {
   
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files[0]) {
-        const file = e.target.files[0]; 
+        let file = e.target.files[0]; 
         
-        // Reset input so same file can be selected again if needed
+        // Reset input so same file can be selected again
         e.target.value = ""; 
         
         setIsUploadingImage(true);
+
         try {
-            const url = await uploadToCloudinary(file, "compress");
+            // ✅ FIX: Compress before upload
+            file = await compressImage(file);
+
+            const url = await uploadToCloudinary(file);
             if (url) {
                 await fetch("/api/messages", { 
                     method: "POST", 
@@ -519,7 +585,7 @@ export default function MessagesContent() {
                 });
                 mutateChat();
                 mutateInbox();
-                setReplyingTo(null); // Clear reply if any
+                setReplyingTo(null);
             }
         } catch (err) { 
             console.error("Image upload failed", err);
@@ -544,6 +610,29 @@ export default function MessagesContent() {
     if (activeContact) fetchContractInfo();
   }, [user, activeContact]);
 
+  // --- DOWNLOAD HELPER ---
+  const handleDownload = async (url: string) => {
+      try {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+          
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = `afriqgig-image-${Date.now()}.jpg`; // Unique filename
+          document.body.appendChild(link);
+          link.click();
+          
+          // Cleanup
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(blobUrl);
+      } catch (error) {
+          console.error("Download failed", error);
+          // Fallback: Open in new tab if programmatic download fails
+          window.open(url, '_blank');
+      }
+  };
+
 
   if (loading) return <PageLoader />;
 
@@ -566,15 +655,42 @@ export default function MessagesContent() {
             ) : (
                contacts.map(contact => (
                    <div key={contact._id} onClick={() => { setActiveContact(contact); setShowChatOnMobile(true); }} className={`p-4 flex gap-3 hover:bg-gray-50 cursor-pointer transition-colors border-b border-gray-50 last:border-0 ${activeContact?._id === contact._id ? 'bg-blue-50/60' : ''}`}>
+                       
+                       {/* Left Side: Large Avatar */}
                        <div className="relative flex-shrink-0">
-                           <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
-                               {contact.avatar ? <img src={contact.avatar} className="w-full h-full object-cover" alt="Avatar"/> : <PersonCircle className="text-5xl text-gray-300 -ml-1 -mt-1" />}
+                           <div className="p-0.5 bg-gradient-to-br from-gold/50 to-navy/50 rounded-full">
+                               <div className="w-12 h-12 bg-gray-50 border-2 border-white rounded-full overflow-hidden flex items-center justify-center text-navy font-bold text-lg">
+                                   {contact.avatar ? (
+                                       // eslint-disable-next-line @next/next/no-img-element
+                                       <img src={contact.avatar} className="w-full h-full object-cover" alt="Avatar"/>
+                                   ) : (
+                                       contact.name ? contact.name[0].toUpperCase() : <PersonCircle />
+                                   )}
+                               </div>
                            </div>
-                           {contact.unread > 0 && <span className="absolute -top-1 -right-1 bg-red-500 border-2 border-white text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shadow-sm">{contact.unread}</span>}
+                           
+                           {/* Online Dot */}
+                           {contact.isOnline && (
+                               <span className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                           )}
+
+                           {/* Unread Badge */}
+                           {contact.unread > 0 && (
+                               <span className="absolute -top-1 -right-1 bg-red-500 border-2 border-white text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full shadow-sm">
+                                   {contact.unread}
+                               </span>
+                           )}
                        </div>
+                       
+                       {/* Right Side: Details */}
                        <div className="min-w-0 flex-1">
                             <div className="flex justify-between items-start mb-1">
-                                <div className="truncate"><UserBadge user={contact} showRating={false} /></div>
+                                {/* ✅ FIX: Render Name & Badge directly (Removed UserBadge to avoid double avatar) */}
+                                <div className="truncate flex items-center gap-1">
+                                    <span className="font-bold text-navy text-sm">{contact.name}</span>
+                                    {contact.isVerified && <PatchCheckFill className="text-blue-500 text-xs" />}
+                                </div>
+                                
                                 <span className={`text-[10px] ${contact.unread > 0 ? "text-blue-600 font-bold" : "text-gray-400"}`}>{formatSidebarTime(contact.time)}</span>
                             </div>
                             <p className={`text-xs truncate max-w-[180px] ${contact.unread > 0 ? "font-bold text-navy" : "text-gray-500"}`}>{contact.lastMsg}</p>
@@ -597,20 +713,53 @@ export default function MessagesContent() {
                             {activeContact.avatar ? <img src={activeContact.avatar} className="w-full h-full object-cover" alt="Avatar" sizes="40px"/> : <PersonCircle className="text-4xl text-gray-400" />}
                         </div>
                         <div className="min-w-0 flex-1 ml-2">
-                             <div className="flex items-center"><UserBadge user={activeContact} showRating={true} /></div>
-                             <div className="flex items-center gap-1.5 mt-0.5">
-                                 {(() => {
-                                     const statusText = formatLastSeen(activeContact.lastSeen);
-                                     const isOnline = statusText === "Online";
-                                     return (
-                                         <>
-                                             <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`}></span>
-                                             <p className={`text-xs ${isOnline ? 'text-gray-600 font-bold' : 'text-gray-400'}`}>{isOnline ? (t.chat.online || "Active Now") : statusText}</p>
-                                         </>
-                                     );
-                                 })()}
+                        {/* ✅ FIX: Name Truncated to 10 chars + Badges */}
+                        <div className="flex items-center gap-1.5">
+                                 {/* 1. Name (Responsive Truncation) */}
+                                 <Link 
+                                     href={`/profile/${activeContact._id}`} 
+                                     className="font-bold text-navy hover:underline whitespace-nowrap text-sm"
+                                     title={activeContact.name} // Shows full name on hover
+                                 >
+                                     {/* Mobile: 10 chars */}
+                                     <span className="md:hidden">
+                                         {activeContact.name.length > 10 ? `${activeContact.name.substring(0, 10)}...` : activeContact.name}
+                                     </span>
+                                     {/* Desktop: 30 chars */}
+                                     <span className="hidden md:inline">
+                                         {activeContact.name.length > 30 ? `${activeContact.name.substring(0, 30)}...` : activeContact.name}
+                                     </span>
+                                 </Link>
+                                 
+                                 {/* 2. Verified Badge (Blue Check) */}
+                                 {activeContact.isVerified && (
+                                    <PatchCheckFill className="text-blue-500 text-xs flex-shrink-0" title="Verified" />
+                                 )}
+
+                                 {/* 3. Rating Badge */}
+                                 {(activeContact.rating || 0) > 0 && (
+                                    <div className="flex items-center gap-0.5 bg-gold/10 px-1.5 py-0.5 rounded text-[9px] font-bold text-navy border border-gold/20 flex-shrink-0">
+                                        <StarFill className="text-gold text-[8px]" />
+                                        <span>{activeContact.rating?.toFixed(1)}</span>
+                                    </div>
+                                 )}
                              </div>
+
+                        {/* Online Status (Existing) */}
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                            {(() => {
+                                const statusText = formatLastSeen(activeContact.lastSeen);
+                                const isOnline = statusText === "Online";
+                                return (
+                                    <>
+                                        <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`}></span>
+                                        <p className={`text-xs ${isOnline ? 'text-gray-600 font-bold' : 'text-gray-400'}`}>{isOnline ? (t.chat.online || "Active Now") : statusText}</p>
+                                    </>
+                                );
+                            })()}
                         </div>
+                   </div>
+
                    </div>
                    <div className="flex items-center gap-2">
                         <button onClick={() => startCall('audio')} className="p-2.5 text-gray-500 hover:bg-blue-50 rounded-full"><Telephone className="text-lg" /></button>
@@ -707,7 +856,14 @@ export default function MessagesContent() {
                                        )}
 
                                        <div className={`p-3 rounded-2xl text-sm shadow-sm relative ${isMe ? 'bg-navy text-white rounded-br-sm' : 'bg-white text-gray-700 rounded-bl-sm'}`}>
-                                           {msg.type === 'image' ? <ImageMessage src={msg.imageUrl} isMe={isMe} /> : isAudio ? <VoiceMessagePlayer src={audioUrl} isMe={isMe} /> : <MessageBubble text={msg.content} isMe={isMe} />}
+                                           {msg.type === 'image' ? (
+                                                // ✅ FIX: Pass setPreviewImage to the component
+                                                <ImageMessage src={msg.imageUrl} isMe={isMe} onClick={setPreviewImage} />
+                                            ) : isAudio ? (
+                                                <VoiceMessagePlayer src={audioUrl} isMe={isMe} />
+                                            ) : (
+                                                <MessageBubble text={msg.content} isMe={isMe} />
+                                            )}
                                            <div className={`text-[10px] mt-1 flex items-center justify-end gap-2 ${isMe ? 'text-blue-200' : 'text-gray-400'}`}>
                                                 <span>{new Date(msg.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                                                 {isMe && <span>{msg.isRead ? <span className="text-blue-300 text-base">✓✓</span> : "✓"}</span>}
@@ -866,6 +1022,50 @@ export default function MessagesContent() {
               </div>
           </div>
       )}
+
+      {/* ✅ LIGHTBOX MODAL */}
+      <AnimatePresence>
+          {previewImage && (
+              <motion.div 
+                  initial={{ opacity: 0 }} 
+                  animate={{ opacity: 1 }} 
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
+                  onClick={() => setPreviewImage(null)}
+              >
+                  {/* Close Button */}
+                  <button 
+                      onClick={() => setPreviewImage(null)} 
+                      className="absolute top-6 right-6 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-50"
+                  >
+                      <X className="text-3xl" />
+                  </button>
+
+                  <motion.div 
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.9, opacity: 0 }}
+                      className="relative max-w-full max-h-full flex flex-col items-center"
+                      onClick={(e) => e.stopPropagation()}
+                  >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img 
+                          src={previewImage} 
+                          alt="Preview" 
+                          className="max-w-[95vw] max-h-[85vh] object-contain rounded-lg shadow-2xl" 
+                      />
+                      
+                      <button 
+                          onClick={() => handleDownload(previewImage)}
+                          className="mt-4 bg-white/10 text-white px-6 py-2.5 rounded-full text-sm font-bold flex items-center gap-2 hover:bg-white/20 transition-all border border-white/20 backdrop-blur-sm shadow-lg active:scale-95"
+                      >
+                          <Download className="text-lg" /> Download Original
+                      </button>
+                  </motion.div>
+              </motion.div>
+          )}
+      </AnimatePresence>
+      
     </div>
   );
 }

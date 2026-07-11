@@ -5,6 +5,7 @@ import User from "@/models/User";
 import Proposal from "@/models/Proposal"; 
 import { sendEmail } from "@/lib/email";
 
+
 export const dynamic = "force-dynamic";
 
 // GET: Fetch Jobs
@@ -70,9 +71,9 @@ export async function POST(req: Request) {
         console.error(`❌ [Job Post Debug] User NOT found for ID: ${clientId}`);
     }
 
-    if (!client || client.role !== 'client') {
+    if (!client || (client.role !== 'client' && client.role !== 'freelancer')) {
       return NextResponse.json({ 
-          message: `Unauthorized. Role is '${client?.role}', but must be 'client'.` 
+          message: `Unauthorized. Role is '${client?.role}', but must be 'client' or 'freelancer'.` 
       }, { status: 401 });
     }
 
@@ -96,6 +97,56 @@ export async function POST(req: Request) {
             clientId
         );
     }
+
+    // ✅ NEW: Notify Relevant Freelancers (Smart Matching Background Task)
+    (async () => {
+        try {
+            // 1. Extract Keywords from Title (remove common stopwords)
+            const stopwords = ['a', 'an', 'the', 'for', 'in', 'on', 'with', 'and', 'or', 'to', 'of'];
+            const titleKeywords = title
+                .toLowerCase()
+                .split(' ')
+                .filter((word: string) => word.length > 3 && !stopwords.includes(word))
+                .map((word: string) => new RegExp(word, 'i')); // Create regex for partial matches
+
+            // 2. Find Freelancers with Matching Skills or Interests
+            const matchingFreelancers = await User.find({
+                role: 'freelancer',
+                isActive: true,
+                $or: [
+                    { skills: { $in: [new RegExp(category, 'i'), ...titleKeywords] } },
+                    { interests: { $in: [new RegExp(category, 'i')] } }
+                ]
+            }).select('email settings _id name').limit(50); // Limit batch size for safety
+
+            console.log(`📧 [Job Alert] Found ${matchingFreelancers.length} matching freelancers for "${title}"`);
+
+            // 3. Send Emails in Parallel (with individual error handling)
+            await Promise.all(matchingFreelancers.map(async (freelancer) => {
+                // Check user notification preferences
+                if (freelancer.settings?.notifications?.email !== false) {
+                    try {
+                        await sendEmail(
+                            freelancer.email,
+                            "JOB_ALERT",
+                            { 
+                                freelancerName: freelancer.name.split(' ')[0], // First name personalized
+                                jobTitle: title, 
+                                jobId: newJob._id,
+                                jobBudget: `${Number(budget).toLocaleString()} XAF`
+                            },
+                            freelancer._id
+                        );
+                    } catch (e) {
+                        console.error(`Failed to email freelancer ${freelancer._id}`, e);
+                    }
+                }
+            }));
+            
+        } catch (err) {
+            console.error("❌ [Job Alert] Failed to send alerts:", err);
+        }
+    })();
 
     return NextResponse.json(
       { message: "Job posted successfully", jobId: newJob._id },

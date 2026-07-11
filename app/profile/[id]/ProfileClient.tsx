@@ -5,7 +5,8 @@ import {
     GeoAlt, Clock, Briefcase, StarFill, CheckCircleFill, 
     Share, PersonCircle, BoxArrowUpRight, ArrowLeft, 
     Translate, CurrencyExchange, Mortarboard, Award,
-    Whatsapp, Facebook, Twitter, Linkedin, Link45deg, X, Globe
+    Whatsapp, Facebook, Twitter, Linkedin, Link45deg, X, Globe,
+    ChevronLeft, ChevronRight
 } from "react-bootstrap-icons";
 import { useLanguage } from "@/context/LanguageContext";
 import Link from "next/link";
@@ -15,6 +16,7 @@ import PageLoader from "@/components/PageLoader";
 import dynamic from 'next/dynamic';
 import { useGoogleTranslate } from "@/hooks/useGoogleTranslate";
 const HireModal = dynamic(() => import('@/components/HireModal'), { ssr: false });
+import { motion, AnimatePresence } from "framer-motion";
 
 // --- SUB-COMPONENT: TRANSLATABLE TEXT ---
 const TranslatableText = ({ text, className = "" }: { text: string, className?: string }) => {
@@ -70,6 +72,11 @@ export default function ProfileContent({ id }: { id: string }) {
     const [shareData, setShareData] = useState<{ url: string, text: string } | null>(null);
 
     const [showHireModal, setShowHireModal] = useState(false);
+
+    // ✅ LIGHTBOX STATE
+    const [lightboxMedia, setLightboxMedia] = useState<string[]>([]);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
+    const [showLightbox, setShowLightbox] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -129,6 +136,22 @@ export default function ProfileContent({ id }: { id: string }) {
             return;
         }
         setShowHireModal(true);
+    };
+
+    // ✅ LIGHTBOX HANDLERS
+    const openLightbox = (images: string[], index: number = 0) => {
+        if (!images || images.length === 0) return;
+        setLightboxMedia(images);
+        setLightboxIndex(index);
+        setShowLightbox(true);
+        document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => {
+        setShowLightbox(false);
+        setLightboxMedia([]);
+        setLightboxIndex(0);
+        document.body.style.overflow = 'auto';
     };
 
     if (loading) return <PageLoader />;
@@ -340,28 +363,54 @@ export default function ProfileContent({ id }: { id: string }) {
 
                     {profile.portfolio?.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {profile.portfolio.map((item: any, i: number) => (
-                                <div key={i} className="group border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
-                                    <div className="h-40 bg-gray-100 overflow-hidden relative">
-                                        {item.image ? (
-                                            <img src={item.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={item.title} />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                                <Briefcase className="text-4xl" />
-                                            </div>
-                                        )}
+                            {profile.portfolio.map((item: any, i: number) => {
+                                // Consolidate images (support both legacy 'image' and new 'images' array)
+                                const projectImages = item.images && item.images.length > 0 
+                                    ? item.images 
+                                    : (item.image ? [item.image] : []);
+
+                                return (
+                                    <div key={i} className="group border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow">
+                                        <div 
+                                            className="h-40 bg-gray-100 overflow-hidden relative cursor-pointer"
+                                            onClick={() => openLightbox(projectImages, 0)}
+                                        >
+                                            {projectImages.length > 0 ? (
+                                                <>
+                                                    <img src={projectImages[0]} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={item.title} />
+                                                    
+                                                    {/* Multiple Images Indicator */}
+                                                    {projectImages.length > 1 && (
+                                                        <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[10px] font-bold px-2 py-1 rounded-full backdrop-blur-sm">
+                                                            1/{projectImages.length}
+                                                        </div>
+                                                    )}
+                                                    
+                                                    {/* Overlay Icon */}
+                                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                        <div className="bg-white/20 p-2 rounded-full backdrop-blur-md">
+                                                            <BoxArrowUpRight className="text-white text-xl" />
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                    <Briefcase className="text-4xl" />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="p-4">
+                                            <h4 className="font-bold text-navy text-sm mb-1">{item.title}</h4>
+                                            <p className="text-xs text-gray-500 line-clamp-2 mb-3">{item.description}</p>
+                                            {item.link && (
+                                                <a href={item.link} target="_blank" className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                                    {t.manage.view} <BoxArrowUpRight />
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="p-4">
-                                        <h4 className="font-bold text-navy text-sm mb-1">{item.title}</h4>
-                                        <p className="text-xs text-gray-500 line-clamp-2 mb-3">{item.description}</p>
-                                        {item.link && (
-                                            <a href={item.link} target="_blank" className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
-                                                {t.manage.view} <BoxArrowUpRight />
-                                            </a>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     ) : (
                         <div className="text-center py-10 border-2 border-dashed border-gray-100 rounded-xl text-gray-400 text-sm">
@@ -448,6 +497,68 @@ export default function ProfileContent({ id }: { id: string }) {
                 </div>
             </div>
         )}
+
+        {/* ✅ LIGHTBOX MODAL */}
+        <AnimatePresence>
+            {showLightbox && lightboxMedia.length > 0 && (
+                <div className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-xl animate-in fade-in flex items-center justify-center">
+                    
+                    {/* Close Button */}
+                    <button onClick={closeLightbox} className="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-colors z-50">
+                        <X className="text-3xl" />
+                    </button>
+
+                    {/* Navigation Buttons (Desktop) */}
+                    {lightboxMedia.length > 1 && (
+                        <>
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); setLightboxIndex(prev => prev > 0 ? prev - 1 : lightboxMedia.length - 1); }}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full z-20 backdrop-blur-md hidden md:block"
+                            >
+                                <ChevronLeft className="text-3xl" />
+                            </button>
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); setLightboxIndex(prev => (prev + 1) % lightboxMedia.length); }}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full z-20 backdrop-blur-md hidden md:block"
+                            >
+                                <ChevronRight className="text-3xl" />
+                            </button>
+                        </>
+                    )}
+
+                    {/* Media Container */}
+                    <div className="relative w-full h-full flex items-center justify-center p-4">
+                        {/* Blurred Background Layer */}
+                        <div className="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+                            <img 
+                                src={lightboxMedia[lightboxIndex]} 
+                                className="w-full h-full object-cover blur-3xl opacity-40 scale-110" 
+                                alt="blur-bg"
+                            />
+                        </div>
+
+                        {/* Main Image */}
+                        <motion.img 
+                            key={lightboxIndex}
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            transition={{ duration: 0.2 }}
+                            src={lightboxMedia[lightboxIndex]} 
+                            className="relative z-10 max-w-full max-h-[90vh] object-contain shadow-2xl rounded-lg" 
+                            alt={`Project Image ${lightboxIndex + 1}`}
+                        />
+
+                        {/* Pagination Badge */}
+                        {lightboxMedia.length > 1 && (
+                            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 text-white text-xs font-bold px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10 z-20">
+                                {lightboxIndex + 1} / {lightboxMedia.length}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+        </AnimatePresence>
 
     </div>
   );

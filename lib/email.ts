@@ -73,6 +73,10 @@ const emailText: any = {
         withdrawalApprovedSub: "Withdrawal Approved ✅",
         withdrawalApprovedTitle: "Funds on the way!",
         withdrawalApprovedBody: (amount: string) => `Your withdrawal of <strong>${amount}</strong> has been approved and processed.`,
+        jobAlertSub: "New Job Match: {title} 🎯", // Use {title} as placeholder
+        jobAlertTitle: "New Job Matches Your Skills",
+        jobAlertBody: (title: string, budget: string) => `A new job <strong>"${title}"</strong> matching your skills has just been posted with a budget of <strong>${budget}</strong>. Apply now before others do!`,
+        applyNow: "Apply Now",
     },
     fr: {
         hello: "Bonjour",
@@ -127,6 +131,10 @@ const emailText: any = {
         withdrawalApprovedSub: "Retrait Approuvé ✅",
         withdrawalApprovedTitle: "Fonds en route !",
         withdrawalApprovedBody: (amount: string) => `Votre retrait de <strong>${amount}</strong> a été approuvé et traité.`,
+        jobAlertSub: "Nouvelle offre correspondante : {title} 🎯",
+        jobAlertTitle: "Une nouvelle offre correspond à vos compétences",
+        jobAlertBody: (title: string, budget: string) => `Un nouveau job <strong>"${title}"</strong> correspondant à vos compétences vient d'être publié avec un budget de <strong>${budget}</strong>. Postulez maintenant avant les autres !`,
+        applyNow: "Postuler maintenant",
     },
     es: {
         hello: "Hola",
@@ -182,7 +190,11 @@ const emailText: any = {
         viewWallet: "Ver Billetera",
         withdrawalApprovedSub: "Retiro Aprobado ✅",
         withdrawalApprovedTitle: "¡Fondos en camino!",
-        withdrawalApprovedBody: (amount: string) => `Tu retiro de <strong>${amount}</strong> ha sido aprobado y procesado.`
+        withdrawalApprovedBody: (amount: string) => `Tu retiro de <strong>${amount}</strong> ha sido aprobado y procesado.`,
+        jobAlertSub: "Nueva coincidencia de trabajo: {title} 🎯",
+        jobAlertTitle: "Nuevo trabajo coincide con tus habilidades",
+        jobAlertBody: (title: string, budget: string) => `Se ha publicado un nuevo trabajo <strong>"${title}"</strong> que coincide con tus habilidades con un presupuesto de <strong>${budget}</strong>. ¡Postula ahora antes que los demás!`,
+        applyNow: "Postular ahora",
     },
     ar: {
         hello: "مرحباً",
@@ -238,7 +250,11 @@ const emailText: any = {
         viewWallet: "عرض المحفظة",
         withdrawalApprovedSub: "تمت الموافقة على السحب ✅",
         withdrawalApprovedTitle: "الأموال في الطريق!",
-        withdrawalApprovedBody: (amount: string) => `تمت الموافقة على سحبك بمبلغ <strong>${amount}</strong> وتمت معالجته.`
+        withdrawalApprovedBody: (amount: string) => `تمت الموافقة على سحبك بمبلغ <strong>${amount}</strong> وتمت معالجته.`,
+        jobAlertSub: "وظيفة جديدة مطابقة: {title} 🎯",
+        jobAlertTitle: "وظيفة جديدة تطابق مهاراتك",
+        jobAlertBody: (title: string, budget: string) => `تم للتو نشر وظيفة جديدة <strong>"${title}"</strong> تطابق مهاراتك بميزانية قدرها <strong>${budget}</strong>. قدم الآن قبل الآخرين!`,
+        applyNow: "قدم الآن",
     },
     sw: {
         hello: "Hujambo",
@@ -294,7 +310,11 @@ const emailText: any = {
         viewWallet: "Tazama Mkoba",
         withdrawalApprovedSub: "Utoaji Umeidhinishwa ✅",
         withdrawalApprovedTitle: "Pesa Zinafuata!",
-        withdrawalApprovedBody: (amount: string) => `Utoaji wako wa <strong>${amount}</strong> umeidhinishwa na kuchakatwa.`
+        withdrawalApprovedBody: (amount: string) => `Utoaji wako wa <strong>${amount}</strong> umeidhinishwa na kuchakatwa.`,
+        jobAlertSub: "Kazi Mpya Inayolingana: {title} 🎯",
+        jobAlertTitle: "Kazi Mpya Inalingana na Ujuzi Wako",
+        jobAlertBody: (title: string, budget: string) => `Kazi mpya <strong>"${title}"</strong> inayolingana na ujuzi wako imechapishwa hivi punde ikiwa na bajeti ya <strong>${budget}</strong>. Omba sasa kabla ya wengine!`,
+        applyNow: "Omba Sasa",
     },
 };
 
@@ -432,6 +452,13 @@ const templates = {
         return {
             subject: verifyTitle,
             html: wrapHtml(lang, verifyTitle, `<p>${verifyBody}</p>`, data.link, verifyBtn)
+        };
+    },
+    JOB_ALERT: (data: any, lang: string) => {
+        const txt = emailText[lang] || emailText['en'];
+        return {
+            subject: txt.jobAlertSub.replace("{title}", data.jobTitle),
+            html: wrapHtml(lang, txt.jobAlertTitle, `<p>${txt.jobAlertBody(data.jobTitle, data.jobBudget)}</p>`, `${process.env.NEXT_PUBLIC_URL}/dashboard/client/jobs/${data.jobId}`, txt.applyNow)
         };
     },
 };

@@ -169,6 +169,15 @@ export const translations = {
       passwordMismatch: "Passwords do not match",      
       resetSuccessTitle: "Success!",
       resetSuccessDesc: "Your password has been reset. Redirecting to login...",
+      address: "Street Address / City",
+      passLength: "8+ Characters",
+      passUpper: "Uppercase Letter",
+      passLower: "Lowercase Letter",
+      passNumber: "Number",
+      passSpecial: "Special Character",
+      passWeak: "Password is too weak. Please meet all requirements.",
+      chooseFieldMax: "Max 5",
+      chooseFieldText: "Select the main areas you specialize in. This helps us recommend the right skills."
     },
     proposal: {
       applyTitle: "Apply for this Job",
@@ -339,6 +348,7 @@ export const translations = {
       submitDeliverables: "Submit Deliverables",
       uploading: "Uploading...",
       importantInfo: "Important Info",
+      fillAllFields: "Please fill in all fields.",
       compressionWarning: "Images (.jpg, .png) will be compressed for web viewing.",
       zipTip: "To maintain original quality or upload Videos without compression, please archive them in a .ZIP file.",
     },
@@ -764,6 +774,8 @@ export const translations = {
       
       faq4q: "Can I use AfriqGig outside Africa?",
       faq4a: "Yes! Clients from anywhere (USA, Europe, Asia) can hire African talent using credit/debit cards. We handle the currency conversion.",
+      faq5q: "Can freelancers post jobs?",
+      faq5a: "Yes! Freelancers can switch roles to become clients. Simply use the 'Post a Job' button in your dashboard to hire other talent.",
 
       // MISC
       viewAllTalent: "View All Talent",
@@ -808,7 +820,13 @@ export const translations = {
       chatEnded: "Chat Ended",
       experience: "How was your experience?",
       feedback: "Any feedback? (Optional)",
-      sessionExpired: "Session expired. Please restart the chat."
+      sessionExpired: "Session expired. Please restart the chat.",
+      leaveReviewPrompt: "Your session has expired. Please rate your experience.",
+      history: "History",
+      newChat: "New Chat",
+      reopen: "Reopen Chat",
+      chatClosedInactivity: "Chat closed due to inactivity.",
+      checkHistory: "You can reopen this conversation in the History tab.",
     },
   },
   fr: {
@@ -976,6 +994,15 @@ export const translations = {
       passwordMismatch: "Les mots de passe ne correspondent pas",
       resetSuccessTitle: "Succès !",
       resetSuccessDesc: "Votre mot de passe a été réinitialisé. Redirection vers la connexion...",
+      address: "Adresse / Ville",
+      passLength: "8+ caractères",
+      passUpper: "Une majuscule",
+      passLower: "Une minuscule",
+      passNumber: "Un chiffre",
+      passSpecial: "Un caractère spécial",
+      passWeak: "Le mot de passe est trop faible. Veuillez remplir toutes les conditions.",
+      chooseFieldMax: "Max. 5",
+      chooseFieldText: "Sélectionnez les principaux domaines dans lesquels vous vous spécialisez. Cela nous aide à vous recommander les bonnes compétences.",
     },
     proposal: {
       applyTitle: "Postuler à cette offre",
@@ -1146,6 +1173,7 @@ export const translations = {
       submitDeliverables: "Soumettre les Livrables",
       uploading: "Téléchargement...",
       importantInfo: "Informations importantes",
+      fillAllFields: "Veuillez remplir tous les champs.",
       compressionWarning: "Les images (.jpg, .png) seront compressées pour l'affichage web.",
       zipTip: "Pour conserver la qualité originale ou télécharger des vidéos sans compression, veuillez les archiver dans un fichier .ZIP.",
     },
@@ -1571,6 +1599,8 @@ export const translations = {
         
       faq4q: "Puis-je utiliser AfriqGig en dehors de l'Afrique ?",
       faq4a: "Oui ! Les clients de partout (USA, Europe, Asie) peuvent engager des talents africains en utilisant des cartes de crédit/débit. Nous nous occupons de la conversion des devises.",
+      faq5q: "Les freelances peuvent-ils publier des offres d'emploi ?",
+      faq5a: "Oui ! Les freelances peuvent changer de rôle pour devenir clients. Utilisez simplement le bouton 'Publier une offre' dans votre tableau de bord pour embaucher d'autres talents.",
 
       // MISC
       viewAllTalent: "Voir tous les talents",
@@ -1615,7 +1645,13 @@ export const translations = {
       chatEnded: "Chat Terminé",
       experience: "Comment était votre expérience ?",
       feedback: "Un feedback ? (Optionnel)",
-      sessionExpired: "Session expirée. Veuillez redémarrer le chat."
+      sessionExpired: "Session expirée. Veuillez redémarrer le chat.",
+      leaveReviewPrompt: "Votre session a expiré. Veuillez évaluer votre expérience.",
+      history: "Historique",
+      newChat: "Nouvelle discussion",
+      reopen: "Rouvrir la discussion",
+      chatClosedInactivity: "Discussion fermée pour cause d'inactivité.",
+      checkHistory: "Vous pouvez rouvrir cette conversation dans l'onglet Historique.",
     },
   },
   es: {
@@ -1780,6 +1816,15 @@ export const translations = {
       passwordMismatch: "Las contraseñas no coinciden",
       resetSuccessTitle: "¡Éxito!",
       resetSuccessDesc: "Tu contraseña ha sido restablecida. Redirigiendo al inicio de sesión...",
+      address: "Dirección / Ciudad",
+      passLength: "8+ caracteres",
+      passUpper: "Una letra mayúscula",
+      passLower: "Una letra minúscula",
+      passNumber: "Un número",
+      passSpecial: "Un carácter especial",
+      passWeak: "La contraseña es muy débil. Por favor, cumple con todos los requisitos.",
+      chooseFieldMax: "Máx. 5",
+      chooseFieldText: "Selecciona las áreas principales en las que te especializas. Esto nos ayuda a recomendarte las habilidades adecuadas.",
     },
     proposal: {
       applyTitle: "Aplicar a este trabajo",
@@ -1950,6 +1995,7 @@ export const translations = {
       submitDeliverables: "Enviar Entregables",
       uploading: "Subiendo...",
       importantInfo: "Información importante",
+      fillAllFields: "Por favor, completa todos los campos.",
       compressionWarning: "Las imágenes (.jpg, .png) se comprimirán para su visualización web.",
       zipTip: "Para mantener la calidad original o subir videos sin compresión, archívelos en un archivo .ZIP.",
     },
@@ -2375,6 +2421,8 @@ export const translations = {
         
       faq4q: "¿Puedo usar AfriqGig fuera de África?",
       faq4a: "¡Sí! Los clientes de cualquier parte (EE. UU., Europa, Asia) pueden contratar talento africano utilizando tarjetas de crédito/débito. Nosotros nos encargamos de la conversión de divisas.",
+      faq5q: "¿Pueden los freelancers publicar trabajos?",
+      faq5a: "¡Sí! Los freelancers pueden cambiar de rol para convertirse en clientes. Simplemente utiliza el botón 'Publicar un trabajo' en tu panel para contratar a otros talentos.",
 
       // MISC
       viewAllTalent: "Ver todo el talento",
@@ -2419,7 +2467,13 @@ export const translations = {
       chatEnded: "Chat Finalizado",
       experience: "¿Cómo fue tu experiencia?",
       feedback: "¿Algún comentario? (Opcional)",
-      sessionExpired: "Sesión expirada. Por favor, reinicia el chat."
+      sessionExpired: "Sesión expirada. Por favor, reinicia el chat.",
+      leaveReviewPrompt: "Tu sesión ha expirado. Por favor, califica tu experiencia.",
+      history: "Historial",
+      newChat: "Nuevo chat",
+      reopen: "Reabrir chat",
+      chatClosedInactivity: "Chat cerrado por inactividad.",
+      checkHistory: "Puedes reabrir esta conversación en la pestaña Historial.",
     },
   },
   ar: {
@@ -2584,6 +2638,15 @@ export const translations = {
       passwordMismatch: "كلمتا المرور غير متطابقتين",
       resetSuccessTitle: "نجاح!",
       resetSuccessDesc: "تمت إعادة تعيين كلمة المرور الخاصة بك. جارٍ إعادة التوجيه إلى تسجيل الدخول...",
+      address: "العنوان / المدينة",
+      passLength: "8+ أحرف",
+      passUpper: "حرف كبير",
+      passLower: "حرف صغير",
+      passNumber: "رقم",
+      passSpecial: "رمز خاص",
+      passWeak: "كلمة المرور ضعيفة جدًا. يرجى استيفاء جميع المتطلبات.",
+      chooseFieldMax: "5 كحد أقصى",
+      chooseFieldText: "اختر المجالات الرئيسية التي تتخصص فيها. يساعدنا هذا في التوصية بالمهارات المناسبة.",
     },
     proposal: {
       applyTitle: "التقدم لهذه الوظيفة",
@@ -2754,6 +2817,7 @@ export const translations = {
       submitDeliverables: "تسليم الأعمال",
       uploading: "جارٍ الرفع...",
       importantInfo: "معلومات هامة",
+      fillAllFields: "يرجى ملء جميع الحقول.",
       compressionWarning: "سيتم ضغط الصور (.jpg، .png) للعرض على الويب.",
       zipTip: "للحفاظ على الجودة الأصلية أو رفع مقاطع فيديو بدون ضغط، يرجى أرشفتها في ملف .ZIP.",
     },
@@ -3184,6 +3248,8 @@ export const translations = {
         
       faq4q: "هل يمكنني استخدام AfriqGig خارج أفريقيا؟",
       faq4a: "نعم! يمكن للعملاء من أي مكان (الولايات المتحدة الأمريكية، أوروبا، آسيا) توظيف المواهب الأفريقية باستخدام بطاقات الائتمان/الخصم. نحن نتولى تحويل العملات.",
+      faq5q: "هل يمكن للمستقلين نشر وظائف؟",
+      faq5a: "نعم! يمكن للمستقلين تبديل الأدوار ليصبحوا عملاء. ببساطة، استخدم زر 'نشر وظيفة' في لوحة التحكم الخاصة بك لتوظيف مواهب أخرى.",
 
       // MISC
       viewAllTalent: "عرض جميع المواهب"
@@ -3223,7 +3289,13 @@ export const translations = {
       chatEnded: "انتهت الدردشة",
       experience: "كيف كانت تجربتك؟",
       feedback: "أي ملاحظات؟ (اختياري)",
-      sessionExpired: "انتهت الجلسة. الرجاء إعادة تشغيل الدردشة."
+      sessionExpired: "انتهت الجلسة. الرجاء إعادة تشغيل الدردشة.",
+      leaveReviewPrompt: "انتهت صلاحية جلستك. يرجى تقييم تجربتك.",
+      history: "السجل",
+      newChat: "دردشة جديدة",
+      reopen: "إعادة فتح الدردشة",
+      chatClosedInactivity: "تم إغلاق الدردشة بسبب عدم النشاط.",
+      checkHistory: "يمكنك إعادة فتح هذه المحادثة من علامة تبويب السجل.",
     },
   },
   sw: { // Swahili
@@ -3388,6 +3460,15 @@ export const translations = {
       passwordMismatch: "Nywila hazilingani",
       resetSuccessTitle: "Mafanikio!",
       resetSuccessDesc: "Nenosiri lako limewekwa upya. Inakuelekeza kwenye kuingia...",
+      address: "Anwani ya Mtaa / Mji",
+      passLength: "Herufi 8+",
+      passUpper: "Herufi Kubwa",
+      passLower: "Herufi Ndogo",
+      passNumber: "Namba",
+      passSpecial: "Alama Maalum",
+      passWeak: "Nenosiri ni dhaifu mno. Tafadhali zingatia mahitaji yote.",
+      chooseFieldMax: "Upeo wa 5",
+      chooseFieldText: "Chagua maeneo makuu unayobobea. Hii inatusaidia kupendekeza ujuzi sahihi.",
     },
     proposal: {
       applyTitle: "Omba Kazi Hii",
@@ -3558,6 +3639,7 @@ export const translations = {
       submitDeliverables: "Wasilisha Viwasilishwaji",
       uploading: "Inapakia...",
       importantInfo: "Taarifa Muhimu",
+      fillAllFields: "Tafadhali jaza sehemu zote.",
       compressionWarning: "Picha (.jpg, .png) zitabanwa kwa ajili ya kutazamwa kwenye wavuti.",
       zipTip: "Ili kudumisha ubora halisi au kupakia Video bila kubanwa, tafadhali ziweke kwenye faili la .ZIP.",
     },
@@ -3983,6 +4065,8 @@ export const translations = {
         
       faq4q: "Je, ninaweza kutumia AfriqGig nje ya Afrika?",
       faq4a: "Ndiyo! Wateja kutoka popote (Marekani, Ulaya, Asia) wanaweza kuajiri vipaji vya Kiafrika kwa kutumia kadi za mkopo/debit. Tunashughulikia ubadilishaji wa sarafu.",
+      faq5q: "Je, wafanyakazi huru wanaweza kuchapisha kazi?",
+      faq5a: "Ndiyo! Wafanyakazi huru wanaweza kubadilisha majukumu na kuwa wateja. Tumia tu kitufe cha 'Chapisha Kazi' kwenye dashibodi yako ili kuajiri vipaji vingine.",
 
       // MISC
       viewAllTalent: "Tazama Vipaji Vyote",
@@ -4027,7 +4111,13 @@ export const translations = {
       chatEnded: "Gumzo Limemalizika",
       experience: "Uzoefu wako ulikuwaje?",
       feedback: "Maoni yoyote? (Si lazima)",
-      sessionExpired: "Kikao kimeisha. Tafadhali anza gumzo upya."
+      sessionExpired: "Kikao kimeisha. Tafadhali anza gumzo upya.",
+      leaveReviewPrompt: "Kipindi chako kimeisha. Tafadhali kadiria uzoefu wako.",
+      history: "Historia",
+      newChat: "Soga Mpya",
+      reopen: "Fungua tena Soga",
+      chatClosedInactivity: "Soga imefungwa kwa sababu ya kutokuwa na shughuli.",
+      checkHistory: "Unaweza kufungua tena mazungumzo haya kwenye kichupo cha Historia.",
     },
   }
 };

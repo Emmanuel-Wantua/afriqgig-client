@@ -328,7 +328,8 @@ export default function CommunityContent() {
         if (!postToDelete) return;
         setIsDeleting(true);
         try {
-            const res = await fetch(`/api/community/${postToDelete._id}`, { method: "DELETE" });
+            const res = await fetch(`/api/community/${postToDelete._id}?userId=${user._id}`, { method: "DELETE" });
+            
             if (res.ok) {
                 setPosts(prev => prev.filter(p => p._id !== postToDelete._id));
                 setPostToDelete(null); 
@@ -729,9 +730,6 @@ export default function CommunityContent() {
 
                 <div className="p-4 flex justify-between items-start relative">
                     <div className="flex gap-3">
-                        <div className="w-10 h-10 bg-gray-200 rounded-full overflow-hidden flex-shrink-0">
-                            {post.author?.avatar ? <img src={post.author.avatar} className="w-full h-full object-cover" alt="Avatar"/> : <PersonCircle className="text-4xl text-gray-400" />}
-                        </div>
                         <div>
                             <div className="flex items-center gap-2">
                                 {post.author ? <UserBadge user={post.author} showRating={true} /> : <span className="font-bold text-navy text-sm">{t.community.unknownUser}</span>}
@@ -748,9 +746,12 @@ export default function CommunityContent() {
                     
                     {activeMenuId === post._id && (
                         <div className="absolute right-4 top-10 bg-white shadow-xl border border-gray-100 rounded-xl overflow-hidden z-20 w-40 animate-in fade-in zoom-in-95">
-                            {user && post.author?._id === user?._id ? (
+                            {user && (post.author?._id === user?._id || user.role === 'admin') ? (
                                 <>
-                                    <button onClick={() => startEdit(post)} className="w-full text-left px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-50 flex items-center gap-2"><Pencil className="text-blue-500" /> {t.community.edit}</button>
+                                    {post.author?._id === user?._id && (
+                                      <button onClick={() => startEdit(post)} className="w-full text-left px-4 py-3 text-xs font-bold text-gray-600 hover:bg-gray-50 flex items-center gap-2"><Pencil className="text-blue-500" /> {t.community.edit}</button>
+                                    )}
+
                                     <button 
                                         onClick={() => handleDeleteClick(post)} 
                                         className="w-full text-left px-4 py-3 text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-2 border-t border-gray-50"
