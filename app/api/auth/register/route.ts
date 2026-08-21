@@ -13,19 +13,38 @@ function generateReferralCode() {
 
 export async function POST(req: Request) {
   try {
-    const { 
-        name, email, phone, password, 
-        role, country, skills, referralCode 
+    const {
+        name, email, phone, password,
+        role, country, skills, referralCode
     } = await req.json();
 
     if (!name || !email || !password || !role) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 
+    // ✅ Self-signup may only ever create a client or a freelancer. Without
+    // this, anyone could POST `role: "admin"` and mint themselves an admin
+    // account — the User schema's enum happily accepts it.
+    const SELF_SIGNUP_ROLES = ["client", "freelancer"];
+    if (!SELF_SIGNUP_ROLES.includes(role)) {
+      return NextResponse.json({ message: "Invalid role" }, { status: 400 });
+    }
+
+    if (typeof password !== "string" || password.length < 8) {
+      return NextResponse.json(
+        { message: "Password must be at least 8 characters" },
+        { status: 400 }
+      );
+    }
+
+    // Normalise the email so "Ada@Test.com" and "ada@test.com" can't become
+    // two accounts (login looks the address up by exact match).
+    const normalizedEmail = String(email).trim().toLowerCase();
+
     await connectToDB();
 
     // 1. STRICT ANTI-ABUSE CHECKS
-    const existingEmail = await User.findOne({ email });
+    const existingEmail = await User.findOne({ email: normalizedEmail });
     if (existingEmail) {
       return NextResponse.json({ message: "Email already registered" }, { status: 400 });
     }
@@ -48,7 +67,7 @@ export async function POST(req: Request) {
     if (referralCode) {
         const referrer = await User.findOne({ referralCode });
         
-        if (referrer && referrer.email !== email) {
+        if (referrer && referrer.email !== normalizedEmail) {
             console.log(`Referral Valid: ${referrer.name} referred ${name}`);
             referrerId = referrer.referralCode;
             
@@ -85,7 +104,7 @@ export async function POST(req: Request) {
     // 6. Create User
     const newUser = await User.create({
       name,
-      email,
+      email: normalizedEmail,
       phone,
       password: hashedPassword,
       role,

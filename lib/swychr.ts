@@ -4,6 +4,11 @@ import axios from "axios";
 const PAYIN_URL = process.env.SWYCHR_PAYIN_URL || "https://api.accountpe.com/api/payin";
 const PAYOUT_URL = process.env.SWYCHR_PAYOUT_URL || "https://api.accountpe.com/api/payout";
 
+// Shared secret embedded in the webhook callback URL. Swychr doesn't document
+// an HMAC signing header, so we defend the webhook endpoint the portable way:
+// only requests carrying this exact token are trusted.
+const WEBHOOK_SECRET = process.env.SWYCHR_WEBHOOK_SECRET;
+
 const CREDENTIALS = {
   email: process.env.SWYCHR_ADMIN_EMAIL,
   password: process.env.SWYCHR_ADMIN_PASSWORD,
@@ -13,120 +18,159 @@ const CREDENTIALS = {
 let payinToken: string | null = null;
 let payoutToken: string | null = null;
 
+// ✅ Typed error instead of attaching properties to `any`. Callers can
+// `instanceof` check this to tell "Swychr explicitly rejected this" apart
+// from "we genuinely don't know what happened" (timeout/no response).
+export class SwychrPayoutError extends Error {
+  isExplicitRejection: boolean;
+  raw: unknown;
+
+  constructor(message: string, isExplicitRejection: boolean, raw: unknown) {
+    super(message);
+    this.name = "SwychrPayoutError";
+    this.isExplicitRejection = isExplicitRejection;
+    this.raw = raw;
+  }
+}
+
 // --- 1. AUTHENTICATION ENGINE ---
 
-// Login to PAYIN API (For Deposits)
 async function getPayinToken() {
   if (payinToken) return payinToken;
 
   try {
     console.log("🔐 [Swychr] Authenticating Payin API...");
     const { data } = await axios.post(`${PAYIN_URL}/admin/auth`, CREDENTIALS);
-    
+
     if (data.token) {
       payinToken = data.token;
       return data.token;
     }
     throw new Error("No token returned from Payin Auth");
-  } catch (error: any) {
-    console.error("❌ Payin Auth Failed:", error.response?.data || error.message);
+  } catch (error: unknown) {
+    const axiosError = axios.isAxiosError(error) ? error : null;
+    console.error("❌ Payin Auth Failed:", axiosError?.response?.data || (error instanceof Error ? error.message : error));
     throw new Error("Payment System Offline (Auth)");
   }
 }
 
-// Login to PAYOUT API (For Withdrawals)
 async function getPayoutToken() {
   if (payoutToken) return payoutToken;
 
   try {
     console.log("🔐 [Swychr] Authenticating Payout API...");
     const { data } = await axios.post(`${PAYOUT_URL}/admin/auth`, CREDENTIALS);
-    
+
     if (data.token) {
       payoutToken = data.token;
       return data.token;
     }
     throw new Error("No token returned from Payout Auth");
-  } catch (error: any) {
-    console.error("❌ Payout Auth Failed:", error.response?.data || error.message);
+  } catch (error: unknown) {
+    const axiosError = axios.isAxiosError(error) ? error : null;
+    console.error("❌ Payout Auth Failed:", axiosError?.response?.data || (error instanceof Error ? error.message : error));
     throw new Error("Payout System Offline (Auth)");
   }
 }
 
 // --- 2. DEPOSIT FUNCTIONS (PAYIN) ---
 
-export async function createDepositLink(user: any, amount: number, transactionId: string) {
+interface DepositUser {
+  name: string;
+  email: string;
+  phone?: string;
+}
+
+export async function createDepositLink(user: DepositUser, amount: number, transactionId: string) {
   const token = await getPayinToken();
-  
-  // Per agreement: We pass the digital charge (2.5%) to the user
+
+  if (!WEBHOOK_SECRET) {
+    console.warn("⚠️ [Swychr] SWYCHR_WEBHOOK_SECRET is not set — webhook endpoint is unprotected!");
+  }
+
   const payload = {
-    country_code: "CM", // Default to Cameroon (or dynamic based on user.country)
+    country_code: "CM",
     name: user.name,
     email: user.email,
     mobile: user.phone || "",
-    amount: amount, // The amount they WANT to deposit (e.g., 10,000)
+    amount: amount,
     currency: "XAF",
     transaction_id: transactionId,
     description: `AfriqGig Wallet Topup: ${user.email}`,
-    pass_digital_charge: true, // <--- CRITICAL: User pays the fee on top
-    callback_url: `${process.env.NEXT_PUBLIC_URL}/api/webhooks/swychr` // Webhook to confirm payment
+    pass_digital_charge: true,
+    callback_url: `${process.env.NEXT_PUBLIC_URL}/api/webhooks/swychr?secret=${WEBHOOK_SECRET || ""}`
   };
 
   try {
     const { data } = await axios.post(`${PAYIN_URL}/create_payment_links`, payload, {
-      headers: { 
+      headers: {
         Authorization: `Bearer ${token}`,
-        "Idempotency-Key": transactionId // Prevents duplicate charges
+        "Idempotency-Key": transactionId
       }
     });
-    return data.data; // Returns { payment_link, id, ... }
-  } catch (error: any) {
-    console.error("❌ Create Link Failed:", error.response?.data || error.message);
-    // If token expired, reset and retry (simple logic)
-    if (error.response?.status === 401) payinToken = null;
-    throw new Error(error.response?.data?.message || "Failed to create payment link");
+    return data.data;
+  } catch (error: unknown) {
+    const axiosError = axios.isAxiosError(error) ? error : null;
+    console.error("❌ Create Link Failed:", axiosError?.response?.data || (error instanceof Error ? error.message : error));
+    if (axiosError?.response?.status === 401) payinToken = null;
+    const message = (axiosError?.response?.data as { message?: string } | undefined)?.message || "Failed to create payment link";
+    throw new Error(message);
   }
 }
 
 // --- 3. WITHDRAWAL FUNCTIONS (PAYOUT) ---
 
-// Step A: Get Supported Banks/MOMO for a Country
 export async function getPayoutMethods(countryCode: string = "CM") {
   const token = await getPayoutToken();
   try {
     const { data } = await axios.post(`${PAYOUT_URL}/payout_methods`, { country_code: countryCode }, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    return data.data; // Returns payment methods & currency info
-  } catch (error: any) {
-    console.error("❌ Fetch Methods Failed:", error.response?.data);
+    return data.data;
+  } catch (error: unknown) {
+    const axiosError = axios.isAxiosError(error) ? error : null;
+    console.error("❌ Fetch Methods Failed:", axiosError?.response?.data);
     return null;
   }
 }
 
-// Step B: Send Money
-export async function executePayout(
-  details: {
-    country_code: string;
-    beneficiary_name: string;
-    mobile_no: string; // E.164 format
-    amount: number; // Net amount AFTER fees
-    transaction_id: string;
-    payment_method: string; // e.g., 'momo' or 'bank_transfer'
-    bank_code?: string;
-    account_number?: string;
-  }
-) {
+export interface PayoutDetails {
+  country_code: string;
+  beneficiary_name: string;
+  mobile_no: string;
+  amount: number;
+  transaction_id: string;
+  payment_method: string;
+  bank_code?: string;
+  account_number?: string;
+}
+
+export async function executePayout(details: PayoutDetails) {
   const token = await getPayoutToken();
-  
+
   try {
     const { data } = await axios.post(`${PAYOUT_URL}/create_transaction`, details, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // Mirrors the deposit flow — protects against a retried request
+        // (client double-click, or a retry after a dropped connection)
+        // triggering two real payouts for the same withdrawal.
+        "Idempotency-Key": details.transaction_id
+      }
     });
     return data;
-  } catch (error: any) {
-    console.error("❌ Payout Failed:", error.response?.data || error.message);
-    if (error.response?.status === 401) payoutToken = null;
-    throw new Error(error.response?.data?.message || "Payout execution failed");
+  } catch (error: unknown) {
+    const axiosError = axios.isAxiosError(error) ? error : null;
+    console.error("❌ Payout Failed:", axiosError?.response?.data || (error instanceof Error ? error.message : error));
+    if (axiosError?.response?.status === 401) payoutToken = null;
+
+    // `axiosError.response` present = Swychr actually responded with a
+    // rejection body (safe to refund). No `.response` = timeout/dropped
+    // connection/no reply (do NOT assume failure — it may have gone through).
+    const isExplicitRejection = !!axiosError?.response;
+    const message = (axiosError?.response?.data as { message?: string } | undefined)?.message || "Payout execution failed";
+    const raw = axiosError?.response?.data ?? (error instanceof Error ? error.message : error);
+
+    throw new SwychrPayoutError(message, isExplicitRejection, raw);
   }
 }

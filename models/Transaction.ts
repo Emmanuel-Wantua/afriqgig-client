@@ -14,7 +14,10 @@ const TransactionSchema = new mongoose.Schema({
   
   status: {
     type: String,
-    enum: ["pending", "completed", "failed"],
+    // ✅ "processing" added: used when a payout's outcome is unclear (e.g. a
+    // timeout talking to Swychr) and it needs reconciliation before we know
+    // whether to mark it completed or refund it.
+    enum: ["pending", "completed", "failed", "processing"],
     default: "pending"
   },
   

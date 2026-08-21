@@ -18,23 +18,28 @@ export async function POST(req: Request) {
         });
 
         if (!user) {
-            // ✅ FIX: Check if user is ALREADY verified before showing error
-            // Sometimes users click twice. If already verified, just say "Success".
-            const alreadyVerified = await User.findOne({ verificationToken: token }); // Check without expiry logic
-            
-            if (!alreadyVerified) {
-                 // Try finding by ID if token mechanism cleared it? 
-                 // Difficult without session.
-                 return NextResponse.json({ 
-                    message: "Link expired or invalid. Please log in to resend.",
-                    code: "INVALID_TOKEN" 
-                }, { status: 400 });
+            // Users click the link twice, or click it after it expires. Look
+            // the token up again without the expiry constraint to tell those
+            // two cases apart.
+            const tokenHolder = await User.findOne({ verificationToken: token });
+
+            // Already verified — a second click is a success, not an error.
+            if (tokenHolder?.isVerified) {
+                return NextResponse.json(
+                    { message: "Email already verified. Logging you in...", code: "SUCCESS" },
+                    { status: 200 }
+                );
             }
-            
-            // If they exist but logic failed, check isVerified flag
-            if (alreadyVerified.isVerified) {
-                 return NextResponse.json({ message: "Email already verified. Logging you in...", code: "SUCCESS" }, { status: 200 });
-            }
+
+            // Either the token is unknown, or it exists but has expired on a
+            // still-unverified account. Both are dead links.
+            //
+            // This branch used to fall through to `user.isVerified = true`
+            // with `user === null`, throwing a TypeError and returning a 500.
+            return NextResponse.json({
+                message: "Link expired or invalid. Please log in to resend.",
+                code: "INVALID_TOKEN"
+            }, { status: 400 });
         }
 
         // 2. Verify User

@@ -19,6 +19,12 @@ export const translations = {
       disputes: "Disputes",
       users: "Users",
       financials: "Financials",
+      // ✅ NEW: for sidebar entries that previously had no translation key
+      referrals: "Referrals",
+      withdrawals: "Withdrawals",
+      analytics: "Analytics",
+      feedback: "Feedback",
+      contact: "Contact Messages",
       menu: "Menu",
       general: "General",
       settings: "Settings",
@@ -30,7 +36,7 @@ export const translations = {
       mission: "Our Mission",
       login: "Log In",
       join: "Join Now",
-      logout: "Log Out"
+      logout: "Log Out",
     },
     dashboard: {
       welcome: "Welcome",
@@ -67,12 +73,13 @@ export const translations = {
       jobCountMiddle: "potential jobs",
       jobCountEnd: "today.",
       verifyTitle: "Get Verified & Boost Your Credibility",
-      verifyText: "Verified freelancers are 3x more likely to get hired. Upload your ID to get the blue badge and unlock premium jobs.",
+      verifyText:
+        "Verified freelancers are 3x more likely to get hired. Upload your ID to get the blue badge and unlock premium jobs.",
       verifyBtn: "Verify Now",
       adjustFilters: "Try adjusting your filters or check back later.",
       match: "Match",
       applied: "Applied ✓",
-      tryAgain: "Try Again"
+      tryAgain: "Try Again",
     },
     roles: {
       client: "Client",
@@ -106,16 +113,16 @@ export const translations = {
       errorMomo: "Enter valid MOMO number.",
       enable2fa: "Enable 2FA Now",
       // --- NEW KEYS TO ADD ---
-      depositDesc: "Enter amount to deposit via Mobile Money or Card.",      
+      depositDesc: "Enter amount to deposit via Mobile Money or Card.",
       // Error Messages
       errorAmount: "Please enter a valid amount",
       errorFunds: "Insufficient funds in Available Balance",
       errorGeneric: "Transaction failed. Please try again.",
-      
+
       // Security
       securityTitle: "Secure Your Wallet",
-      securityText: "Your account currently uses only a password. Enable Two-Factor Authentication (2FA) to prevent unauthorized withdrawals.",
-      
+      securityText:
+        "Your account currently uses only a password. Enable Two-Factor Authentication (2FA) to prevent unauthorized withdrawals.",
     },
     auth: {
       joinTitle: "Join AfriqGig",
@@ -156,17 +163,19 @@ export const translations = {
       and: "and",
       privacy: "Privacy Policy",
       joinRevolution: "Join the Revolution",
-      joinDesc: "Create your profile, showcase your skills, and start earning on Africa's premier freelance marketplace.",
+      joinDesc:
+        "Create your profile, showcase your skills, and start earning on Africa's premier freelance marketplace.",
       resetDesc: "Enter your email to receive a reset link.",
       sendResetLink: "Send Reset Link",
       backToLogin: "Back to Login",
       checkEmail: "Check your email",
-      resetSent: "If an account exists for this email, we have sent a reset link.",
+      resetSent:
+        "If an account exists for this email, we have sent a reset link.",
       resetPassword: "Set New Password",
       newPassword: "New Password",
       confirmPassword: "Confirm Password",
       updatePassword: "Update Password",
-      passwordMismatch: "Passwords do not match",      
+      passwordMismatch: "Passwords do not match",
       resetSuccessTitle: "Success!",
       resetSuccessDesc: "Your password has been reset. Redirecting to login...",
       address: "Street Address / City",
@@ -177,7 +186,8 @@ export const translations = {
       passSpecial: "Special Character",
       passWeak: "Password is too weak. Please meet all requirements.",
       chooseFieldMax: "Max 5",
-      chooseFieldText: "Select the main areas you specialize in. This helps us recommend the right skills."
+      chooseFieldText:
+        "Select the main areas you specialize in. This helps us recommend the right skills.",
     },
     proposal: {
       applyTitle: "Apply for this Job",
@@ -192,7 +202,7 @@ export const translations = {
       cancel: "Cancel",
       duration: "How long will this take?",
       errorDuration: "Please specify a duration",
-      errorCoverLetter: "A cover letter is required to apply."
+      errorCoverLetter: "A cover letter is required to apply.",
     },
     manage: {
       title: "Manage Jobs",
@@ -236,7 +246,8 @@ export const translations = {
       deleteJob: "Delete Job",
       deleteTitle: "Delete this Job?",
       deleteConfirmStart: "Are you sure you want to delete",
-      deleteConfirmEnd: "This action cannot be undone and all proposals will be lost.",
+      deleteConfirmEnd:
+        "This action cannot be undone and all proposals will be lost.",
       deleteError: "Failed to delete job",
       deleting: "Deleting...",
       delete: "Delete",
@@ -301,12 +312,15 @@ export const translations = {
       markComplete: "Mark as Complete",
       paymentReleased: "Payment Released",
       contractNotFound: "Contract Not Found",
-      contractNotFoundDesc: "It seems a contract hasn't been created for this job yet.",
+      contractNotFoundDesc:
+        "It seems a contract hasn't been created for this job yet.",
       started: "Started",
       paymentProtection: "Payment Protection Active",
-      paymentProtectionDesc: "Funds are held securely in escrow. If you have any issues, use the Report Problem button.",
+      paymentProtectionDesc:
+        "Funds are held securely in escrow. If you have any issues, use the Report Problem button.",
       underReview: "Contract Under Review",
-      underReviewDesc: "A dispute has been filed. Funds are frozen while admin reviews the case.",
+      underReviewDesc:
+        "A dispute has been filed. Funds are frozen while admin reviews the case.",
       originalFiles: "Original Job Files",
       noFiles: "No files uploaded.",
       approved: "APPROVED",
@@ -321,7 +335,8 @@ export const translations = {
       disputeFiled: "Dispute Filed",
       disputeFiledDesc: "Admin has been notified. Funds are frozen.",
       reportProblem: "Report Problem",
-      disputeWarning: "Filing a dispute will immediately freeze the contract funds. An admin will review the chat history and deliverables.",
+      disputeWarning:
+        "Filing a dispute will immediately freeze the contract funds. An admin will review the chat history and deliverables.",
       reason: "Reason",
       reasonNoSubmission: "No Submission / Ghosting",
       reasonPoorQuality: "Poor Quality Work",
@@ -349,15 +364,18 @@ export const translations = {
       uploading: "Uploading...",
       importantInfo: "Important Info",
       fillAllFields: "Please fill in all fields.",
-      compressionWarning: "Images (.jpg, .png) will be compressed for web viewing.",
-      zipTip: "To maintain original quality or upload Videos without compression, please archive them in a .ZIP file.",
+      compressionWarning:
+        "Images (.jpg, .png) will be compressed for web viewing.",
+      zipTip:
+        "To maintain original quality or upload Videos without compression, please archive them in a .ZIP file.",
     },
     chat: {
       title: "Messages",
       search: "Search chats...",
       type: "Type a message...",
       online: "Online",
-      safety: "For your safety, do not share phone numbers or pay outside AfriqGig.",
+      safety:
+        "For your safety, do not share phone numbers or pay outside AfriqGig.",
       noConversations: "No conversations yet.",
       select: "Select a conversation to start chatting",
       new: "New Conversation",
@@ -370,7 +388,8 @@ export const translations = {
       micError: "Microphone access is not supported or denied.",
       sendingVoice: "Sending voice note...",
       securityTitle: "Account Security Warning",
-      securityText: "Do NOT share phone numbers, emails, or external links (WhatsApp, Telegram, etc). Detection will lead to immediate account deactivation. Keep all communication inside AfriqGig for your protection.",
+      securityText:
+        "Do NOT share phone numbers, emails, or external links (WhatsApp, Telegram, etc). Detection will lead to immediate account deactivation. Keep all communication inside AfriqGig for your protection.",
     },
     profile: {
       title: "My Profile",
@@ -434,15 +453,18 @@ export const translations = {
       idVerify: "Identity Verification",
       verified: "Verified",
       verifyFailed: "Verification Failed",
-      verifyFailDesc: "Please upload clear documents matching your profile details.",
-      verifyTip: "Ensure the name on your document matches your profile exactly.",
+      verifyFailDesc:
+        "Please upload clear documents matching your profile details.",
+      verifyTip:
+        "Ensure the name on your document matches your profile exactly.",
       docType: "Document Type",
       frontBack: "Front & Back (if applicable)",
       docsOnFile: "Documents on file",
       submitVerify: "Submit for Verification",
       resubmit: "Resubmit Verification",
       verificationSent: "Verification requested! Documents submitted.",
-      reviewTime: "Your documents are currently under review. This usually takes 24-48 hours.",
+      reviewTime:
+        "Your documents are currently under review. This usually takes 24-48 hours.",
       appLang: "App Language",
       contentLang: "Content Language",
       autoplay: "Autoplay Videos",
@@ -462,45 +484,59 @@ export const translations = {
       onlineStatus: "Show Online Status",
       dataPrivacy: "Data & Privacy",
       dataDownload: "Personal Data Download",
-      dataDownloadDesc: "Get a copy of your data including your profile, job history, and messages.",
+      dataDownloadDesc:
+        "Get a copy of your data including your profile, job history, and messages.",
       archiveRequested: "Archive requested. Check email shortly.",
       requestArchive: "Request Archive",
       allowData: "Allow Data Collection",
       allowDataDesc: "Help us improve AfriqGig by sharing usage data.",
       searchVis: "Search Visibility",
-      searchVisDesc: "Allow search engines (Google, Bing) to index your profile.",
+      searchVisDesc:
+        "Allow search engines (Google, Bing) to index your profile.",
       deactivateTitle: "Deactivate Account?",
-      deactivateDesc: "This will hide your profile and active jobs. You can reactivate by logging in anytime.",
+      deactivateDesc:
+        "This will hide your profile and active jobs. You can reactivate by logging in anytime.",
       typeDelete: "Type",
       toConfirm: "below to confirm",
       scanQr: "Scan QR Code",
-      scanQrDesc: "Open your Authenticator app (Google/Microsoft) and scan this code to enable 2FA.",
+      scanQrDesc:
+        "Open your Authenticator app (Google/Microsoft) and scan this code to enable 2FA.",
       verifyEnable: "Verify & Enable",
       twoFaSuccess: "2FA Enabled Successfully!",
       errorSave: "Failed to save settings.",
       errorNoDoc: "Please upload a valid Identity Document.",
       enterCode: "Enter 6-digit Code",
-      twoFaInvalid: "Invalid Code. Please try again."
+      twoFaInvalid: "Invalid Code. Please try again.",
+      enableHiring: "Also Want to Hire Talent?",
+      enableHiringDesc:
+        "Turn this on to post jobs and hire other freelancers, without creating a separate client account.",
     },
     about: {
       heroTitle: "Empowering African Talent",
-      heroSubtitle: "We are on a mission to bridge the gap between Africa's brightest minds and the global economy, creating a secure ecosystem where trust is the currency.",
+      heroSubtitle:
+        "We are on a mission to bridge the gap between Africa's brightest minds and the global economy, creating a secure ecosystem where trust is the currency.",
       storyTitle: "Our Story",
-      storyText1: "It started with a simple observation: African freelancers are incredibly talented but often excluded from the global market due to payment barriers and trust issues.",
+      storyText1:
+        "It started with a simple observation: African freelancers are incredibly talented but often excluded from the global market due to payment barriers and trust issues.",
       storyText2: "Founded in Cameroon,",
-      storyText3: "was built to solve this. We integrated local payment methods like Mobile Money and built a rigorous verification system to create a platform that feels like home, but works like a global enterprise.",
+      storyText3:
+        "was built to solve this. We integrated local payment methods like Mobile Money and built a rigorous verification system to create a platform that feels like home, but works like a global enterprise.",
       valuesTitle: "Our Core Values",
       value1Title: "Inclusivity",
-      value1Text: "Opportunity should not have borders. We build tools that work for everyone, everywhere, regardless of banking status.",
+      value1Text:
+        "Opportunity should not have borders. We build tools that work for everyone, everywhere, regardless of banking status.",
       value2Title: "Trust",
-      value2Text: "We verify identities and secure payments via Escrow so you can focus on the work, not the risk.",
+      value2Text:
+        "We verify identities and secure payments via Escrow so you can focus on the work, not the risk.",
       value3Title: "Innovation",
-      value3Text: "We constantly evolve our technology to solve the unique challenges of the African market.",
+      value3Text:
+        "We constantly evolve our technology to solve the unique challenges of the African market.",
       backHome: "Back to Home",
     },
     contact: {
       title: "Get in Touch",
-      subtitle: "Have questions about the platform, payments, or partnerships? We're here to help.",
+      subtitle:
+        "Have questions about the platform, payments, or partnerships? We're here to help.",
       emailTitle: "Email Us",
       emailText: "Our friendly team is here to help.",
       visitTitle: "Visit Us",
@@ -516,7 +552,7 @@ export const translations = {
       messagePlaceholder: "How can we help you?",
       sendBtn: "Send Message",
       sending: "Sending...",
-      error: "Failed to send message. Please try again."
+      error: "Failed to send message. Please try again.",
     },
     admin: {
       backToDashboard: "Back to Dashboard",
@@ -544,7 +580,7 @@ export const translations = {
       deadline: "Deadline",
       nextStep: "Next Step",
       postNow: "Post Job Now",
-      
+
       // Errors
       errorTitle: "Please enter a job title.",
       errorCategory: "Please select a category.",
@@ -554,7 +590,7 @@ export const translations = {
       errorDeadline: "Please select a deadline.",
       errorLogin: "Please log in again.",
       errorServer: "Server rejected the request",
-      errorConnection: "Failed to connect to server"
+      errorConnection: "Failed to connect to server",
     },
     notificationsPage: {
       title: "Notifications",
@@ -569,7 +605,8 @@ export const translations = {
       heroSubtitle: "Save on Fees!",
       heroDescStart: "Get",
       heroDescPercent: "50% OFF",
-      heroDescEnd: "our commission fees (you pay 2.5% instead of 5% as a Freelancer, while Client gets 100% off our commission) for every new user who signs up with your link.",
+      heroDescEnd:
+        "our commission fees (you pay 2.5% instead of 5% as a Freelancer, while Client gets 100% off our commission) for every new user who signs up with your link.",
       copy: "Copy",
       copied: "Copied!",
       statFriends: "Friends Referred",
@@ -578,34 +615,42 @@ export const translations = {
       shareSocials: "Share via Socials",
       howItWorks: "How it Works",
       step1Title: "Share your Link",
-      step1Desc: "Copy your unique link above and send it to clients or friends who need work done.",
+      step1Desc:
+        "Copy your unique link above and send it to clients or friends who need work done.",
       step2Title: "They Sign Up",
-      step2Desc: "When they create an account using your link, they automatically get 100% off commission on their first 2 jobs.",
+      step2Desc:
+        "When they create an account using your link, they automatically get 100% off commission on their first 2 jobs.",
       step3Title: "You Earn Discount",
-      step3Desc: "For every active referral, you as a Freelancer also pay 2.5% commission (instead of 5%) on your next job!",
-      shareText: "Join me on AfriqGig! The safest way to hire African talent. Sign up and we both get 50% off commission fees! 🚀",
+      step3Desc:
+        "For every active referral, you as a Freelancer also pay 2.5% commission (instead of 5%) on your next job!",
+      shareText:
+        "Join me on AfriqGig! The safest way to hire African talent. Sign up and we both get 50% off commission fees! 🚀",
       give50get50: "Give 50%, Get 50%!",
       bannerDesc: "Refer a friend. You both save 50% on commission fees.",
       getLink: "Get Link",
       want50: "Want 50% Off?",
-      modalText: "Refer a client or freelancer to AfriqGig. When they sign up, you BOTH get a 50% discount on platform fees for your next job!",
+      modalText:
+        "Refer a client or freelancer to AfriqGig. When they sign up, you BOTH get a 50% discount on platform fees for your next job!",
       inviteNow: "Invite Friends Now",
-      remindLater: "Remind me later"
+      remindLater: "Remind me later",
     },
     support: {
       title: "Help Center",
-      subtitle: "Find answers, get support, and learn how to succeed on AfriqGig.",
+      subtitle:
+        "Find answers, get support, and learn how to succeed on AfriqGig.",
       faqTitle: "FAQs",
       faqDesc: "Instant answers to common questions about payments and hiring.",
       contactTitle: "Contact Support",
-      contactDesc: "Reach out to our team directly for personalized assistance.",
+      contactDesc:
+        "Reach out to our team directly for personalized assistance.",
       communityTitle: "Community Forum",
       communityDesc: "Ask fellow freelancers and clients for tips and advice.",
       stillNeedHelp: "Still need help?",
-      helpText: "Our support team is available Mon-Fri from 8am to 6pm WAT to assist you with any issues.",
+      helpText:
+        "Our support team is available Mon-Fri from 8am to 6pm WAT to assist you with any issues.",
       liveChat: "Chat with us live! Click the chat icon on the bottom right",
       emailSupport: "Email Support",
-      openTicket: "Open a Ticket"
+      openTicket: "Open a Ticket",
     },
     faq: {
       title: "How can we help?",
@@ -657,62 +702,76 @@ export const translations = {
       q16: "Can I change my username?",
       a16: "For security reasons, usernames cannot be changed once created. You can, however, update your display name.",
       q17: "Do you offer refunds?",
-      a17: "Refunds are available for funds held in Escrow that have not been released to a freelancer. Service fees are non-refundable."
+      a17: "Refunds are available for funds held in Escrow that have not been released to a freelancer. Service fees are non-refundable.",
     },
     privacy: {
       title: "Privacy Policy",
       lastUpdated: "Last Updated: December 2025",
-      
+
       section1Title: "1. Information We Collect",
-      section1Text: "We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, contact customer support, or otherwise communicate with us. This information may include: name, email, phone number, postal address, profile picture, payment method, and other information you choose to provide.",
-      
+      section1Text:
+        "We collect information you provide directly to us, such as when you create or modify your account, request on-demand services, contact customer support, or otherwise communicate with us. This information may include: name, email, phone number, postal address, profile picture, payment method, and other information you choose to provide.",
+
       section2Title: "2. How We Use Your Information",
       section2Intro: "We use the information we collect to:",
       section2Li1: "Provide, maintain, and improve our Services.",
-      section2Li2: "Facilitate payments and communications between Clients and Freelancers.",
+      section2Li2:
+        "Facilitate payments and communications between Clients and Freelancers.",
       section2Li3: "Verify your identity and prevent fraud.",
-      section2Li4: "Send you receipts, updates, security alerts, and support messages.",
-      
+      section2Li4:
+        "Send you receipts, updates, security alerts, and support messages.",
+
       section3Title: "3. Data Security",
-      section3Text: "We implement appropriate technical and organizational measures to protect your personal data against unauthorized or unlawful processing, accidental loss, destruction, or damage. However, no internet transmission is 100% secure, and we cannot guarantee absolute security.",
-      
+      section3Text:
+        "We implement appropriate technical and organizational measures to protect your personal data against unauthorized or unlawful processing, accidental loss, destruction, or damage. However, no internet transmission is 100% secure, and we cannot guarantee absolute security.",
+
       section4Title: "4. Your Rights",
-      section4Text: "You have the right to access, correct, or delete your personal data. You can manage your information directly from your Profile Settings. For data deletion requests, please contact our support team."
+      section4Text:
+        "You have the right to access, correct, or delete your personal data. You can manage your information directly from your Profile Settings. For data deletion requests, please contact our support team.",
     },
     terms: {
       title: "Terms of Service",
       lastUpdated: "Last Updated: December 2025",
-      
+
       section1Title: "1. Introduction",
-      section1Text: "Welcome to AfriqGig. By accessing or using our website, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree with any part of these terms, you must not use our platform.",
-      
+      section1Text:
+        "Welcome to AfriqGig. By accessing or using our website, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree with any part of these terms, you must not use our platform.",
+
       section2Title: "2. User Accounts",
-      section2Text: "To access certain features, you must register for an account. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete.",
+      section2Text:
+        "To access certain features, you must register for an account. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete.",
       section2Li1: "You are responsible for safeguarding your password.",
-      section2Li2: "You agree not to disclose your password to any third party.",
-      section2Li3: "You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.",
-      
+      section2Li2:
+        "You agree not to disclose your password to any third party.",
+      section2Li3:
+        "You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account.",
+
       section3Title: "3. Freelancer & Client Obligations",
       section3FreelancerLabel: "Freelancers:",
-      section3FreelancerText: "You agree to perform the work in a professional manner, deliver on time, and respect client confidentiality.",
+      section3FreelancerText:
+        "You agree to perform the work in a professional manner, deliver on time, and respect client confidentiality.",
       section3ClientLabel: "Clients:",
-      section3ClientText: "You agree to pay for work securely via our Escrow system. Payments are held until you approve the work or a dispute is resolved.",
-      
+      section3ClientText:
+        "You agree to pay for work securely via our Escrow system. Payments are held until you approve the work or a dispute is resolved.",
+
       section4Title: "4. Payments & Escrow",
-      section4Text: "AfriqGig uses a secure Escrow system. When a contract is started, the agreed amount is held by AfriqGig. Funds are released to the Freelancer only upon completion of the work to the Client's satisfaction.",
-      
+      section4Text:
+        "AfriqGig uses a secure Escrow system. When a contract is started, the agreed amount is held by AfriqGig. Funds are released to the Freelancer only upon completion of the work to the Client's satisfaction.",
+
       section5Title: "5. Dispute Resolution",
-      section5Text: "In the event of a dispute, users agree to use the AfriqGig Resolution Center. Our support team will review the evidence provided by both parties and make a binding decision based on the contract terms."
+      section5Text:
+        "In the event of a dispute, users agree to use the AfriqGig Resolution Center. Our support team will review the evidence provided by both parties and make a binding decision based on the contract terms.",
     },
     landing: {
       liveBadge: "Live: Freelance Simplified",
       heroTitleStart: "Hire the best",
       heroTitleMiddle: "African Talent",
       heroTitleEnd: "for",
-      heroSubtitle: "Connect with vetted freelancers across the continent. Secure payments via Escrow & Mobile Money. Quality work, guaranteed.",
+      heroSubtitle:
+        "Connect with vetted freelancers across the continent. Secure payments via Escrow & Mobile Money. Quality work, guaranteed.",
       findTalent: "Find Talent",
       findWork: "Find Work",
-      
+
       step1Title: "1. Post or Search",
       step1Text: "Clients post jobs; Freelancers search for work.",
       step2Title: "2. Hire & Verify",
@@ -723,31 +782,41 @@ export const translations = {
       step4Text: "Get paid instantly via MOMO or Bank.",
 
       missionTitle: "Built by Africans, for Africa",
-      missionText1: "We realized that many Africans, especially in Cameroon, find it difficult to use and monetize their skills on Western platforms like Upwork and Fiverr due to payment barriers and intense global competition.",
-      missionText2: "was born to solve this. We are building a platform tailored to the African market—supporting local payment methods (MOMO), bridging trust gaps with ID verification, and connecting clients with diverse, high-quality local talent at affordable prices.",
+      missionText1:
+        "We realized that many Africans, especially in Cameroon, find it difficult to use and monetize their skills on Western platforms like Upwork and Fiverr due to payment barriers and intense global competition.",
+      missionText2:
+        "was born to solve this. We are building a platform tailored to the African market—supporting local payment methods (MOMO), bridging trust gaps with ID verification, and connecting clients with diverse, high-quality local talent at affordable prices.",
 
       topTalentTitle: "Top Rated Talent",
-      topTalentDesc: "Hire professionals verified by us, with proven track records.",
+      topTalentDesc:
+        "Hire professionals verified by us, with proven track records.",
 
       whyUsTitle: "Built for Trust in Africa",
       whyUsDesc: "A secure ecosystem where quality is the standard.",
-      
+
       card1Title: "Secure Escrow Payments",
-      card1Text: "We hold the funds safely until the work is approved. Clients get what they pay for, and freelancers get paid on time. No more scams, just secure transactions.",
-      
+      card1Text:
+        "We hold the funds safely until the work is approved. Clients get what they pay for, and freelancers get paid on time. No more scams, just secure transactions.",
+
       card2Title: "Verified Identities",
       card2Text: "We check IDs so you know exactly who you are working with.",
       card4Title: "Community First",
-      card4Text: "We are more than a marketplace. Join our community forums, share knowledge, get mentorship, and grow your career together with fellow Africans.",
+      card4Text:
+        "We are more than a marketplace. Join our community forums, share knowledge, get mentorship, and grow your career together with fellow Africans.",
 
       testiTitle: "Stories from our Users",
-      testi1: "AfriqGig made it so easy to find a developer who understood my local context. The payment via MOMO was a lifesaver!",
-      testi2: "Finally, a platform that values African freelancers. I got hired within 2 days and the escrow system makes me feel safe.",
-      testi3: "The verification process gave me confidence. I know I'm hiring real people, not bots.",
-      testi4: "As a Cameroonian, getting paid internationally was hard. AfriqGig solved this with local payments.",
+      testi1:
+        "AfriqGig made it so easy to find a developer who understood my local context. The payment via MOMO was a lifesaver!",
+      testi2:
+        "Finally, a platform that values African freelancers. I got hired within 2 days and the escrow system makes me feel safe.",
+      testi3:
+        "The verification process gave me confidence. I know I'm hiring real people, not bots.",
+      testi4:
+        "As a Cameroonian, getting paid internationally was hard. AfriqGig solved this with local payments.",
 
       ctaTitle: "Ready to get started?",
-      ctaText: "Join thousands of freelancers and businesses building the future of Africa today.",
+      ctaText:
+        "Join thousands of freelancers and businesses building the future of Africa today.",
       // ECOSYSTEM SECTION
       ecosystemTitle: "How AfriqGig Works",
       ecosystemDesc: "A secure ecosystem connecting talent and business.",
@@ -761,21 +830,26 @@ export const translations = {
       // FAQ SECTION
       faqTitle: "Frequently Asked Questions",
       faqSubtitle: "Everything you need to know about the platform.",
-      
+
       // FAQ ITEMS (Q&A)
       faq1q: "Is my money safe with AfriqGig?",
-      faq1a: "Absolutely. We use an Escrow system. When you hire a freelancer, your funds are held safely by us. We only release payment to the freelancer once you have approved their work.",
-      
+      faq1a:
+        "Absolutely. We use an Escrow system. When you hire a freelancer, your funds are held safely by us. We only release payment to the freelancer once you have approved their work.",
+
       faq2q: "How do I withdraw my earnings?",
-      faq2a: "We support local withdrawals across 26+ African countries directly to Mobile Money (MTN, Orange, M-Pesa), Bank Transfer, or Virtual Cards.",
-      
+      faq2a:
+        "We support local withdrawals across 26+ African countries directly to Mobile Money (MTN, Orange, M-Pesa), Bank Transfer, or Virtual Cards.",
+
       faq3q: "How does verification work?",
-      faq3a: "To ensure safety, we verify identities using government-issued IDs. This prevents fraud and builds trust. The process takes less than 24 hours.",
-      
+      faq3a:
+        "To ensure safety, we verify identities using government-issued IDs. This prevents fraud and builds trust. The process takes less than 24 hours.",
+
       faq4q: "Can I use AfriqGig outside Africa?",
-      faq4a: "Yes! Clients from anywhere (USA, Europe, Asia) can hire African talent using credit/debit cards. We handle the currency conversion.",
+      faq4a:
+        "Yes! Clients from anywhere (USA, Europe, Asia) can hire African talent using credit/debit cards. We handle the currency conversion.",
       faq5q: "Can freelancers post jobs?",
-      faq5a: "Yes! Freelancers can switch roles to become clients. Simply use the 'Post a Job' button in your dashboard to hire other talent.",
+      faq5a:
+        "Yes! Freelancers can switch roles to become clients. Simply use the 'Post a Job' button in your dashboard to hire other talent.",
 
       // MISC
       viewAllTalent: "View All Talent",
@@ -791,15 +865,17 @@ export const translations = {
       placeholder: "I think the platform should...",
       send: "Send Feedback",
       thankYou: "Thank You!",
-      successMessage: "Your feedback helps us build a better platform for Africa."
+      successMessage:
+        "Your feedback helps us build a better platform for Africa.",
     },
     footer: {
-      slogan: "Freelance Simplified for Africa. Connecting talent with opportunity via secure, local tools.",
+      slogan:
+        "Freelance Simplified for Africa. Connecting talent with opportunity via secure, local tools.",
       platform: "Platform",
       company: "Company",
       suggestFeature: "Suggest Feature",
       rightsReserved: "All rights reserved.",
-      builtWithLove: "Built with love in Africa, for the World."
+      builtWithLove: "Built with love in Africa, for the World.",
     },
     liveChat: {
       support: "Support",
@@ -821,7 +897,8 @@ export const translations = {
       experience: "How was your experience?",
       feedback: "Any feedback? (Optional)",
       sessionExpired: "Session expired. Please restart the chat.",
-      leaveReviewPrompt: "Your session has expired. Please rate your experience.",
+      leaveReviewPrompt:
+        "Your session has expired. Please rate your experience.",
       history: "History",
       newChat: "New Chat",
       reopen: "Reopen Chat",
@@ -833,13 +910,12 @@ export const translations = {
     nav: {
       home: "Accueil",
       search: "Recherche",
-      inbox: "Messagerie",
+      inbox: "Boîte de réception",
       profile: "Profil",
-      dashboard: "Tableau de Bord",
-      jobs: "Mes Missions",
+      dashboard: "Tableau de bord",
+      jobs: "Mes emplois",
       wallet: "Portefeuille",
-      logout: "Se Déconnecter",
-      postJob: "Publier une Offre",
+      postJob: "Publier une offre",
       community: "Communauté",
       findWork: "Trouver du travail",
       contracts: "Contrats",
@@ -847,29 +923,24 @@ export const translations = {
       disputes: "Litiges",
       users: "Utilisateurs",
       financials: "Finances",
+      // ✅ NEW: for sidebar entries that previously had no translation key
+      referrals: "Parrainages",
+      withdrawals: "Retraits",
+      analytics: "Analyses",
+      feedback: "Commentaires",
+      contact: "Messages de contact",
       menu: "Menu",
       general: "Général",
       settings: "Paramètres",
-      support: "Aide et Support",
+      support: "Aide et support",
       about: "À propos de nous",
-      legal: "Mentions légales et confidentialité",
-      escrowDesc: "Fonds actuellement détenus pour les offres actives.",
-      pendingDesc: "Retraits en cours de traitement.",
-      fundsAdded: "Les fonds ont été ajoutés à votre portefeuille.",
-      mobileMoney: "Mobile Money",
-      creditCard: "Carte de crédit",
-      requestSent: "Demande envoyée !",
-      adminReview: "L'administrateur examinera sous peu.",
-      requestPayout: "Demander un paiement",
-      errorAmount: "Entrez un montant valide",
-      errorFunds: "Fonds insuffisants.",
-      errorMomo: "Entrez un numéro MOMO valide.",
-      errorGeneric: "Échec de la transaction. Veuillez réessayer.",
+      legal: "Légal et confidentialité",
       howItWorks: "Comment ça marche",
-      whyUs: "Pourquoi nous choisir",
-      mission: "Notre Mission",
+      whyUs: "Pourquoi nous",
+      mission: "Notre mission",
       login: "Se connecter",
-      join: "Adhérer maintenant",
+      join: "Rejoindre maintenant",
+      logout: "Se déconnecter",
     },
     dashboard: {
       welcome: "Bienvenue",
@@ -906,12 +977,13 @@ export const translations = {
       jobCountMiddle: "opportunités d'emploi",
       jobCountEnd: "aujourd'hui.",
       verifyTitle: "Faites-vous vérifier et augmentez votre crédibilité",
-      verifyText: "Les freelances vérifiés ont 3 fois plus de chances d'être embauchés. Téléchargez votre pièce d'identité pour obtenir le badge bleu et accéder aux emplois premium.",
+      verifyText:
+        "Les freelances vérifiés ont 3 fois plus de chances d'être embauchés. Téléchargez votre pièce d'identité pour obtenir le badge bleu et accéder aux emplois premium.",
       verifyBtn: "Vérifier maintenant",
       adjustFilters: "Essayez d'ajuster vos filtres ou revenez plus tard.",
       match: "Correspondance",
       applied: "Candidaté ✓",
-      tryAgain: "Réessayer"
+      tryAgain: "Réessayer",
     },
     roles: {
       client: "Client",
@@ -938,7 +1010,8 @@ export const translations = {
       requestSent: "Demande envoyée !",
       adminReview: "Un administrateur examinera bientôt.",
       securityTitle: "Protégez votre Portefeuille",
-      securityText: "Votre compte utilise actuellement uniquement un mot de passe. Activez l'authentification à deux facteurs (2FA) pour prévenir les retraits non autorisés.",
+      securityText:
+        "Votre compte utilise actuellement uniquement un mot de passe. Activez l'authentification à deux facteurs (2FA) pour prévenir les retraits non autorisés.",
       enable2fa: "Activer la 2FA maintenant",
       depositDesc: "Entrez le montant à déposer via Mobile Money ou Carte.",
     },
@@ -971,8 +1044,10 @@ export const translations = {
       accountCreated: "Compte créé !",
       signInNew: "Veuillez vous connecter avec vos nouveaux identifiants.",
       invalidCreds: "Identifiants invalides. Veuillez vérifier vos saisies.",
-      unexpectedError: "Une erreur inattendue est survenue. Veuillez réessayer.",
-      errorTerms: "Vous devez accepter les Conditions d'utilisation et la Politique de confidentialité.",
+      unexpectedError:
+        "Une erreur inattendue est survenue. Veuillez réessayer.",
+      errorTerms:
+        "Vous devez accepter les Conditions d'utilisation et la Politique de confidentialité.",
       errorCountry: "Veuillez spécifier votre pays.",
       errorSkills: "Veuillez sélectionner au moins une compétence.",
       selectAtLeastOne: "Sélectionnez au moins 1 compétence",
@@ -981,28 +1056,34 @@ export const translations = {
       and: "et la",
       privacy: "Politique de confidentialité",
       joinRevolution: "Rejoignez la Révolution",
-      joinDesc: "Créez votre profil, présentez vos compétences et commencez à gagner de l'argent sur la première place de marché freelance d'Afrique.",
-      resetDesc: "Entrez votre e-mail pour recevoir un lien de réinitialisation.",
+      joinDesc:
+        "Créez votre profil, présentez vos compétences et commencez à gagner de l'argent sur la première place de marché freelance d'Afrique.",
+      resetDesc:
+        "Entrez votre e-mail pour recevoir un lien de réinitialisation.",
       sendResetLink: "Envoyer le lien de réinitialisation",
       backToLogin: "Retour à la connexion",
       checkEmail: "Vérifiez votre e-mail",
-      resetSent: "Si un compte existe pour cet e-mail, nous avons envoyé un lien de réinitialisation.",
+      resetSent:
+        "Si un compte existe pour cet e-mail, nous avons envoyé un lien de réinitialisation.",
       resetPassword: "Définir un nouveau mot de passe",
       newPassword: "Nouveau mot de passe",
       confirmPassword: "Confirmer le mot de passe",
       updatePassword: "Mettre à jour le mot de passe",
       passwordMismatch: "Les mots de passe ne correspondent pas",
       resetSuccessTitle: "Succès !",
-      resetSuccessDesc: "Votre mot de passe a été réinitialisé. Redirection vers la connexion...",
+      resetSuccessDesc:
+        "Votre mot de passe a été réinitialisé. Redirection vers la connexion...",
       address: "Adresse / Ville",
       passLength: "8+ caractères",
       passUpper: "Une majuscule",
       passLower: "Une minuscule",
       passNumber: "Un chiffre",
       passSpecial: "Un caractère spécial",
-      passWeak: "Le mot de passe est trop faible. Veuillez remplir toutes les conditions.",
+      passWeak:
+        "Le mot de passe est trop faible. Veuillez remplir toutes les conditions.",
       chooseFieldMax: "Max. 5",
-      chooseFieldText: "Sélectionnez les principaux domaines dans lesquels vous vous spécialisez. Cela nous aide à vous recommander les bonnes compétences.",
+      chooseFieldText:
+        "Sélectionnez les principaux domaines dans lesquels vous vous spécialisez. Cela nous aide à vous recommander les bonnes compétences.",
     },
     proposal: {
       applyTitle: "Postuler à cette offre",
@@ -1061,7 +1142,8 @@ export const translations = {
       deleteJob: "Supprimer l'offre",
       deleteTitle: "Supprimer cette offre ?",
       deleteConfirmStart: "Êtes-vous sûr de vouloir supprimer",
-      deleteConfirmEnd: "Cette action est irréversible et toutes les propositions seront perdues.",
+      deleteConfirmEnd:
+        "Cette action est irréversible et toutes les propositions seront perdues.",
       deleteError: "Échec de la suppression de l'offre",
       deleting: "Suppression en cours...",
       delete: "Supprimer",
@@ -1070,11 +1152,13 @@ export const translations = {
       history: "Historique",
       noActiveContracts: "Aucun contrat actif trouvé.",
       noHistory: "Aucun historique complété pour l'instant.",
-      selectJobToInvite: "Sélectionnez une offre ouverte pour inviter ce freelance :",
+      selectJobToInvite:
+        "Sélectionnez une offre ouverte pour inviter ce freelance :",
       noOpenJobs: "Aucune offre ouverte trouvée.",
     },
     community: {
-      placeholder: "Partagez votre travail, posez une question ou publiez un tutoriel...",
+      placeholder:
+        "Partagez votre travail, posez une question ou publiez un tutoriel...",
       photo: "Photo",
       video: "Vidéo",
       post: "Publier",
@@ -1086,7 +1170,8 @@ export const translations = {
       unknownUser: "Utilisateur inconnu",
       member: "Membre",
       title: "Fil d'actualité de la Communauté",
-      subtitle: "Connectez-vous, partagez vos connaissances et grandissez ensemble.",
+      subtitle:
+        "Connectez-vous, partagez vos connaissances et grandissez ensemble.",
       filterAll: "Tous les messages",
       filterForYou: "Pour vous",
       filterMyPosts: "Mes messages",
@@ -1107,7 +1192,8 @@ export const translations = {
       share: "Partager",
       writeComment: "Écrire un commentaire...",
       translating: "Traduction en cours...",
-      errorCategory: "Veuillez sélectionner une catégorie pour votre publication.",
+      errorCategory:
+        "Veuillez sélectionner une catégorie pour votre publication.",
     },
     workspace: {
       title: "Espace de travail",
@@ -1126,12 +1212,15 @@ export const translations = {
       markComplete: "Marquer comme terminé",
       paymentReleased: "Paiement débloqué",
       contractNotFound: "Contrat introuvable",
-      contractNotFoundDesc: "Il semble qu'aucun contrat n'ait encore été créé pour cette offre.",
+      contractNotFoundDesc:
+        "Il semble qu'aucun contrat n'ait encore été créé pour cette offre.",
       started: "Démarré",
       paymentProtection: "Protection des paiements active",
-      paymentProtectionDesc: "Les fonds sont détenus en toute sécurité sous séquestre. Si vous rencontrez des problèmes, utilisez le bouton 'Signaler un problème'.",
+      paymentProtectionDesc:
+        "Les fonds sont détenus en toute sécurité sous séquestre. Si vous rencontrez des problèmes, utilisez le bouton 'Signaler un problème'.",
       underReview: "Contrat en cours de révision",
-      underReviewDesc: "Un litige a été déposé. Les fonds sont gelés pendant que l'administrateur examine le cas.",
+      underReviewDesc:
+        "Un litige a été déposé. Les fonds sont gelés pendant que l'administrateur examine le cas.",
       originalFiles: "Fichiers originaux de l'offre",
       noFiles: "Aucun fichier téléchargé.",
       approved: "APPROUVÉ",
@@ -1146,7 +1235,8 @@ export const translations = {
       disputeFiled: "Litige déposé",
       disputeFiledDesc: "L'administrateur a été notifié. Les fonds sont gelés.",
       reportProblem: "Signaler un problème",
-      disputeWarning: "Le dépôt d'un litige gèlera immédiatement les fonds du contrat. Un administrateur examinera l'historique du chat et les livrables.",
+      disputeWarning:
+        "Le dépôt d'un litige gèlera immédiatement les fonds du contrat. Un administrateur examinera l'historique du chat et les livrables.",
       reason: "Raison",
       reasonNoSubmission: "Aucune soumission / Abandon",
       reasonPoorQuality: "Travail de mauvaise qualité",
@@ -1174,15 +1264,18 @@ export const translations = {
       uploading: "Téléchargement...",
       importantInfo: "Informations importantes",
       fillAllFields: "Veuillez remplir tous les champs.",
-      compressionWarning: "Les images (.jpg, .png) seront compressées pour l'affichage web.",
-      zipTip: "Pour conserver la qualité originale ou télécharger des vidéos sans compression, veuillez les archiver dans un fichier .ZIP.",
+      compressionWarning:
+        "Les images (.jpg, .png) seront compressées pour l'affichage web.",
+      zipTip:
+        "Pour conserver la qualité originale ou télécharger des vidéos sans compression, veuillez les archiver dans un fichier .ZIP.",
     },
     chat: {
       title: "Messages",
       search: "Rechercher...",
       type: "Écrivez un message...",
       online: "En ligne",
-      safety: "Pour votre sécurité, ne partagez pas de numéros de téléphone et ne payez pas en dehors d'AfriqGig.",
+      safety:
+        "Pour votre sécurité, ne partagez pas de numéros de téléphone et ne payez pas en dehors d'AfriqGig.",
       noConversations: "Aucune conversation pour l'instant.",
       select: "Sélectionnez une conversation pour discuter",
       new: "Nouvelle conversation",
@@ -1192,10 +1285,12 @@ export const translations = {
       block: "Bloquer l'utilisateur",
       report: "Signaler",
       safetyTitle: "Avertissement de sécurité",
-      micError: "L'accès au microphone n'est pas pris en charge ou a été refusé.",
+      micError:
+        "L'accès au microphone n'est pas pris en charge ou a été refusé.",
       sendingVoice: "Envoi de la note vocale...",
       securityTitle: "Avertissement de sécurité du compte",
-      securityText: "Ne partagez PAS de numéros de téléphone, d'e-mails ou de liens externes (WhatsApp, Telegram, etc.). Toute détection entraînera la désactivation immédiate du compte. Gardez toutes les communications au sein d'AfriqGig pour votre protection.",
+      securityText:
+        "Ne partagez PAS de numéros de téléphone, d'e-mails ou de liens externes (WhatsApp, Telegram, etc.). Toute détection entraînera la désactivation immédiate du compte. Gardez toutes les communications au sein d'AfriqGig pour votre protection.",
     },
     profile: {
       title: "Mon profil",
@@ -1259,15 +1354,18 @@ export const translations = {
       idVerify: "Vérification d'identité",
       verified: "Vérifié",
       verifyFailed: "Échec de la vérification",
-      verifyFailDesc: "Veuillez télécharger des documents clairs correspondant aux détails de votre profil.",
-      verifyTip: "Assurez-vous que le nom sur votre document correspond exactement à votre profil.",
+      verifyFailDesc:
+        "Veuillez télécharger des documents clairs correspondant aux détails de votre profil.",
+      verifyTip:
+        "Assurez-vous que le nom sur votre document correspond exactement à votre profil.",
       docType: "Type de document",
       frontBack: "Recto et Verso (si applicable)",
       docsOnFile: "Documents au dossier",
       submitVerify: "Soumettre pour vérification",
       resubmit: "Ressoumettre la vérification",
       verificationSent: "Vérification demandée ! Documents soumis.",
-      reviewTime: "Vos documents sont en cours de révision. Cela prend généralement 24 à 48 heures.",
+      reviewTime:
+        "Vos documents sont en cours de révision. Cela prend généralement 24 à 48 heures.",
       appLang: "Langue de l'application",
       contentLang: "Langue du contenu",
       autoplay: "Lecture automatique des vidéos",
@@ -1275,7 +1373,8 @@ export const translations = {
       dangerZone: "Zone de danger",
       deactivate: "Désactiver le compte",
       twoFa: "Authentification à deux facteurs",
-      twoFaDesc: "Ajoutez une couche de sécurité supplémentaire via une application d'authentification.",
+      twoFaDesc:
+        "Ajoutez une couche de sécurité supplémentaire via une application d'authentification.",
       enabled: "Activé",
       setup: "Configurer",
       pushNotif: "Notifications push",
@@ -1287,45 +1386,60 @@ export const translations = {
       onlineStatus: "Afficher le statut en ligne",
       dataPrivacy: "Données et Confidentialité",
       dataDownload: "Téléchargement des données personnelles",
-      dataDownloadDesc: "Obtenez une copie de vos données, y compris votre profil, l'historique des emplois et les messages.",
+      dataDownloadDesc:
+        "Obtenez une copie de vos données, y compris votre profil, l'historique des emplois et les messages.",
       archiveRequested: "Archive demandée. Vérifiez votre e-mail sous peu.",
       requestArchive: "Demander l'archive",
       allowData: "Autoriser la collecte de données",
-      allowDataDesc: "Aidez-nous à améliorer AfriqGig en partageant les données d'utilisation.",
+      allowDataDesc:
+        "Aidez-nous à améliorer AfriqGig en partageant les données d'utilisation.",
       searchVis: "Visibilité dans les moteurs de recherche",
-      searchVisDesc: "Autoriser les moteurs de recherche (Google, Bing) à indexer votre profil.",
+      searchVisDesc:
+        "Autoriser les moteurs de recherche (Google, Bing) à indexer votre profil.",
       deactivateTitle: "Désactiver le compte ?",
-      deactivateDesc: "Ceci masquera votre profil et vos offres actives. Vous pouvez réactiver en vous reconnectant à tout moment.",
+      deactivateDesc:
+        "Ceci masquera votre profil et vos offres actives. Vous pouvez réactiver en vous reconnectant à tout moment.",
       typeDelete: "Tapez",
       toConfirm: "ci-dessous pour confirmer",
       scanQr: "Scanner le code QR",
-      scanQrDesc: "Ouvrez votre application d'authentification (Google/Microsoft) et scannez ce code pour activer la 2FA.",
+      scanQrDesc:
+        "Ouvrez votre application d'authentification (Google/Microsoft) et scannez ce code pour activer la 2FA.",
       verifyEnable: "Vérifier et activer",
       twoFaSuccess: "2FA activée avec succès !",
       errorSave: "Échec de l'enregistrement des paramètres.",
       errorNoDoc: "Veuillez télécharger un document d'identité valide.",
       enterCode: "Entrez le code à 6 chiffres",
       twoFaInvalid: "Code invalide. Veuillez réessayer.",
+      enableHiring: "Vous souhaitez également recruter des talents ?",
+      enableHiringDesc:
+        "Activez cette option pour publier des offres et embaucher d'autres freelances, sans créer de compte client séparé.",
     },
     about: {
       heroTitle: "Soutenir le Talent Africain",
-      heroSubtitle: "Nous avons pour mission de combler le fossé entre les esprits les plus brillants d'Afrique et l'économie mondiale, en créant un écosystème sécurisé où la confiance est la monnaie d'échange.",
+      heroSubtitle:
+        "Nous avons pour mission de combler le fossé entre les esprits les plus brillants d'Afrique et l'économie mondiale, en créant un écosystème sécurisé où la confiance est la monnaie d'échange.",
       storyTitle: "Notre Histoire",
-      storyText1: "Tout a commencé par un simple constat : les freelances africains sont incroyablement talentueux mais souvent exclus du marché mondial en raison des barrières de paiement et des problèmes de confiance.",
+      storyText1:
+        "Tout a commencé par un simple constat : les freelances africains sont incroyablement talentueux mais souvent exclus du marché mondial en raison des barrières de paiement et des problèmes de confiance.",
       storyText2: "Fondé au Cameroun,",
-      storyText3: "a été conçu pour résoudre ce problème. Nous avons intégré des méthodes de paiement locales comme Mobile Money et mis en place un système de vérification rigoureux pour créer une plateforme qui ressemble à la maison, mais fonctionne comme une entreprise mondiale.",
+      storyText3:
+        "a été conçu pour résoudre ce problème. Nous avons intégré des méthodes de paiement locales comme Mobile Money et mis en place un système de vérification rigoureux pour créer une plateforme qui ressemble à la maison, mais fonctionne comme une entreprise mondiale.",
       valuesTitle: "Nos Valeurs Fondamentales",
       value1Title: "Inclusivité",
-      value1Text: "L'opportunité ne devrait pas avoir de frontières. Nous construisons des outils qui fonctionnent pour tout le monde, partout, quel que soit leur statut bancaire.",
+      value1Text:
+        "L'opportunité ne devrait pas avoir de frontières. Nous construisons des outils qui fonctionnent pour tout le monde, partout, quel que soit leur statut bancaire.",
       value2Title: "Confiance",
-      value2Text: "Nous vérifions les identités et sécurisons les paiements via Escrow afin que vous puissiez vous concentrer sur le travail, et non sur le risque.",
+      value2Text:
+        "Nous vérifions les identités et sécurisons les paiements via Escrow afin que vous puissiez vous concentrer sur le travail, et non sur le risque.",
       value3Title: "Innovation",
-      value3Text: "Nous faisons évoluer constamment notre technologie pour résoudre les défis uniques du marché africain.",
+      value3Text:
+        "Nous faisons évoluer constamment notre technologie pour résoudre les défis uniques du marché africain.",
       backHome: "Retour à l'accueil",
     },
     contact: {
       title: "Contactez-nous",
-      subtitle: "Vous avez des questions sur la plateforme, les paiements ou les partenariats ? Nous sommes là pour vous aider.",
+      subtitle:
+        "Vous avez des questions sur la plateforme, les paiements ou les partenariats ? Nous sommes là pour vous aider.",
       emailTitle: "Envoyez-nous un e-mail",
       emailText: "Notre équipe amicale est là pour vous aider.",
       visitTitle: "Venez nous voir",
@@ -1341,7 +1455,7 @@ export const translations = {
       messagePlaceholder: "Comment pouvons-nous vous aider ?",
       sendBtn: "Envoyer le message",
       sending: "Envoi en cours...",
-      error: "Échec de l'envoi du message. Veuillez réessayer."
+      error: "Échec de l'envoi du message. Veuillez réessayer.",
     },
     admin: {
       backToDashboard: "Retour au tableau de bord",
@@ -1352,7 +1466,8 @@ export const translations = {
       title: "Publier une nouvelle offre",
       subtitle: "Trouvez le talent africain parfait pour votre projet.",
       jobTitle: "Titre de l'offre",
-      titlePlaceholder: "Ex: Besoin d'un logo, d'un site web, ou d'un plombier...",
+      titlePlaceholder:
+        "Ex: Besoin d'un logo, d'un site web, ou d'un plombier...",
       titleTip: "Nous suggérerons des catégories basées sur votre titre.",
       category: "Catégorie",
       selectCategory: "Sélectionnez une catégorie spécifique...",
@@ -1368,24 +1483,25 @@ export const translations = {
       deadline: "Date limite",
       nextStep: "Étape suivante",
       postNow: "Publier l'offre maintenant",
-      
+
       // Errors
       errorTitle: "Veuillez entrer un titre pour l'offre.",
       errorCategory: "Veuillez sélectionner une catégorie.",
       errorDesc: "Veuillez entrer une description de l'offre.",
-      errorDescShort: "La description est trop courte. Veuillez ajouter plus de détails.",
+      errorDescShort:
+        "La description est trop courte. Veuillez ajouter plus de détails.",
       errorBudget: "Veuillez entrer votre budget.",
       errorDeadline: "Veuillez sélectionner une date limite.",
       errorLogin: "Veuillez vous reconnecter.",
       errorServer: "Le serveur a rejeté la demande",
-      errorConnection: "Échec de la connexion au serveur"
+      errorConnection: "Échec de la connexion au serveur",
     },
     notificationsPage: {
       title: "Notifications",
       subtitle: "Restez informé de votre activité.",
       markAllRead: "Marquer tout comme lu",
       markRead: "Marquer comme lu",
-      noNotifications: "Aucune notification pour l'instant."
+      noNotifications: "Aucune notification pour l'instant.",
     },
     referrals: {
       limitedOffer: "OFFRE À DURÉE LIMITÉE",
@@ -1393,7 +1509,8 @@ export const translations = {
       heroSubtitle: "Économisez sur les frais !",
       heroDescStart: "Obtenez",
       heroDescPercent: "50 % DE RÉDUCTION",
-      heroDescEnd: "sur nos frais de commission (vous payez 2,5 % au lieu de 5 % en tant que Freelance, tandis que le Client bénéficie de 100 % de réduction sur notre commission) pour chaque nouvel utilisateur qui s'inscrit avec votre lien.",
+      heroDescEnd:
+        "sur nos frais de commission (vous payez 2,5 % au lieu de 5 % en tant que Freelance, tandis que le Client bénéficie de 100 % de réduction sur notre commission) pour chaque nouvel utilisateur qui s'inscrit avec votre lien.",
       copy: "Copier",
       copied: "Copié !",
       statFriends: "Amis parrainés",
@@ -1402,39 +1519,53 @@ export const translations = {
       shareSocials: "Partager sur les réseaux sociaux",
       howItWorks: "Comment ça marche",
       step1Title: "Partagez votre lien",
-      step1Desc: "Copiez votre lien unique ci-dessus et envoyez-le à des clients ou amis qui ont besoin de travail.",
+      step1Desc:
+        "Copiez votre lien unique ci-dessus et envoyez-le à des clients ou amis qui ont besoin de travail.",
       step2Title: "Ils s'inscrivent",
-      step2Desc: "Lorsqu'ils créent un compte en utilisant votre lien, ils bénéficient automatiquement de 100 % de réduction sur la commission de leurs 2 premières offres.",
+      step2Desc:
+        "Lorsqu'ils créent un compte en utilisant votre lien, ils bénéficient automatiquement de 100 % de réduction sur la commission de leurs 2 premières offres.",
       step3Title: "Vous gagnez une réduction",
-      step3Desc: "Pour chaque parrainage actif, vous en tant que Freelance payez également 2,5 % de commission (au lieu de 5 %) sur votre prochaine offre !",
-      shareText: "Rejoignez-moi sur AfriqGig ! Le moyen le plus sûr d'embaucher des talents africains. Inscrivez-vous et nous obtenons tous les deux 50 % de réduction sur les frais de commission ! 🚀",
+      step3Desc:
+        "Pour chaque parrainage actif, vous en tant que Freelance payez également 2,5 % de commission (au lieu de 5 %) sur votre prochaine offre !",
+      shareText:
+        "Rejoignez-moi sur AfriqGig ! Le moyen le plus sûr d'embaucher des talents africains. Inscrivez-vous et nous obtenons tous les deux 50 % de réduction sur les frais de commission ! 🚀",
       give50get50: "Donnez 50 %, Recevez 50 % !",
-      bannerDesc: "Parrainez un ami. Vous économisez tous les deux 50 % sur les frais de commission.",
+      bannerDesc:
+        "Parrainez un ami. Vous économisez tous les deux 50 % sur les frais de commission.",
       getLink: "Obtenir le lien",
       want50: "Vous voulez 50 % de réduction ?",
-      modalText: "Parrainez un client ou un freelance sur AfriqGig. Lorsqu'ils s'inscrivent, vous bénéficiez TOUS DEUX d'une réduction de 50 % sur les frais de plateforme pour votre prochaine offre !",
+      modalText:
+        "Parrainez un client ou un freelance sur AfriqGig. Lorsqu'ils s'inscrivent, vous bénéficiez TOUS DEUX d'une réduction de 50 % sur les frais de plateforme pour votre prochaine offre !",
       inviteNow: "Inviter des amis maintenant",
-      remindLater: "Me le rappeler plus tard"
+      remindLater: "Me le rappeler plus tard",
     },
     support: {
       title: "Centre d'aide",
-      subtitle: "Trouvez des réponses, obtenez de l'aide et apprenez à réussir sur AfriqGig.",
+      subtitle:
+        "Trouvez des réponses, obtenez de l'aide et apprenez à réussir sur AfriqGig.",
       faqTitle: "FAQ",
-      faqDesc: "Réponses instantanées aux questions courantes sur les paiements et le recrutement.",
+      faqDesc:
+        "Réponses instantanées aux questions courantes sur les paiements et le recrutement.",
       contactTitle: "Contacter le support",
-      contactDesc: "Contactez notre équipe directement pour une assistance personnalisée.",
+      contactDesc:
+        "Contactez notre équipe directement pour une assistance personnalisée.",
       communityTitle: "Forum communautaire",
-      communityDesc: "Demandez conseil et astuces à d'autres freelances et clients.",
+      communityDesc:
+        "Demandez conseil et astuces à d'autres freelances et clients.",
       stillNeedHelp: "Toujours besoin d'aide ?",
-      helpText: "Notre équipe d'assistance est disponible du lundi au vendredi de 8h à 18h WAT pour vous aider avec tout problème.",
-      liveChat: "Besoin d'aide ? Discutez avec nous en direct ! Cliquez sur l'icône de chat en bas à droite.",
+      helpText:
+        "Notre équipe d'assistance est disponible du lundi au vendredi de 8h à 18h WAT pour vous aider avec tout problème.",
+      liveChat:
+        "Besoin d'aide ? Discutez avec nous en direct ! Cliquez sur l'icône de chat en bas à droite.",
       emailSupport: "Assistance par e-mail",
-      openTicket: "Ouvrir un ticket"
+      openTicket: "Ouvrir un ticket",
     },
     faq: {
       title: "Comment pouvons-nous vous aider ?",
-      subtitle: "Recherchez dans notre base de connaissances ou parcourez les catégories ci-dessous.",
-      searchPlaceholder: "Rechercher des réponses (ex. 'paiement', 'vérification')...",
+      subtitle:
+        "Recherchez dans notre base de connaissances ou parcourez les catégories ci-dessous.",
+      searchPlaceholder:
+        "Rechercher des réponses (ex. 'paiement', 'vérification')...",
       catGeneral: "Général",
       catFreelancers: "Pour les Freelances",
       catClients: "Pour les Clients",
@@ -1481,150 +1612,192 @@ export const translations = {
       q16: "Puis-je changer mon nom d'utilisateur ?",
       a16: "Pour des raisons de sécurité, les noms d'utilisateur ne peuvent pas être modifiés une fois créés. Vous pouvez cependant mettre à jour votre nom d'affichage.",
       q17: "Offrez-vous des remboursements ?",
-      a17: "Les remboursements sont disponibles pour les fonds détenus en Séquestre qui n'ont pas été débloqués à un freelance. Les frais de service ne sont pas remboursables."
+      a17: "Les remboursements sont disponibles pour les fonds détenus en Séquestre qui n'ont pas été débloqués à un freelance. Les frais de service ne sont pas remboursables.",
     },
     privacy: {
       title: "Politique de Confidentialité",
       lastUpdated: "Dernière mise à jour : décembre 2025",
-      
+
       section1Title: "1. Informations que nous collectons",
-      section1Text: "Nous collectons les informations que vous nous fournissez directement, notamment lorsque vous créez ou modifiez votre compte, demandez des services à la demande, contactez le support client, ou communiquez d'une autre manière avec nous. Ces informations peuvent inclure : nom, e-mail, numéro de téléphone, adresse postale, photo de profil, méthode de paiement, et autres informations que vous choisissez de fournir.",
-      
+      section1Text:
+        "Nous collectons les informations que vous nous fournissez directement, notamment lorsque vous créez ou modifiez votre compte, demandez des services à la demande, contactez le support client, ou communiquez d'une autre manière avec nous. Ces informations peuvent inclure : nom, e-mail, numéro de téléphone, adresse postale, photo de profil, méthode de paiement, et autres informations que vous choisissez de fournir.",
+
       section2Title: "2. Comment nous utilisons vos informations",
-      section2Intro: "Nous utilisons les informations que nous collectons pour :",
+      section2Intro:
+        "Nous utilisons les informations que nous collectons pour :",
       section2Li1: "Fournir, maintenir et améliorer nos Services.",
-      section2Li2: "Faciliter les paiements et les communications entre les Clients et les Freelances.",
+      section2Li2:
+        "Faciliter les paiements et les communications entre les Clients et les Freelances.",
       section2Li3: "Vérifier votre identité et prévenir la fraude.",
-      section2Li4: "Vous envoyer des reçus, des mises à jour, des alertes de sécurité et des messages de support.",
-      
+      section2Li4:
+        "Vous envoyer des reçus, des mises à jour, des alertes de sécurité et des messages de support.",
+
       section3Title: "3. Sécurité des données",
-      section3Text: "Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données personnelles contre tout traitement non autorisé ou illégal, perte accidentelle, destruction ou dommage. Cependant, aucune transmission par Internet n'est sécurisée à 100 %, et nous ne pouvons garantir une sécurité absolue.",
-      
+      section3Text:
+        "Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données personnelles contre tout traitement non autorisé ou illégal, perte accidentelle, destruction ou dommage. Cependant, aucune transmission par Internet n'est sécurisée à 100 %, et nous ne pouvons garantir une sécurité absolue.",
+
       section4Title: "4. Vos droits",
-      section4Text: "Vous avez le droit d'accéder, de corriger ou de supprimer vos données personnelles. Vous pouvez gérer vos informations directement depuis vos Paramètres de profil. Pour les demandes de suppression de données, veuillez contacter notre équipe de support."
+      section4Text:
+        "Vous avez le droit d'accéder, de corriger ou de supprimer vos données personnelles. Vous pouvez gérer vos informations directement depuis vos Paramètres de profil. Pour les demandes de suppression de données, veuillez contacter notre équipe de support.",
     },
     terms: {
       title: "Conditions d'utilisation",
       lastUpdated: "Dernière mise à jour : décembre 2025",
-      
+
       section1Title: "1. Introduction",
-      section1Text: "Bienvenue sur AfriqGig. En accédant à notre site web ou en l'utilisant, vous acceptez d'être lié par les présentes Conditions d'utilisation et notre Politique de confidentialité. Si vous n'acceptez aucune partie de ces conditions, vous ne devez pas utiliser notre plateforme.",
-      
+      section1Text:
+        "Bienvenue sur AfriqGig. En accédant à notre site web ou en l'utilisant, vous acceptez d'être lié par les présentes Conditions d'utilisation et notre Politique de confidentialité. Si vous n'acceptez aucune partie de ces conditions, vous ne devez pas utiliser notre plateforme.",
+
       section2Title: "2. Comptes d'utilisateur",
-      section2Text: "Pour accéder à certaines fonctionnalités, vous devez vous inscrire pour un compte. Vous acceptez de fournir des informations exactes, à jour et complètes lors du processus d'inscription et de mettre à jour ces informations pour qu'elles restent exactes, à jour et complètes.",
-      section2Li1: "Vous êtes responsable de la sécurité de votre mot de passe.",
-      section2Li2: "Vous vous engagez à ne pas divulguer votre mot de passe à un tiers.",
-      section2Li3: "Vous devez nous informer immédiatement dès que vous avez connaissance de toute violation de la sécurité ou de toute utilisation non autorisée de votre compte.",
-      
+      section2Text:
+        "Pour accéder à certaines fonctionnalités, vous devez vous inscrire pour un compte. Vous acceptez de fournir des informations exactes, à jour et complètes lors du processus d'inscription et de mettre à jour ces informations pour qu'elles restent exactes, à jour et complètes.",
+      section2Li1:
+        "Vous êtes responsable de la sécurité de votre mot de passe.",
+      section2Li2:
+        "Vous vous engagez à ne pas divulguer votre mot de passe à un tiers.",
+      section2Li3:
+        "Vous devez nous informer immédiatement dès que vous avez connaissance de toute violation de la sécurité ou de toute utilisation non autorisée de votre compte.",
+
       section3Title: "3. Obligations du Freelance et du Client",
       section3FreelancerLabel: "Freelances :",
-      section3FreelancerText: "Vous vous engagez à effectuer le travail de manière professionnelle, à livrer dans les délais et à respecter la confidentialité du client.",
+      section3FreelancerText:
+        "Vous vous engagez à effectuer le travail de manière professionnelle, à livrer dans les délais et à respecter la confidentialité du client.",
       section3ClientLabel: "Clients :",
-      section3ClientText: "Vous vous engagez à payer le travail en toute sécurité via notre système de Séquestre. Les fonds sont retenus jusqu'à ce que vous approuviez le travail ou qu'un litige soit résolu.",
-      
+      section3ClientText:
+        "Vous vous engagez à payer le travail en toute sécurité via notre système de Séquestre. Les fonds sont retenus jusqu'à ce que vous approuviez le travail ou qu'un litige soit résolu.",
+
       section4Title: "4. Paiements et Séquestre",
-      section4Text: "AfriqGig utilise un système de Séquestre sécurisé. Lorsqu'un contrat est démarré, le montant convenu est détenu par AfriqGig. Les fonds sont débloqués au Freelance uniquement après l'achèvement du travail à la satisfaction du Client.",
-      
+      section4Text:
+        "AfriqGig utilise un système de Séquestre sécurisé. Lorsqu'un contrat est démarré, le montant convenu est détenu par AfriqGig. Les fonds sont débloqués au Freelance uniquement après l'achèvement du travail à la satisfaction du Client.",
+
       section5Title: "5. Résolution des Litiges",
-      section5Text: "En cas de litige, les utilisateurs acceptent d'utiliser le Centre de Résolution AfriqGig. Notre équipe de support examinera les preuves fournies par les deux parties et prendra une décision contraignante basée sur les termes du contrat."
+      section5Text:
+        "En cas de litige, les utilisateurs acceptent d'utiliser le Centre de Résolution AfriqGig. Notre équipe de support examinera les preuves fournies par les deux parties et prendra une décision contraignante basée sur les termes du contrat.",
     },
     landing: {
       liveBadge: "En direct : le Freelance Simplifié",
       heroTitleStart: "Engagez le meilleur",
       heroTitleMiddle: "Talent Africain",
       heroTitleEnd: "pour vos projets",
-      heroSubtitle: "Connectez-vous avec des freelances vérifiés à travers le continent. Paiements sécurisés via Séquestre & Mobile Money. Travail de qualité, garanti.",
+      heroSubtitle:
+        "Connectez-vous avec des freelances vérifiés à travers le continent. Paiements sécurisés via Séquestre & Mobile Money. Travail de qualité, garanti.",
       findTalent: "Trouver des Talents",
       findWork: "Trouver du Travail",
-      
+
       step1Title: "1. Publiez ou Recherchez",
-      step1Text: "Les clients publient des offres ; les Freelances recherchent du travail.",
+      step1Text:
+        "Les clients publient des offres ; les Freelances recherchent du travail.",
       step2Title: "2. Engagez et Vérifiez",
-      step2Text: "Sélectionnez des talents vérifiés et convenez des conditions.",
+      step2Text:
+        "Sélectionnez des talents vérifiés et convenez des conditions.",
       step3Title: "3. Séquestre Sécurisé",
-      step3Text: "Les fonds sont détenus en toute sécurité jusqu'à ce que le travail soit approuvé.",
+      step3Text:
+        "Les fonds sont détenus en toute sécurité jusqu'à ce que le travail soit approuvé.",
       step4Title: "4. Paiement Local",
       step4Text: "Soyez payé instantanément via MOMO ou Banque.",
 
       missionTitle: "Construit par des Africains, pour l'Afrique",
-      missionText1: "Nous avons réalisé que de nombreux Africains, en particulier au Cameroun, ont du mal à utiliser et à monétiser leurs compétences sur les plateformes occidentales comme Upwork et Fiverr en raison des barrières de paiement et de la concurrence mondiale intense.",
-      missionText2: "est né pour résoudre ce problème. Nous construisons une plateforme adaptée au marché africain – prenant en charge les méthodes de paiement locales (MOMO), comblant les lacunes de confiance avec la vérification d'identité et connectant les clients avec des talents locaux diversifiés et de haute qualité à des prix abordables.",
+      missionText1:
+        "Nous avons réalisé que de nombreux Africains, en particulier au Cameroun, ont du mal à utiliser et à monétiser leurs compétences sur les plateformes occidentales comme Upwork et Fiverr en raison des barrières de paiement et de la concurrence mondiale intense.",
+      missionText2:
+        "est né pour résoudre ce problème. Nous construisons une plateforme adaptée au marché africain – prenant en charge les méthodes de paiement locales (MOMO), comblant les lacunes de confiance avec la vérification d'identité et connectant les clients avec des talents locaux diversifiés et de haute qualité à des prix abordables.",
 
       topTalentTitle: "Meilleurs Talents Évalués",
-      topTalentDesc: "Engagez des professionnels vérifiés par nous, avec des antécédents prouvés.",
+      topTalentDesc:
+        "Engagez des professionnels vérifiés par nous, avec des antécédents prouvés.",
 
       whyUsTitle: "Conçu pour la Confiance en Afrique",
       whyUsDesc: "Un écosystème sécurisé où la qualité est la norme.",
-      
+
       card1Title: "Paiements Sécurisés par Séquestre",
-      card1Text: "Nous détenons les fonds en toute sécurité jusqu'à ce que le travail soit approuvé. Les clients obtiennent ce pour quoi ils paient, et les freelances sont payés à temps. Plus d'escroqueries, juste des transactions sécurisées.",
-      
+      card1Text:
+        "Nous détenons les fonds en toute sécurité jusqu'à ce que le travail soit approuvé. Les clients obtiennent ce pour quoi ils paient, et les freelances sont payés à temps. Plus d'escroqueries, juste des transactions sécurisées.",
+
       card2Title: "Identités Vérifiées",
-      card2Text: "Nous vérifions les pièces d'identité afin que vous sachiez exactement avec qui vous travaillez.",
-      
+      card2Text:
+        "Nous vérifions les pièces d'identité afin que vous sachiez exactement avec qui vous travaillez.",
+
       card4Title: "La Communauté d'abord",
-      card4Text: "Nous sommes plus qu'une place de marché. Rejoignez nos forums communautaires, partagez des connaissances, obtenez du mentorat et développez votre carrière avec d'autres Africains.",
+      card4Text:
+        "Nous sommes plus qu'une place de marché. Rejoignez nos forums communautaires, partagez des connaissances, obtenez du mentorat et développez votre carrière avec d'autres Africains.",
 
       testiTitle: "Témoignages de nos Utilisateurs",
-      testi1: "AfriqGig a rendu si facile de trouver un développeur qui comprenait mon contexte local. Le paiement via MOMO a été une bouée de sauvetage !",
-      testi2: "Enfin, une plateforme qui valorise les freelances africains. J'ai été embauché en 2 jours et le système de séquestre me fait me sentir en sécurité.",
-      testi3: "Le processus de vérification m'a donné confiance. Je sais que j'engage de vraies personnes, pas des bots.",
-      testi4: "En tant que Camerounais, être payé à l'international était difficile. AfriqGig a résolu ce problème avec les paiements locaux.",
+      testi1:
+        "AfriqGig a rendu si facile de trouver un développeur qui comprenait mon contexte local. Le paiement via MOMO a été une bouée de sauvetage !",
+      testi2:
+        "Enfin, une plateforme qui valorise les freelances africains. J'ai été embauché en 2 jours et le système de séquestre me fait me sentir en sécurité.",
+      testi3:
+        "Le processus de vérification m'a donné confiance. Je sais que j'engage de vraies personnes, pas des bots.",
+      testi4:
+        "En tant que Camerounais, être payé à l'international était difficile. AfriqGig a résolu ce problème avec les paiements locaux.",
 
       ctaTitle: "Prêt à commencer ?",
-      ctaText: "Rejoignez des milliers de freelances et d'entreprises qui construisent l'avenir de l'Afrique aujourd'hui.",
+      ctaText:
+        "Rejoignez des milliers de freelances et d'entreprises qui construisent l'avenir de l'Afrique aujourd'hui.",
       // ECOSYSTEM SECTION
       ecosystemTitle: "Comment fonctionne AfriqGig",
-      ecosystemDesc: "Un écosystème sécurisé connectant les talents et les entreprises.",
+      ecosystemDesc:
+        "Un écosystème sécurisé connectant les talents et les entreprises.",
       clientTitle: "Client",
-      clientDesc: "Publie une offre et dépose des fonds via Mobile Money/Carte.",
+      clientDesc:
+        "Publie une offre et dépose des fonds via Mobile Money/Carte.",
       escrowTitle: "Séquestre Sécurisé (Escrow)",
-      escrowDesc: "Les fonds sont détenus en toute sécurité jusqu'à ce que le travail soit approuvé.",
+      escrowDesc:
+        "Les fonds sont détenus en toute sécurité jusqu'à ce que le travail soit approuvé.",
       freelancerTitle: "Freelance",
       freelancerDesc: "Livre le travail et retire ses gains sur Mobile Money.",
 
       // FAQ SECTION
       faqTitle: "Foire Aux Questions",
       faqSubtitle: "Tout ce que vous devez savoir sur la plateforme.",
-        
+
       // FAQ ITEMS (Q&A)
       faq1q: "Mon argent est-il en sécurité avec AfriqGig ?",
-      faq1a: "Absolument. Nous utilisons un système de séquestre (Escrow). Lorsque vous engagez un freelance, vos fonds sont détenus en toute sécurité par nous. Nous ne versons le paiement au freelance qu'une fois que vous avez approuvé son travail.",
-        
+      faq1a:
+        "Absolument. Nous utilisons un système de séquestre (Escrow). Lorsque vous engagez un freelance, vos fonds sont détenus en toute sécurité par nous. Nous ne versons le paiement au freelance qu'une fois que vous avez approuvé son travail.",
+
       faq2q: "Comment puis-je retirer mes gains ?",
-      faq2a: "Nous prenons en charge les retraits locaux dans plus de 26 pays africains, directement vers Mobile Money (MTN, Orange, M-Pesa), par virement bancaire ou via des cartes virtuelles.",
-        
+      faq2a:
+        "Nous prenons en charge les retraits locaux dans plus de 26 pays africains, directement vers Mobile Money (MTN, Orange, M-Pesa), par virement bancaire ou via des cartes virtuelles.",
+
       faq3q: "Comment fonctionne la vérification ?",
-      faq3a: "Pour garantir la sécurité, nous vérifions les identités à l'aide de pièces d'identité émises par le gouvernement. Cela prévient la fraude et renforce la confiance. Le processus prend moins de 24 heures.",
-        
+      faq3a:
+        "Pour garantir la sécurité, nous vérifions les identités à l'aide de pièces d'identité émises par le gouvernement. Cela prévient la fraude et renforce la confiance. Le processus prend moins de 24 heures.",
+
       faq4q: "Puis-je utiliser AfriqGig en dehors de l'Afrique ?",
-      faq4a: "Oui ! Les clients de partout (USA, Europe, Asie) peuvent engager des talents africains en utilisant des cartes de crédit/débit. Nous nous occupons de la conversion des devises.",
+      faq4a:
+        "Oui ! Les clients de partout (USA, Europe, Asie) peuvent engager des talents africains en utilisant des cartes de crédit/débit. Nous nous occupons de la conversion des devises.",
       faq5q: "Les freelances peuvent-ils publier des offres d'emploi ?",
-      faq5a: "Oui ! Les freelances peuvent changer de rôle pour devenir clients. Utilisez simplement le bouton 'Publier une offre' dans votre tableau de bord pour embaucher d'autres talents.",
+      faq5a:
+        "Oui ! Les freelances peuvent changer de rôle pour devenir clients. Utilisez simplement le bouton 'Publier une offre' dans votre tableau de bord pour embaucher d'autres talents.",
 
       // MISC
       viewAllTalent: "Voir tous les talents",
       card3Title: "Paiements Locaux",
-      card3Text: "Traitement sécurisé des paiements dans plus de 26 pays africains.",
+      card3Text:
+        "Traitement sécurisé des paiements dans plus de 26 pays africains.",
       card3List1: "Mobile Money (MTN, Orange, M-Pesa)",
       card3List2: "Virements Bancaires Locaux et Cartes",
       card3List3: "Protection de Sécurité 2FA",
     },
     feedback: {
       title: "Aidez-nous à améliorer AfriqGig",
-      subtitle: "Vous avez une suggestion ou avez trouvé un bug ? Faites-le nous savoir !",
+      subtitle:
+        "Vous avez une suggestion ou avez trouvé un bug ? Faites-le nous savoir !",
       placeholder: "Je pense que la plateforme devrait...",
       send: "Envoyer le feedback",
       thankYou: "Merci !",
-      successMessage: "Votre feedback nous aide à construire une meilleure plateforme pour l'Afrique."
+      successMessage:
+        "Votre feedback nous aide à construire une meilleure plateforme pour l'Afrique.",
     },
     footer: {
-      slogan: "Le Freelance Simplifié pour l'Afrique. Connecter les talents aux opportunités via des outils locaux et sécurisés.",
+      slogan:
+        "Le Freelance Simplifié pour l'Afrique. Connecter les talents aux opportunités via des outils locaux et sécurisés.",
       platform: "Plateforme",
       company: "Entreprise",
       suggestFeature: "Suggérer une fonctionnalité",
       rightsReserved: "Tous droits réservés.",
-      builtWithLove: "Construit avec amour en Afrique, pour le Monde."
+      builtWithLove: "Construit avec amour en Afrique, pour le Monde.",
     },
     liveChat: {
       support: "Support",
@@ -1634,7 +1807,8 @@ export const translations = {
       endConfirmText: "Vous perdrez cet historique de chat.",
       yesEnd: "Oui, Terminer",
       welcome: "Bonjour ! 👋",
-      welcomeDesc: "Nous serions ravis de vous aider. Demandez-nous n'importe quoi !",
+      welcomeDesc:
+        "Nous serions ravis de vous aider. Demandez-nous n'importe quoi !",
       yourName: "Votre Nom",
       yourEmail: "Votre Email",
       howHelp: "Comment pouvons-nous vous aider ?",
@@ -1646,25 +1820,26 @@ export const translations = {
       experience: "Comment était votre expérience ?",
       feedback: "Un feedback ? (Optionnel)",
       sessionExpired: "Session expirée. Veuillez redémarrer le chat.",
-      leaveReviewPrompt: "Votre session a expiré. Veuillez évaluer votre expérience.",
+      leaveReviewPrompt:
+        "Votre session a expiré. Veuillez évaluer votre expérience.",
       history: "Historique",
       newChat: "Nouvelle discussion",
       reopen: "Rouvrir la discussion",
       chatClosedInactivity: "Discussion fermée pour cause d'inactivité.",
-      checkHistory: "Vous pouvez rouvrir cette conversation dans l'onglet Historique.",
+      checkHistory:
+        "Vous pouvez rouvrir cette conversation dans l'onglet Historique.",
     },
   },
   es: {
     nav: {
       home: "Inicio",
       search: "Buscar",
-      inbox: "Bandeja",
+      inbox: "Bandeja de entrada",
       profile: "Perfil",
-      dashboard: "Panel",
-      jobs: "Mis Trabajos",
+      dashboard: "Panel de control",
+      jobs: "Mis trabajos",
       wallet: "Billetera",
-      logout: "Cerrar Sesión",
-      postJob: "Publicar Trabajo",
+      postJob: "Publicar un trabajo",
       community: "Comunidad",
       findWork: "Encontrar trabajo",
       contracts: "Contratos",
@@ -1672,17 +1847,24 @@ export const translations = {
       disputes: "Disputas",
       users: "Usuarios",
       financials: "Finanzas",
+      // ✅ NEW: for sidebar entries that previously had no translation key
+      referrals: "Referidos",
+      withdrawals: "Retiros",
+      analytics: "Analíticas",
+      feedback: "Comentarios",
+      contact: "Mensajes de contacto",
       menu: "Menú",
       general: "General",
       settings: "Configuración",
       support: "Ayuda y soporte",
-      about: "Acerca de nosotros",
-      legal: "Legal y Privacidad",
+      about: "Sobre nosotros",
+      legal: "Legal y privacidad",
       howItWorks: "Cómo funciona",
-      whyUs: "Por qué elegirnos",
-      mission: "Nuestra Misión",
+      whyUs: "Por qué nosotros",
+      mission: "Nuestra misión",
       login: "Iniciar sesión",
-      join: "Únete ahora",
+      join: "Unirse ahora",
+      logout: "Cerrar sesión",
     },
     dashboard: {
       welcome: "Bienvenido",
@@ -1719,12 +1901,13 @@ export const translations = {
       jobCountMiddle: "trabajos potenciales",
       jobCountEnd: "hoy.",
       verifyTitle: "Verifícate y aumenta tu credibilidad",
-      verifyText: "Los freelancers verificados tienen 3 veces más probabilidades de ser contratados. Sube tu identificación para obtener la insignia azul y acceder a trabajos premium.",
+      verifyText:
+        "Los freelancers verificados tienen 3 veces más probabilidades de ser contratados. Sube tu identificación para obtener la insignia azul y acceder a trabajos premium.",
       verifyBtn: "Verificar ahora",
       adjustFilters: "Intenta ajustar tus filtros o vuelve más tarde.",
       match: "Coincidencia",
       applied: "Aplicado ✓",
-      tryAgain: "Intentar de nuevo"
+      tryAgain: "Intentar de nuevo",
     },
     roles: {
       client: "Cliente",
@@ -1760,9 +1943,11 @@ export const translations = {
       errorMomo: "Entrez un numéro MOMO valide.",
       errorGeneric: "Échec de la transaction. Veuillez réessayer.",
       securityTitle: "Protege tu Billetera",
-      securityText: "Tu cuenta actualmente solo usa una contraseña. Habilita la Autenticación de Dos Factores (2FA) para prevenir retiros no autorizados.",
+      securityText:
+        "Tu cuenta actualmente solo usa una contraseña. Habilita la Autenticación de Dos Factores (2FA) para prevenir retiros no autorizados.",
       enable2fa: "Habilitar 2FA ahora",
-      depositDesc: "Introduce el monto a depositar a través de Mobile Money o Tarjeta.",
+      depositDesc:
+        "Introduce el monto a depositar a través de Mobile Money o Tarjeta.",
     },
     auth: {
       joinTitle: "Únete a AfriqGig",
@@ -1793,8 +1978,10 @@ export const translations = {
       accountCreated: "¡Cuenta creada!",
       signInNew: "Por favor, inicia sesión con tus nuevas credenciales.",
       invalidCreds: "Credenciales no válidas. Por favor, verifica tus datos.",
-      unexpectedError: "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
-      errorTerms: "Debes aceptar los Términos de servicio y la Política de privacidad.",
+      unexpectedError:
+        "Ocurrió un error inesperado. Por favor, inténtalo de nuevo.",
+      errorTerms:
+        "Debes aceptar los Términos de servicio y la Política de privacidad.",
       errorCountry: "Por favor, especifica tu país.",
       errorSkills: "Por favor, selecciona al menos una habilidad.",
       selectAtLeastOne: "Selecciona al menos 1 habilidad",
@@ -1803,28 +1990,34 @@ export const translations = {
       and: "y la",
       privacy: "Política de privacidad",
       joinRevolution: "Únete a la Revolución",
-      joinDesc: "Crea tu perfil, muestra tus habilidades y comienza a ganar en el principal mercado freelance de África.",
-      resetDesc: "Introduce tu correo electrónico para recibir un enlace de restablecimiento.",
+      joinDesc:
+        "Crea tu perfil, muestra tus habilidades y comienza a ganar en el principal mercado freelance de África.",
+      resetDesc:
+        "Introduce tu correo electrónico para recibir un enlace de restablecimiento.",
       sendResetLink: "Enviar Enlace de Restablecimiento",
       backToLogin: "Volver a Iniciar Sesión",
       checkEmail: "Revisa tu correo electrónico",
-      resetSent: "Si existe una cuenta para este correo electrónico, hemos enviado un enlace de restablecimiento.",
+      resetSent:
+        "Si existe una cuenta para este correo electrónico, hemos enviado un enlace de restablecimiento.",
       resetPassword: "Establecer Nueva Contraseña",
       newPassword: "Nueva Contraseña",
       confirmPassword: "Confirmar Contraseña",
       updatePassword: "Actualizar Contraseña",
       passwordMismatch: "Las contraseñas no coinciden",
       resetSuccessTitle: "¡Éxito!",
-      resetSuccessDesc: "Tu contraseña ha sido restablecida. Redirigiendo al inicio de sesión...",
+      resetSuccessDesc:
+        "Tu contraseña ha sido restablecida. Redirigiendo al inicio de sesión...",
       address: "Dirección / Ciudad",
       passLength: "8+ caracteres",
       passUpper: "Una letra mayúscula",
       passLower: "Una letra minúscula",
       passNumber: "Un número",
       passSpecial: "Un carácter especial",
-      passWeak: "La contraseña es muy débil. Por favor, cumple con todos los requisitos.",
+      passWeak:
+        "La contraseña es muy débil. Por favor, cumple con todos los requisitos.",
       chooseFieldMax: "Máx. 5",
-      chooseFieldText: "Selecciona las áreas principales en las que te especializas. Esto nos ayuda a recomendarte las habilidades adecuadas.",
+      chooseFieldText:
+        "Selecciona las áreas principales en las que te especializas. Esto nos ayuda a recomendarte las habilidades adecuadas.",
     },
     proposal: {
       applyTitle: "Aplicar a este trabajo",
@@ -1839,7 +2032,8 @@ export const translations = {
       cancel: "Cancelar",
       duration: "¿Cuánto tiempo tomará esto?",
       errorDuration: "Por favor, especifica una duración",
-      errorCoverLetter: "Se requiere una carta de presentación para postularse.",
+      errorCoverLetter:
+        "Se requiere una carta de presentación para postularse.",
     },
     manage: {
       title: "Gestionar trabajos",
@@ -1883,7 +2077,8 @@ export const translations = {
       deleteJob: "Eliminar trabajo",
       deleteTitle: "¿Eliminar este trabajo?",
       deleteConfirmStart: "¿Estás seguro de que quieres eliminar",
-      deleteConfirmEnd: "Esta acción no se puede deshacer y todas las propuestas se perderán.",
+      deleteConfirmEnd:
+        "Esta acción no se puede deshacer y todas las propuestas se perderán.",
       deleteError: "Error al eliminar el trabajo",
       deleting: "Eliminando...",
       delete: "Eliminar",
@@ -1892,11 +2087,13 @@ export const translations = {
       history: "Historial",
       noActiveContracts: "No se encontraron contratos activos.",
       noHistory: "Aún no hay historial completado.",
-      selectJobToInvite: "Selecciona un trabajo abierto para invitar a este freelancer:",
+      selectJobToInvite:
+        "Selecciona un trabajo abierto para invitar a este freelancer:",
       noOpenJobs: "No se encontraron trabajos abiertos.",
     },
     community: {
-      placeholder: "Comparte tu trabajo, haz una pregunta o publica un tutorial...",
+      placeholder:
+        "Comparte tu trabajo, haz una pregunta o publica un tutorial...",
       photo: "Foto",
       video: "Video",
       post: "Publicar",
@@ -1948,12 +2145,15 @@ export const translations = {
       markComplete: "Marcar como completado",
       paymentReleased: "Pago liberado",
       contractNotFound: "Contrato no encontrado",
-      contractNotFoundDesc: "Parece que aún no se ha creado un contrato para este trabajo.",
+      contractNotFoundDesc:
+        "Parece que aún no se ha creado un contrato para este trabajo.",
       started: "Iniciado",
       paymentProtection: "Protección de pago activa",
-      paymentProtectionDesc: "Los fondos se mantienen seguros en depósito de garantía. Si tienes algún problema, utiliza el botón 'Reportar problema'.",
+      paymentProtectionDesc:
+        "Los fondos se mantienen seguros en depósito de garantía. Si tienes algún problema, utiliza el botón 'Reportar problema'.",
       underReview: "Contrato bajo revisión",
-      underReviewDesc: "Se ha presentado una disputa. Los fondos están congelados mientras el administrador revisa el caso.",
+      underReviewDesc:
+        "Se ha presentado una disputa. Los fondos están congelados mientras el administrador revisa el caso.",
       originalFiles: "Archivos originales del trabajo",
       noFiles: "No se subieron archivos.",
       approved: "APROBADO",
@@ -1961,14 +2161,17 @@ export const translations = {
       uploadFiles: "Subir archivos (Múltiples)",
       addNote: "Añadir una nota...",
       submittedSuccess: "¡Entregado con éxito!",
-      previewUnavailable: "Vista previa no disponible para este tipo de archivo.",
+      previewUnavailable:
+        "Vista previa no disponible para este tipo de archivo.",
       downloadFile: "Descargar archivo",
       releasePayment: "¿Liberar pago?",
       releasePaymentDesc: "Esto marcará el trabajo como completado.",
       disputeFiled: "Disputa presentada",
-      disputeFiledDesc: "El administrador ha sido notificado. Los fondos están congelados.",
+      disputeFiledDesc:
+        "El administrador ha sido notificado. Los fondos están congelados.",
       reportProblem: "Reportar problema",
-      disputeWarning: "Presentar una disputa congelará inmediatamente los fondos del contrato. Un administrador revisará el historial de chat y los entregables.",
+      disputeWarning:
+        "Presentar una disputa congelará inmediatamente los fondos del contrato. Un administrador revisará el historial de chat y los entregables.",
       reason: "Razón",
       reasonNoSubmission: "Sin entrega / Abandono",
       reasonPoorQuality: "Trabajo de baja calidad",
@@ -1996,15 +2199,18 @@ export const translations = {
       uploading: "Subiendo...",
       importantInfo: "Información importante",
       fillAllFields: "Por favor, completa todos los campos.",
-      compressionWarning: "Las imágenes (.jpg, .png) se comprimirán para su visualización web.",
-      zipTip: "Para mantener la calidad original o subir videos sin compresión, archívelos en un archivo .ZIP.",
+      compressionWarning:
+        "Las imágenes (.jpg, .png) se comprimirán para su visualización web.",
+      zipTip:
+        "Para mantener la calidad original o subir videos sin compresión, archívelos en un archivo .ZIP.",
     },
     chat: {
       title: "Mensajes",
       search: "Buscar chats...",
       type: "Escribe un mensaje...",
       online: "En línea",
-      safety: "Por tu seguridad, no compartas números de teléfono ni realices pagos fuera de AfriqGig.",
+      safety:
+        "Por tu seguridad, no compartas números de teléfono ni realices pagos fuera de AfriqGig.",
       noConversations: "Aún no hay conversaciones.",
       select: "Selecciona una conversación para chatear",
       new: "Nueva conversación",
@@ -2017,7 +2223,8 @@ export const translations = {
       micError: "El acceso al micrófono no es compatible o ha sido denegado.",
       sendingVoice: "Enviando nota de voz...",
       securityTitle: "Advertencia de seguridad de la cuenta",
-      securityText: "NO compartas números de teléfono, correos electrónicos o enlaces externos (WhatsApp, Telegram, etc.). Su detección conllevará la desactivación inmediata de la cuenta. Mantén toda la comunicación dentro de AfriqGig para tu protección.",
+      securityText:
+        "NO compartas números de teléfono, correos electrónicos o enlaces externos (WhatsApp, Telegram, etc.). Su detección conllevará la desactivación inmediata de la cuenta. Mantén toda la comunicación dentro de AfriqGig para tu protección.",
     },
     profile: {
       title: "Mi Perfil",
@@ -2081,15 +2288,18 @@ export const translations = {
       idVerify: "Verificación de Identidad",
       verified: "Verificado",
       verifyFailed: "Verificación fallida",
-      verifyFailDesc: "Por favor, sube documentos claros que coincidan con los detalles de tu perfil.",
-      verifyTip: "Asegúrate de que el nombre en tu documento coincida exactamente con tu perfil.",
+      verifyFailDesc:
+        "Por favor, sube documentos claros que coincidan con los detalles de tu perfil.",
+      verifyTip:
+        "Asegúrate de que el nombre en tu documento coincida exactamente con tu perfil.",
       docType: "Tipo de documento",
       frontBack: "Anverso y Reverso (si aplica)",
       docsOnFile: "Documentos en archivo",
       submitVerify: "Enviar para verificación",
       resubmit: "Volver a enviar verificación",
       verificationSent: "¡Verificación solicitada! Documentos enviados.",
-      reviewTime: "Tus documentos están actualmente en revisión. Esto suele tardar entre 24 y 48 horas.",
+      reviewTime:
+        "Tus documentos están actualmente en revisión. Esto suele tardar entre 24 y 48 horas.",
       appLang: "Idioma de la aplicación",
       contentLang: "Idioma del contenido",
       autoplay: "Reproducción automática de videos",
@@ -2097,7 +2307,8 @@ export const translations = {
       dangerZone: "Zona de Peligro",
       deactivate: "Desactivar cuenta",
       twoFa: "Autenticación de dos factores",
-      twoFaDesc: "Añade una capa extra de seguridad a través de la aplicación Autenticador.",
+      twoFaDesc:
+        "Añade una capa extra de seguridad a través de la aplicación Autenticador.",
       enabled: "Activado",
       setup: "Configurar",
       pushNotif: "Notificaciones push",
@@ -2109,45 +2320,60 @@ export const translations = {
       onlineStatus: "Mostrar estado en línea",
       dataPrivacy: "Datos y Privacidad",
       dataDownload: "Descarga de Datos Personales",
-      dataDownloadDesc: "Obtén una copia de tus datos, incluyendo tu perfil, historial de trabajos y mensajes.",
-      archiveRequested: "Archivo solicitado. Consulta tu correo electrónico en breve.",
+      dataDownloadDesc:
+        "Obtén una copia de tus datos, incluyendo tu perfil, historial de trabajos y mensajes.",
+      archiveRequested:
+        "Archivo solicitado. Consulta tu correo electrónico en breve.",
       requestArchive: "Solicitar Archivo",
       allowData: "Permitir la recopilación de datos",
       allowDataDesc: "Ayúdanos a mejorar AfriqGig compartiendo datos de uso.",
       searchVis: "Visibilidad en búsquedas",
-      searchVisDesc: "Permitir a los motores de búsqueda (Google, Bing) indexar tu perfil.",
+      searchVisDesc:
+        "Permitir a los motores de búsqueda (Google, Bing) indexar tu perfil.",
       deactivateTitle: "¿Desactivar cuenta?",
-      deactivateDesc: "Esto ocultará tu perfil y trabajos activos. Puedes reactivarla iniciando sesión en cualquier momento.",
+      deactivateDesc:
+        "Esto ocultará tu perfil y trabajos activos. Puedes reactivarla iniciando sesión en cualquier momento.",
       typeDelete: "Escribe",
       toConfirm: "abajo para confirmar",
       scanQr: "Escanea el código QR",
-      scanQrDesc: "Abre tu aplicación de autenticación (Google/Microsoft) y escanea este código para habilitar 2FA.",
+      scanQrDesc:
+        "Abre tu aplicación de autenticación (Google/Microsoft) y escanea este código para habilitar 2FA.",
       verifyEnable: "Verificar y habilitar",
       twoFaSuccess: "¡2FA habilitada con éxito!",
       errorSave: "Error al guardar la configuración.",
       errorNoDoc: "Por favor, sube un documento de identidad válido.",
       enterCode: "Introduce el código de 6 dígitos",
       twoFaInvalid: "Código no válido. Por favor, inténtalo de nuevo.",
+      enableHiring: "¿También quieres contratar talento?",
+      enableHiringDesc:
+        "Activa esto para publicar trabajos y contratar a otros freelancers, sin crear una cuenta de cliente separada.",
     },
     about: {
       heroTitle: "Potenciando el Talento Africano",
-      heroSubtitle: "Nuestra misión es cerrar la brecha entre las mentes más brillantes de África y la economía global, creando un ecosistema seguro donde la confianza es la moneda.",
+      heroSubtitle:
+        "Nuestra misión es cerrar la brecha entre las mentes más brillantes de África y la economía global, creando un ecosistema seguro donde la confianza es la moneda.",
       storyTitle: "Nuestra Historia",
-      storyText1: "Comenzó con una simple observación: los freelancers africanos son increíblemente talentosos pero a menudo son excluidos del mercado global debido a las barreras de pago y los problemas de confianza.",
+      storyText1:
+        "Comenzó con una simple observación: los freelancers africanos son increíblemente talentosos pero a menudo son excluidos del mercado global debido a las barreras de pago y los problemas de confianza.",
       storyText2: "Fundada en Camerún,",
-      storyText3: "fue construido para resolver esto. Integramos métodos de pago locales como Mobile Money y construimos un riguroso sistema de verificación para crear una plataforma que se siente como en casa, pero funciona como una empresa global.",
+      storyText3:
+        "fue construido para resolver esto. Integramos métodos de pago locales como Mobile Money y construimos un riguroso sistema de verificación para crear una plataforma que se siente como en casa, pero funciona como una empresa global.",
       valuesTitle: "Nuestros Valores Fundamentales",
       value1Title: "Inclusión",
-      value1Text: "La oportunidad no debe tener fronteras. Construimos herramientas que funcionan para todos, en todas partes, independientemente del estado bancario.",
+      value1Text:
+        "La oportunidad no debe tener fronteras. Construimos herramientas que funcionan para todos, en todas partes, independientemente del estado bancario.",
       value2Title: "Confianza",
-      value2Text: "Verificamos identidades y aseguramos pagos a través de Escrow para que puedas centrarte en el trabajo, no en el riesgo.",
+      value2Text:
+        "Verificamos identidades y aseguramos pagos a través de Escrow para que puedas centrarte en el trabajo, no en el riesgo.",
       value3Title: "Innovación",
       backHome: "Volver a Inicio",
-      value3Text: "Evolucionamos constantemente nuestra tecnología para resolver los desafíos únicos del mercado africano."
+      value3Text:
+        "Evolucionamos constantemente nuestra tecnología para resolver los desafíos únicos del mercado africano.",
     },
     contact: {
       title: "Ponte en contacto",
-      subtitle: "¿Tienes preguntas sobre la plataforma, pagos o asociaciones? Estamos aquí para ayudarte.",
+      subtitle:
+        "¿Tienes preguntas sobre la plataforma, pagos o asociaciones? Estamos aquí para ayudarte.",
       emailTitle: "Envíanos un correo",
       emailText: "Nuestro amable equipo está aquí para ayudarte.",
       visitTitle: "Visítanos",
@@ -2163,7 +2389,7 @@ export const translations = {
       messagePlaceholder: "¿Cómo podemos ayudarte?",
       sendBtn: "Enviar mensaje",
       sending: "Enviando...",
-      error: "No se pudo enviar el mensaje. Por favor, inténtalo de nuevo."
+      error: "No se pudo enviar el mensaje. Por favor, inténtalo de nuevo.",
     },
     admin: {
       backToDashboard: "Volver al panel",
@@ -2190,24 +2416,25 @@ export const translations = {
       deadline: "Fecha límite",
       nextStep: "Siguiente paso",
       postNow: "Publicar trabajo ahora",
-      
+
       // Errors
       errorTitle: "Por favor, introduce un título para el trabajo.",
       errorCategory: "Por favor, selecciona una categoría.",
       errorDesc: "Por favor, introduce una descripción del trabajo.",
-      errorDescShort: "La descripción es demasiado corta. Por favor, añade más detalles.",
+      errorDescShort:
+        "La descripción es demasiado corta. Por favor, añade más detalles.",
       errorBudget: "Por favor, introduce tu presupuesto.",
       errorDeadline: "Por favor, selecciona una fecha límite.",
       errorLogin: "Por favor, inicia sesión de nuevo.",
       errorServer: "El servidor rechazó la solicitud",
-      errorConnection: "Error al conectar con el servidor"
+      errorConnection: "Error al conectar con el servidor",
     },
     notificationsPage: {
       title: "Notificaciones",
       subtitle: "Mantente al día con tu actividad.",
       markAllRead: "Marcar todo como leído",
       markRead: "Marcar como leído",
-      noNotifications: "Aún no hay notificaciones."
+      noNotifications: "Aún no hay notificaciones.",
     },
     referrals: {
       limitedOffer: "OFERTA POR TIEMPO LIMITADO",
@@ -2215,7 +2442,8 @@ export const translations = {
       heroSubtitle: "¡Ahorra en comisiones!",
       heroDescStart: "Obtén",
       heroDescPercent: "50% DE DESCUENTO",
-      heroDescEnd: "en nuestras tarifas de comisión (pagas 2,5% en lugar de 5% como Freelancer, mientras que el Cliente obtiene 100% de descuento en nuestra comisión) por cada nuevo usuario que se registre con tu enlace.",
+      heroDescEnd:
+        "en nuestras tarifas de comisión (pagas 2,5% en lugar de 5% como Freelancer, mientras que el Cliente obtiene 100% de descuento en nuestra comisión) por cada nuevo usuario que se registre con tu enlace.",
       copy: "Copiar",
       copied: "¡Copiado!",
       statFriends: "Amigos recomendados",
@@ -2224,38 +2452,51 @@ export const translations = {
       shareSocials: "Compartir en redes sociales",
       howItWorks: "Cómo funciona",
       step1Title: "Comparte tu enlace",
-      step1Desc: "Copia tu enlace único de arriba y envíalo a clientes o amigos que necesiten trabajo.",
+      step1Desc:
+        "Copia tu enlace único de arriba y envíalo a clientes o amigos que necesiten trabajo.",
       step2Title: "Se registran",
-      step2Desc: "Cuando crean una cuenta usando tu enlace, obtienen automáticamente 100% de descuento en la comisión de sus primeros 2 trabajos.",
+      step2Desc:
+        "Cuando crean una cuenta usando tu enlace, obtienen automáticamente 100% de descuento en la comisión de sus primeros 2 trabajos.",
       step3Title: "Ganas descuento",
-      step3Desc: "Por cada recomendación activa, tú como Freelancer también pagas 2,5% de comisión (en lugar de 5%) en tu próximo trabajo.",
-      shareText: "¡Únete a mí en AfriqGig! La forma más segura de contratar talento africano. Regístrate y ambos obtendremos 50% de descuento en las comisiones. 🚀",
+      step3Desc:
+        "Por cada recomendación activa, tú como Freelancer también pagas 2,5% de comisión (en lugar de 5%) en tu próximo trabajo.",
+      shareText:
+        "¡Únete a mí en AfriqGig! La forma más segura de contratar talento africano. Regístrate y ambos obtendremos 50% de descuento en las comisiones. 🚀",
       give50get50: "¡Da 50%, Obtén 50%!",
-      bannerDesc: "Recomienda a un amigo. Ambos ahorran 50% en las tarifas de comisión.",
+      bannerDesc:
+        "Recomienda a un amigo. Ambos ahorran 50% en las tarifas de comisión.",
       getLink: "Obtener Enlace",
       want50: "¿Quieres un 50% de descuento?",
-      modalText: "Recomienda un cliente o freelancer a AfriqGig. Cuando se registren, ¡AMBOS obtienen un 50% de descuento en las tarifas de la plataforma para tu próximo trabajo!",
+      modalText:
+        "Recomienda un cliente o freelancer a AfriqGig. Cuando se registren, ¡AMBOS obtienen un 50% de descuento en las tarifas de la plataforma para tu próximo trabajo!",
       inviteNow: "Invitar amigos ahora",
-      remindLater: "Recordarme más tarde"
+      remindLater: "Recordarme más tarde",
     },
     support: {
       title: "Centro de Ayuda",
-      subtitle: "Encuentra respuestas, obtén soporte y aprende cómo tener éxito en AfriqGig.",
+      subtitle:
+        "Encuentra respuestas, obtén soporte y aprende cómo tener éxito en AfriqGig.",
       faqTitle: "Preguntas Frecuentes",
-      faqDesc: "Respuestas instantáneas a preguntas comunes sobre pagos y contratación.",
+      faqDesc:
+        "Respuestas instantáneas a preguntas comunes sobre pagos y contratación.",
       contactTitle: "Contactar con Soporte",
-      contactDesc: "Comunícate directamente con nuestro equipo para obtener asistencia personalizada.",
+      contactDesc:
+        "Comunícate directamente con nuestro equipo para obtener asistencia personalizada.",
       communityTitle: "Foro Comunitario",
-      communityDesc: "Pide consejos y orientación a otros freelancers y clientes.",
+      communityDesc:
+        "Pide consejos y orientación a otros freelancers y clientes.",
       stillNeedHelp: "¿Aún necesitas ayuda?",
-      helpText: "Nuestro equipo de soporte está disponible de lunes a viernes de 8 a.m. a 6 p.m. WAT para ayudarte con cualquier problema.",
-      liveChat: "Besoin d'aide ? Discutez avec nous en direct ! Cliquez sur l'icône de chat en bas à droite.",
+      helpText:
+        "Nuestro equipo de soporte está disponible de lunes a viernes de 8 a.m. a 6 p.m. WAT para ayudarte con cualquier problema.",
+      liveChat:
+        "Besoin d'aide ? Discutez avec nous en direct ! Cliquez sur l'icône de chat en bas à droite.",
       emailSupport: "Soporte por correo electrónico",
-      openTicket: "Abrir un ticket"
+      openTicket: "Abrir un ticket",
     },
     faq: {
       title: "¿Cómo podemos ayudarte?",
-      subtitle: "Busca en nuestra base de conocimientos o navega por las categorías a continuación.",
+      subtitle:
+        "Busca en nuestra base de conocimientos o navega por las categorías a continuación.",
       searchPlaceholder: "Busca respuestas (ej. 'pago', 'verificar')...",
       catGeneral: "General",
       catFreelancers: "Para Freelancers",
@@ -2303,126 +2544,160 @@ export const translations = {
       q16: "¿Puedo cambiar mi nombre de usuario?",
       a16: "Por razones de seguridad, los nombres de usuario no se pueden cambiar una vez creados. Sin embargo, puedes actualizar tu nombre de visualización.",
       q17: "¿Ofrecen reembolsos?",
-      a17: "Los reembolsos están disponibles para los fondos retenidos en Depósito de Garantía que no han sido liberados a un freelancer. Las comisiones de servicio no son reembolsables."
+      a17: "Los reembolsos están disponibles para los fondos retenidos en Depósito de Garantía que no han sido liberados a un freelancer. Las comisiones de servicio no son reembolsables.",
     },
     privacy: {
       title: "Política de Privacidad",
       lastUpdated: "Última actualización: diciembre de 2025",
-      
+
       section1Title: "1. Información que recopilamos",
-      section1Text: "Recopilamos la información que nos proporcionas directamente, como cuando creas o modificas tu cuenta, solicitas servicios a pedido, contactas al soporte al cliente o te comunicas con nosotros de otra manera. Esta información puede incluir: nombre, correo electrónico, número de teléfono, dirección postal, foto de perfil, método de pago y otra información que decidas proporcionar.",
-      
+      section1Text:
+        "Recopilamos la información que nos proporcionas directamente, como cuando creas o modificas tu cuenta, solicitas servicios a pedido, contactas al soporte al cliente o te comunicas con nosotros de otra manera. Esta información puede incluir: nombre, correo electrónico, número de teléfono, dirección postal, foto de perfil, método de pago y otra información que decidas proporcionar.",
+
       section2Title: "2. Cómo utilizamos tu información",
       section2Intro: "Utilizamos la información que recopilamos para:",
       section2Li1: "Proporcionar, mantener y mejorar nuestros Servicios.",
-      section2Li2: "Facilitar pagos y comunicaciones entre Clientes y Freelancers.",
+      section2Li2:
+        "Facilitar pagos y comunicaciones entre Clientes y Freelancers.",
       section2Li3: "Verificar tu identidad y prevenir el fraude.",
-      section2Li4: "Enviarte recibos, actualizaciones, alertas de seguridad y mensajes de soporte.",
-      
+      section2Li4:
+        "Enviarte recibos, actualizaciones, alertas de seguridad y mensajes de soporte.",
+
       section3Title: "3. Seguridad de los datos",
-      section3Text: "Implementamos medidas técnicas y organizativas adecuadas para proteger tus datos personales contra el procesamiento no autorizado o ilegal, la pérdida accidental, la destrucción o el daño. Sin embargo, ninguna transmisión por Internet es 100% segura y no podemos garantizar una seguridad absoluta.",
-      
+      section3Text:
+        "Implementamos medidas técnicas y organizativas adecuadas para proteger tus datos personales contra el procesamiento no autorizado o ilegal, la pérdida accidental, la destrucción o el daño. Sin embargo, ninguna transmisión por Internet es 100% segura y no podemos garantizar una seguridad absoluta.",
+
       section4Title: "4. Tus derechos",
-      section4Text: "Tienes derecho a acceder, corregir o eliminar tus datos personales. Puedes administrar tu información directamente desde la Configuración de tu Perfil. Para solicitudes de eliminación de datos, comunícate con nuestro equipo de soporte."
+      section4Text:
+        "Tienes derecho a acceder, corregir o eliminar tus datos personales. Puedes administrar tu información directamente desde la Configuración de tu Perfil. Para solicitudes de eliminación de datos, comunícate con nuestro equipo de soporte.",
     },
     terms: {
       title: "Términos de servicio",
       lastUpdated: "Última actualización: diciembre de 2025",
-      
+
       section1Title: "1. Introducción",
-      section1Text: "Bienvenido a AfriqGig. Al acceder o utilizar nuestro sitio web, aceptas estar sujeto a estos Términos de servicio y a nuestra Política de privacidad. Si no estás de acuerdo con alguna parte de estos términos, no debes utilizar nuestra plataforma.",
-      
+      section1Text:
+        "Bienvenido a AfriqGig. Al acceder o utilizar nuestro sitio web, aceptas estar sujeto a estos Términos de servicio y a nuestra Política de privacidad. Si no estás de acuerdo con alguna parte de estos términos, no debes utilizar nuestra plataforma.",
+
       section2Title: "2. Cuentas de usuario",
-      section2Text: "Para acceder a ciertas funciones, debes registrar una cuenta. Aceptas proporcionar información precisa, actual y completa durante el proceso de registro y actualizar dicha información para mantenerla precisa, actual y completa.",
+      section2Text:
+        "Para acceder a ciertas funciones, debes registrar una cuenta. Aceptas proporcionar información precisa, actual y completa durante el proceso de registro y actualizar dicha información para mantenerla precisa, actual y completa.",
       section2Li1: "Eres responsable de salvaguardar tu contraseña.",
       section2Li2: "Aceptas no revelar tu contraseña a terceros.",
-      section2Li3: "Debes notificarnos inmediatamente si tienes conocimiento de cualquier violación de la seguridad o uso no autorizado de tu cuenta.",
-      
+      section2Li3:
+        "Debes notificarnos inmediatamente si tienes conocimiento de cualquier violación de la seguridad o uso no autorizado de tu cuenta.",
+
       section3Title: "3. Obligaciones del Freelancer y del Cliente",
       section3FreelancerLabel: "Freelancers:",
-      section3FreelancerText: "Aceptas realizar el trabajo de manera profesional, entregar a tiempo y respetar la confidencialidad del cliente.",
+      section3FreelancerText:
+        "Aceptas realizar el trabajo de manera profesional, entregar a tiempo y respetar la confidencialidad del cliente.",
       section3ClientLabel: "Clientes:",
-      section3ClientText: "Aceptas pagar el trabajo de forma segura a través de nuestro sistema de Depósito de Garantía (Escrow). Los fondos se retienen hasta que apruebes el trabajo o se resuelva una disputa.",
-      
+      section3ClientText:
+        "Aceptas pagar el trabajo de forma segura a través de nuestro sistema de Depósito de Garantía (Escrow). Los fondos se retienen hasta que apruebes el trabajo o se resuelva una disputa.",
+
       section4Title: "4. Pagos y Depósito de Garantía",
-      section4Text: "AfriqGig utiliza un sistema de Depósito de Garantía seguro. Cuando se inicia un contrato, la cantidad acordada es retenida por AfriqGig. Los fondos solo se liberan al Freelancer tras la finalización del trabajo a satisfacción del Cliente.",
-      
+      section4Text:
+        "AfriqGig utiliza un sistema de Depósito de Garantía seguro. Cuando se inicia un contrato, la cantidad acordada es retenida por AfriqGig. Los fondos solo se liberan al Freelancer tras la finalización del trabajo a satisfacción del Cliente.",
+
       section5Title: "5. Resolución de Disputas",
-      section5Text: "En caso de disputa, los usuarios acuerdan utilizar el Centro de Resolución AfriqGig. Nuestro equipo de soporte revisará la evidencia proporcionada por ambas partes y tomará una decisión vinculante basada en los términos del contrato."
+      section5Text:
+        "En caso de disputa, los usuarios acuerdan utilizar el Centro de Resolución AfriqGig. Nuestro equipo de soporte revisará la evidencia proporcionada por ambas partes y tomará una decisión vinculante basada en los términos del contrato.",
     },
     landing: {
       liveBadge: "En vivo: Freelance Simplificado",
       heroTitleStart: "Contrata al mejor",
       heroTitleMiddle: "Talento Africano",
       heroTitleEnd: "para tus proyectos",
-      heroSubtitle: "Conéctate con freelancers examinados en todo el continente. Pagos seguros mediante Depósito de Garantía (Escrow) y Mobile Money. Trabajo de calidad, garantizado.",
+      heroSubtitle:
+        "Conéctate con freelancers examinados en todo el continente. Pagos seguros mediante Depósito de Garantía (Escrow) y Mobile Money. Trabajo de calidad, garantizado.",
       findTalent: "Encontrar Talento",
       findWork: "Encontrar Trabajo",
-      
+
       step1Title: "1. Publica o Busca",
-      step1Text: "Los Clientes publican trabajos; los Freelancers buscan trabajo.",
+      step1Text:
+        "Los Clientes publican trabajos; los Freelancers buscan trabajo.",
       step2Title: "2. Contrata y Verifica",
       step2Text: "Selecciona talento verificado y acuerda los términos.",
       step3Title: "3. Depósito de Garantía Seguro",
-      step3Text: "Los fondos se retienen de forma segura hasta que se aprueba el trabajo.",
+      step3Text:
+        "Los fondos se retienen de forma segura hasta que se aprueba el trabajo.",
       step4Title: "4. Pago Local",
       step4Text: "Recibe el pago instantáneamente a través de MOMO o Banco.",
 
       missionTitle: "Construido por africanos, para África",
-      missionText1: "Nos dimos cuenta de que a muchos africanos, especialmente en Camerún, les resulta difícil usar y monetizar sus habilidades en plataformas occidentales como Upwork y Fiverr debido a las barreras de pago y la intensa competencia global.",
-      missionText2: "nació para resolver esto. Estamos construyendo una plataforma adaptada al mercado africano, que admite métodos de pago locales (MOMO), que cierra las brechas de confianza con la verificación de identidad y que conecta a los clientes con talento local diverso y de alta calidad a precios asequibles.",
+      missionText1:
+        "Nos dimos cuenta de que a muchos africanos, especialmente en Camerún, les resulta difícil usar y monetizar sus habilidades en plataformas occidentales como Upwork y Fiverr debido a las barreras de pago y la intensa competencia global.",
+      missionText2:
+        "nació para resolver esto. Estamos construyendo una plataforma adaptada al mercado africano, que admite métodos de pago locales (MOMO), que cierra las brechas de confianza con la verificación de identidad y que conecta a los clientes con talento local diverso y de alta calidad a precios asequibles.",
 
       topTalentTitle: "Talento Mejor Calificado",
-      topTalentDesc: "Contrata profesionales verificados por nosotros, con historiales comprobados.",
+      topTalentDesc:
+        "Contrata profesionales verificados por nosotros, con historiales comprobados.",
 
       whyUsTitle: "Construido para la Confianza en África",
       whyUsDesc: "Un ecosistema seguro donde la calidad es el estándar.",
-      
+
       card1Title: "Pagos Seguros con Depósito de Garantía",
-      card1Text: "Retenemos los fondos de forma segura hasta que se aprueba el trabajo. Los Clientes obtienen lo que pagan y los freelancers reciben su pago a tiempo. No más estafas, solo transacciones seguras.",
-      
+      card1Text:
+        "Retenemos los fondos de forma segura hasta que se aprueba el trabajo. Los Clientes obtienen lo que pagan y los freelancers reciben su pago a tiempo. No más estafas, solo transacciones seguras.",
+
       card2Title: "Identidades Verificadas",
-      card2Text: "Verificamos las identificaciones para que sepas exactamente con quién estás trabajando.",
-      
+      card2Text:
+        "Verificamos las identificaciones para que sepas exactamente con quién estás trabajando.",
+
       card4Title: "La Comunidad Primero",
-      card4Text: "Somos más que un mercado. Únete a nuestros foros comunitarios, comparte conocimientos, obtén tutoría y haz crecer tu carrera junto con otros africanos.",
+      card4Text:
+        "Somos más que un mercado. Únete a nuestros foros comunitarios, comparte conocimientos, obtén tutoría y haz crecer tu carrera junto con otros africanos.",
 
       testiTitle: "Historias de nuestros Usuarios",
-      testi1: "AfriqGig hizo que fuera muy fácil encontrar un desarrollador que entendiera mi contexto local. ¡El pago a través de MOMO fue una salvación!",
-      testi2: "Finalmente, una plataforma que valora a los freelancers africanos. Me contrataron en 2 días y el sistema de depósito de garantía me hace sentir seguro.",
-      testi3: "El proceso de verificación me dio confianza. Sé que estoy contratando personas reales, no bots.",
-      testi4: "Como camerunés, era difícil que me pagaran a nivel internacional. AfriqGig resolvió esto con pagos locales.",
+      testi1:
+        "AfriqGig hizo que fuera muy fácil encontrar un desarrollador que entendiera mi contexto local. ¡El pago a través de MOMO fue una salvación!",
+      testi2:
+        "Finalmente, una plataforma que valora a los freelancers africanos. Me contrataron en 2 días y el sistema de depósito de garantía me hace sentir seguro.",
+      testi3:
+        "El proceso de verificación me dio confianza. Sé que estoy contratando personas reales, no bots.",
+      testi4:
+        "Como camerunés, era difícil que me pagaran a nivel internacional. AfriqGig resolvió esto con pagos locales.",
 
       ctaTitle: "¿Listo para empezar?",
-      ctaText: "Únete hoy a miles de freelancers y empresas que construyen el futuro de África.",
+      ctaText:
+        "Únete hoy a miles de freelancers y empresas que construyen el futuro de África.",
       // ECOSYSTEM SECTION
       ecosystemTitle: "Cómo funciona AfriqGig",
       ecosystemDesc: "Un ecosistema seguro que conecta talento y negocios.",
       clientTitle: "Cliente",
-      clientDesc: "Publica trabajo y deposita fondos a través de Mobile Money/Tarjeta.",
+      clientDesc:
+        "Publica trabajo y deposita fondos a través de Mobile Money/Tarjeta.",
       escrowTitle: "Fideicomiso Seguro (Escrow)",
-      escrowDesc: "Fondos retenidos de forma segura hasta que se apruebe el trabajo.",
+      escrowDesc:
+        "Fondos retenidos de forma segura hasta que se apruebe el trabajo.",
       freelancerTitle: "Freelancer",
-      freelancerDesc: "Entrega el trabajo y retira sus ganancias a Mobile Money.",
+      freelancerDesc:
+        "Entrega el trabajo y retira sus ganancias a Mobile Money.",
 
       // FAQ SECTION
       faqTitle: "Preguntas Frecuentes",
       faqSubtitle: "Todo lo que necesitas saber sobre la plataforma.",
-        
+
       // FAQ ITEMS (Q&A)
       faq1q: "¿Está mi dinero seguro con AfriqGig?",
-      faq1a: "Absolutamente. Utilizamos un sistema de fideicomiso (Escrow). Cuando contratas a un freelancer, tus fondos son retenidos de forma segura por nosotros. Solo liberamos el pago al freelancer una vez que hayas aprobado su trabajo.",
-        
+      faq1a:
+        "Absolutamente. Utilizamos un sistema de fideicomiso (Escrow). Cuando contratas a un freelancer, tus fondos son retenidos de forma segura por nosotros. Solo liberamos el pago al freelancer una vez que hayas aprobado su trabajo.",
+
       faq2q: "¿Cómo retiro mis ganancias?",
-      faq2a: "Apoyamos retiros locales en más de 26 países africanos directamente a Mobile Money (MTN, Orange, M-Pesa), Transferencia Bancaria o Tarjetas Virtuales.",
-        
+      faq2a:
+        "Apoyamos retiros locales en más de 26 países africanos directamente a Mobile Money (MTN, Orange, M-Pesa), Transferencia Bancaria o Tarjetas Virtuales.",
+
       faq3q: "¿Cómo funciona la verificación?",
-      faq3a: "Para garantizar la seguridad, verificamos las identidades utilizando documentos de identidad emitidos por el gobierno. Esto previene el fraude y genera confianza. El proceso toma menos de 24 horas.",
-        
+      faq3a:
+        "Para garantizar la seguridad, verificamos las identidades utilizando documentos de identidad emitidos por el gobierno. Esto previene el fraude y genera confianza. El proceso toma menos de 24 horas.",
+
       faq4q: "¿Puedo usar AfriqGig fuera de África?",
-      faq4a: "¡Sí! Los clientes de cualquier parte (EE. UU., Europa, Asia) pueden contratar talento africano utilizando tarjetas de crédito/débito. Nosotros nos encargamos de la conversión de divisas.",
+      faq4a:
+        "¡Sí! Los clientes de cualquier parte (EE. UU., Europa, Asia) pueden contratar talento africano utilizando tarjetas de crédito/débito. Nosotros nos encargamos de la conversión de divisas.",
       faq5q: "¿Pueden los freelancers publicar trabajos?",
-      faq5a: "¡Sí! Los freelancers pueden cambiar de rol para convertirse en clientes. Simplemente utiliza el botón 'Publicar un trabajo' en tu panel para contratar a otros talentos.",
+      faq5a:
+        "¡Sí! Los freelancers pueden cambiar de rol para convertirse en clientes. Simplemente utiliza el botón 'Publicar un trabajo' en tu panel para contratar a otros talentos.",
 
       // MISC
       viewAllTalent: "Ver todo el talento",
@@ -2430,23 +2705,26 @@ export const translations = {
       card3Text: "Procesamiento de pagos seguro en más de 26 países africanos.",
       card3List1: "Mobile Money (MTN, Orange, M-Pesa)",
       card3List2: "Transferencias bancarias locales y tarjetas",
-      card3List3: "Protección de seguridad 2FA"
+      card3List3: "Protección de seguridad 2FA",
     },
     feedback: {
       title: "Ayúdanos a mejorar AfriqGig",
-      subtitle: "¿Tienes una sugerencia o encontraste un error? ¡Háznoslo saber!",
+      subtitle:
+        "¿Tienes una sugerencia o encontraste un error? ¡Háznoslo saber!",
       placeholder: "Creo que la plataforma debería...",
       send: "Enviar comentarios",
       thankYou: "¡Gracias!",
-      successMessage: "Tus comentarios nos ayudan a construir una mejor plataforma para África."
+      successMessage:
+        "Tus comentarios nos ayudan a construir una mejor plataforma para África.",
     },
     footer: {
-      slogan: "Freelance Simplificado para África. Conectando talento con oportunidades a través de herramientas locales y seguras.",
+      slogan:
+        "Freelance Simplificado para África. Conectando talento con oportunidades a través de herramientas locales y seguras.",
       platform: "Plataforma",
       company: "Compañía",
       suggestFeature: "Sugerir Característica",
       rightsReserved: "Todos los derechos reservados.",
-      builtWithLove: "Construido con amor en África, para el Mundo."
+      builtWithLove: "Construido con amor en África, para el Mundo.",
     },
     liveChat: {
       support: "Soporte",
@@ -2468,7 +2746,8 @@ export const translations = {
       experience: "¿Cómo fue tu experiencia?",
       feedback: "¿Algún comentario? (Opcional)",
       sessionExpired: "Sesión expirada. Por favor, reinicia el chat.",
-      leaveReviewPrompt: "Tu sesión ha expirado. Por favor, califica tu experiencia.",
+      leaveReviewPrompt:
+        "Tu sesión ha expirado. Por favor, califica tu experiencia.",
       history: "Historial",
       newChat: "Nuevo chat",
       reopen: "Reabrir chat",
@@ -2480,31 +2759,37 @@ export const translations = {
     nav: {
       home: "الرئيسية",
       search: "بحث",
-      inbox: "الرسائل",
+      inbox: "صندوق الوارد",
       profile: "الملف الشخصي",
       dashboard: "لوحة التحكم",
       jobs: "وظائفي",
       wallet: "المحفظة",
-      logout: "تسجيل الخروج",
-      postJob: "انشر وظيفة",
+      postJob: "نشر وظيفة",
       community: "المجتمع",
       findWork: "ابحث عن عمل",
       contracts: "العقود",
       overview: "نظرة عامة",
       disputes: "النزاعات",
       users: "المستخدمون",
-      financials: "الشؤون المالية",
+      financials: "المالية",
+      // ✅ NEW: for sidebar entries that previously had no translation key
+      referrals: "الإحالات",
+      withdrawals: "السحوبات",
+      analytics: "التحليلات",
+      feedback: "الملاحظات",
+      contact: "رسائل الاتصال",
       menu: "القائمة",
       general: "عام",
       settings: "الإعدادات",
       support: "المساعدة والدعم",
-      about: "من نحن",
-      legal: "قانوني وخصوصية",
-      howItWorks: "كيف يعمل",
+      about: "معلومات عنا",
+      legal: "الشؤون القانونية والخصوصية",
+      howItWorks: "كيف تعمل",
       whyUs: "لماذا نحن",
       mission: "مهمتنا",
       login: "تسجيل الدخول",
       join: "انضم الآن",
+      logout: "تسجيل الخروج",
     },
     dashboard: {
       welcome: "أهلاً بك",
@@ -2541,12 +2826,14 @@ export const translations = {
       jobCountMiddle: "وظيفة محتملة",
       jobCountEnd: "اليوم.",
       verifyTitle: "احصل على التحقق وعزز مصداقيتك",
-      verifyText: "المستقلون المتحققون لديهم فرصة أكبر بثلاث مرات للحصول على وظيفة. قم بتحميل هويتك للحصول على الشارة الزرقاء وفتح الوظائف المميزة.",
+      verifyText:
+        "المستقلون المتحققون لديهم فرصة أكبر بثلاث مرات للحصول على وظيفة. قم بتحميل هويتك للحصول على الشارة الزرقاء وفتح الوظائف المميزة.",
       verifyBtn: "تحقق الآن",
-      adjustFilters: "حاول تعديل عوامل التصفية الخاصة بك أو تحقق مرة أخرى لاحقًا.",
+      adjustFilters:
+        "حاول تعديل عوامل التصفية الخاصة بك أو تحقق مرة أخرى لاحقًا.",
       match: "تطابق",
       applied: "تم التقديم ✓",
-      tryAgain: "حاول مرة أخرى"
+      tryAgain: "حاول مرة أخرى",
     },
     roles: {
       client: "عميل",
@@ -2582,7 +2869,8 @@ export const translations = {
       errorMomo: "أدخل رقم MOMO صالحًا.",
       errorGeneric: "فشلت المعاملة. حاول مرة أخرى.",
       securityTitle: "حماية محفظتك",
-      securityText: "يستخدم حسابك حاليًا كلمة مرور فقط. قم بتمكين المصادقة الثنائية (2FA) لمنع عمليات السحب غير المصرح بها.",
+      securityText:
+        "يستخدم حسابك حاليًا كلمة مرور فقط. قم بتمكين المصادقة الثنائية (2FA) لمنع عمليات السحب غير المصرح بها.",
       enable2fa: "تمكين 2FA الآن",
       depositDesc: "أدخل المبلغ المراد إيداعه عبر Mobile Money أو البطاقة.",
     },
@@ -2625,19 +2913,22 @@ export const translations = {
       and: "و",
       privacy: "سياسة الخصوصية",
       joinRevolution: "انضم إلى الثورة",
-      joinDesc: "أنشئ ملفك الشخصي، واعرض مهاراتك، وابدأ في الكسب في سوق العمل الحر الرائد في أفريقيا.",
+      joinDesc:
+        "أنشئ ملفك الشخصي، واعرض مهاراتك، وابدأ في الكسب في سوق العمل الحر الرائد في أفريقيا.",
       resetDesc: "أدخل بريدك الإلكتروني لتلقي رابط إعادة التعيين.",
       sendResetLink: "إرسال رابط إعادة التعيين",
       backToLogin: "العودة إلى تسجيل الدخول",
       checkEmail: "تحقق من بريدك الإلكتروني",
-      resetSent: "إذا كان هناك حساب مسجل بهذا البريد الإلكتروني، فقد أرسلنا رابط إعادة التعيين.",
+      resetSent:
+        "إذا كان هناك حساب مسجل بهذا البريد الإلكتروني، فقد أرسلنا رابط إعادة التعيين.",
       resetPassword: "تعيين كلمة مرور جديدة",
       newPassword: "كلمة المرور الجديدة",
       confirmPassword: "تأكيد كلمة المرور",
       updatePassword: "تحديث كلمة المرور",
       passwordMismatch: "كلمتا المرور غير متطابقتين",
       resetSuccessTitle: "نجاح!",
-      resetSuccessDesc: "تمت إعادة تعيين كلمة المرور الخاصة بك. جارٍ إعادة التوجيه إلى تسجيل الدخول...",
+      resetSuccessDesc:
+        "تمت إعادة تعيين كلمة المرور الخاصة بك. جارٍ إعادة التوجيه إلى تسجيل الدخول...",
       address: "العنوان / المدينة",
       passLength: "8+ أحرف",
       passUpper: "حرف كبير",
@@ -2646,7 +2937,8 @@ export const translations = {
       passSpecial: "رمز خاص",
       passWeak: "كلمة المرور ضعيفة جدًا. يرجى استيفاء جميع المتطلبات.",
       chooseFieldMax: "5 كحد أقصى",
-      chooseFieldText: "اختر المجالات الرئيسية التي تتخصص فيها. يساعدنا هذا في التوصية بالمهارات المناسبة.",
+      chooseFieldText:
+        "اختر المجالات الرئيسية التي تتخصص فيها. يساعدنا هذا في التوصية بالمهارات المناسبة.",
     },
     proposal: {
       applyTitle: "التقدم لهذه الوظيفة",
@@ -2773,9 +3065,11 @@ export const translations = {
       contractNotFoundDesc: "يبدو أنه لم يتم إنشاء عقد لهذه الوظيفة بعد.",
       started: "بدأ",
       paymentProtection: "حماية الدفع نشطة",
-      paymentProtectionDesc: "يتم الاحتفاظ بالأموال بأمان في الضمان. إذا كانت لديك أي مشكلات، استخدم زر 'الإبلاغ عن مشكلة'.",
+      paymentProtectionDesc:
+        "يتم الاحتفاظ بالأموال بأمان في الضمان. إذا كانت لديك أي مشكلات، استخدم زر 'الإبلاغ عن مشكلة'.",
       underReview: "العقد قيد المراجعة",
-      underReviewDesc: "تم تقديم نزاع. تم تجميد الأموال بينما يقوم المشرف بمراجعة الحالة.",
+      underReviewDesc:
+        "تم تقديم نزاع. تم تجميد الأموال بينما يقوم المشرف بمراجعة الحالة.",
       originalFiles: "ملفات الوظيفة الأصلية",
       noFiles: "لم يتم تحميل ملفات.",
       approved: "تمت الموافقة",
@@ -2790,7 +3084,8 @@ export const translations = {
       disputeFiled: "تم تقديم نزاع",
       disputeFiledDesc: "تم إخطار المشرف. الأموال مجمدة.",
       reportProblem: "الإبلاغ عن مشكلة",
-      disputeWarning: "تقديم نزاع سيؤدي إلى تجميد أموال العقد فورًا. سيقوم المشرف بمراجعة سجل الدردشة والتسليمات.",
+      disputeWarning:
+        "تقديم نزاع سيؤدي إلى تجميد أموال العقد فورًا. سيقوم المشرف بمراجعة سجل الدردشة والتسليمات.",
       reason: "السبب",
       reasonNoSubmission: "لا يوجد تسليم / اختفاء",
       reasonPoorQuality: "عمل ذو جودة رديئة",
@@ -2819,7 +3114,8 @@ export const translations = {
       importantInfo: "معلومات هامة",
       fillAllFields: "يرجى ملء جميع الحقول.",
       compressionWarning: "سيتم ضغط الصور (.jpg، .png) للعرض على الويب.",
-      zipTip: "للحفاظ على الجودة الأصلية أو رفع مقاطع فيديو بدون ضغط، يرجى أرشفتها في ملف .ZIP.",
+      zipTip:
+        "للحفاظ على الجودة الأصلية أو رفع مقاطع فيديو بدون ضغط، يرجى أرشفتها في ملف .ZIP.",
     },
     chat: {
       title: "الرسائل",
@@ -2839,7 +3135,8 @@ export const translations = {
       micError: "الوصول إلى الميكروفون غير مدعوم أو مرفوض.",
       sendingVoice: "جاري إرسال المذكرة الصوتية...",
       securityTitle: "تحذير أمني للحساب",
-      securityText: "لا تقم بمشاركة أرقام الهواتف أو رسائل البريد الإلكتروني أو الروابط الخارجية (واتساب، تيليجرام، إلخ). سيؤدي اكتشاف ذلك إلى إلغاء تنشيط الحساب فوراً. احتفظ بجميع المراسلات داخل AfriqGig لحمايتك.",
+      securityText:
+        "لا تقم بمشاركة أرقام الهواتف أو رسائل البريد الإلكتروني أو الروابط الخارجية (واتساب، تيليجرام، إلخ). سيؤدي اكتشاف ذلك إلى إلغاء تنشيط الحساب فوراً. احتفظ بجميع المراسلات داخل AfriqGig لحمايتك.",
     },
     profile: {
       title: "ملفي الشخصي",
@@ -2904,7 +3201,8 @@ export const translations = {
       verified: "تم التحقق",
       verifyFailed: "فشل التحقق",
       verifyFailDesc: "الرجاء تحميل مستندات واضحة تطابق تفاصيل ملفك الشخصي.",
-      verifyTip: "تأكد من أن الاسم الموجود على وثيقتك يطابق ملفك الشخصي تمامًا.",
+      verifyTip:
+        "تأكد من أن الاسم الموجود على وثيقتك يطابق ملفك الشخصي تمامًا.",
       docType: "نوع الوثيقة",
       frontBack: "الأمام والخلف (إذا كان متاحاً)",
       docsOnFile: "المستندات الموجودة في الملف",
@@ -2931,45 +3229,59 @@ export const translations = {
       onlineStatus: "إظهار حالة الاتصال",
       dataPrivacy: "البيانات والخصوصية",
       dataDownload: "تنزيل البيانات الشخصية",
-      dataDownloadDesc: "احصل على نسخة من بياناتك بما في ذلك ملفك الشخصي، سجل الوظائف، والرسائل.",
+      dataDownloadDesc:
+        "احصل على نسخة من بياناتك بما في ذلك ملفك الشخصي، سجل الوظائف، والرسائل.",
       archiveRequested: "تم طلب الأرشيف. تحقق من بريدك الإلكتروني قريبًا.",
       requestArchive: "طلب الأرشيف",
       allowData: "السماح بجمع البيانات",
-      allowDataDesc: "ساعدنا في تحسين AfriqGig من خلال مشاركة بيانات الاستخدام.",
+      allowDataDesc:
+        "ساعدنا في تحسين AfriqGig من خلال مشاركة بيانات الاستخدام.",
       searchVis: "رؤية البحث",
       searchVisDesc: "السماح لمحركات البحث (جوجل، بينج) بفهرسة ملفك الشخصي.",
       deactivateTitle: "تعطيل الحساب؟",
-      deactivateDesc: "سيؤدي هذا إلى إخفاء ملفك الشخصي والوظائف النشطة. يمكنك إعادة التفعيل عن طريق تسجيل الدخول في أي وقت.",
+      deactivateDesc:
+        "سيؤدي هذا إلى إخفاء ملفك الشخصي والوظائف النشطة. يمكنك إعادة التفعيل عن طريق تسجيل الدخول في أي وقت.",
       typeDelete: "اكتب",
       toConfirm: "أدناه للتأكيد",
       scanQr: "مسح رمز الاستجابة السريعة (QR)",
-      scanQrDesc: "افتح تطبيق المصادقة الخاص بك (جوجل/مايكروسوفت) وقم بمسح هذا الرمز لتمكين المصادقة الثنائية (2FA).",
+      scanQrDesc:
+        "افتح تطبيق المصادقة الخاص بك (جوجل/مايكروسوفت) وقم بمسح هذا الرمز لتمكين المصادقة الثنائية (2FA).",
       verifyEnable: "التحقق والتمكين",
       twoFaSuccess: "تم تمكين المصادقة الثنائية بنجاح!",
       errorSave: "فشل في حفظ الإعدادات.",
       errorNoDoc: "الرجاء تحميل وثيقة هوية صالحة.",
       enterCode: "أدخل الرمز المكون من 6 أرقام",
       twoFaInvalid: "رمز غير صالح. الرجاء المحاولة مرة أخرى.",
+      enableHiring: "هل ترغب أيضاً في توظيف المواهب؟",
+      enableHiringDesc:
+        "قم بتفعيل هذا الخيار لنشر الوظائف وتوظيف مستقلين آخرين، دون الحاجة لإنشاء حساب عميل منفصل.",
     },
     about: {
       heroTitle: "تمكين المواهب الأفريقية",
-      heroSubtitle: "مهمتنا هي سد الفجوة بين ألمع العقول في إفريقيا والاقتصاد العالمي، وخلق نظام بيئي آمن حيث الثقة هي العملة المتداولة.",
+      heroSubtitle:
+        "مهمتنا هي سد الفجوة بين ألمع العقول في إفريقيا والاقتصاد العالمي، وخلق نظام بيئي آمن حيث الثقة هي العملة المتداولة.",
       storyTitle: "قصتنا",
-      storyText1: "بدأت بملاحظة بسيطة: المستقلون الأفارقة موهوبون بشكل لا يصدق ولكن غالبًا ما يتم استبعادهم من السوق العالمية بسبب حواجز الدفع وقضايا الثقة.",
+      storyText1:
+        "بدأت بملاحظة بسيطة: المستقلون الأفارقة موهوبون بشكل لا يصدق ولكن غالبًا ما يتم استبعادهم من السوق العالمية بسبب حواجز الدفع وقضايا الثقة.",
       storyText2: "تأسست في الكاميرون،",
-      storyText3: "تم بناء المنصة لحل هذه المشكلة. لقد قمنا بدمج طرق الدفع المحلية مثل Mobile Money وبنينا نظام تحقق صارم لإنشاء منصة تبدو مألوفة، ولكنها تعمل كمنشأة عالمية.",
+      storyText3:
+        "تم بناء المنصة لحل هذه المشكلة. لقد قمنا بدمج طرق الدفع المحلية مثل Mobile Money وبنينا نظام تحقق صارم لإنشاء منصة تبدو مألوفة، ولكنها تعمل كمنشأة عالمية.",
       valuesTitle: "قيمنا الأساسية",
       value1Title: "الشمولية",
-      value1Text: "يجب ألا يكون للفرصة حدود. نحن نبني أدوات تعمل للجميع، في كل مكان، بغض النظر عن الحالة المصرفية.",
+      value1Text:
+        "يجب ألا يكون للفرصة حدود. نحن نبني أدوات تعمل للجميع، في كل مكان، بغض النظر عن الحالة المصرفية.",
       value2Title: "الثقة",
-      value2Text: "نتحقق من الهويات ونؤمن المدفوعات عبر خدمة الضمان (Escrow) حتى تتمكن من التركيز على العمل، وليس المخاطر.",
+      value2Text:
+        "نتحقق من الهويات ونؤمن المدفوعات عبر خدمة الضمان (Escrow) حتى تتمكن من التركيز على العمل، وليس المخاطر.",
       value3Title: "الابتكار",
       backHome: "العودة إلى الصفحة الرئيسية",
-      value3Text: "نقوم بتطوير تقنيتنا باستمرار لحل التحديات الفريدة للسوق الأفريقي."
+      value3Text:
+        "نقوم بتطوير تقنيتنا باستمرار لحل التحديات الفريدة للسوق الأفريقي.",
     },
     contact: {
       title: "تواصل معنا",
-      subtitle: "هل لديك أسئلة حول المنصة، المدفوعات، أو الشراكات؟ نحن هنا للمساعدة.",
+      subtitle:
+        "هل لديك أسئلة حول المنصة، المدفوعات، أو الشراكات؟ نحن هنا للمساعدة.",
       emailTitle: "راسلنا عبر البريد الإلكتروني",
       emailText: "فريقنا الودود مستعد لخدمتك.",
       visitTitle: "قم بزيارتنا",
@@ -2985,7 +3297,7 @@ export const translations = {
       messagePlaceholder: "كيف يمكننا مساعدتك؟",
       sendBtn: "إرسال الرسالة",
       sending: "جاري الإرسال...",
-      error: "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى."
+      error: "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.",
     },
     admin: {
       backToDashboard: "العودة إلى لوحة التحكم",
@@ -3012,7 +3324,7 @@ export const translations = {
       deadline: "الموعد النهائي",
       nextStep: "الخطوة التالية",
       postNow: "انشر الوظيفة الآن",
-      
+
       // Errors
       errorTitle: "الرجاء إدخال عنوان الوظيفة.",
       errorCategory: "الرجاء تحديد فئة.",
@@ -3022,14 +3334,14 @@ export const translations = {
       errorDeadline: "الرجاء تحديد موعد نهائي.",
       errorLogin: "الرجاء تسجيل الدخول مرة أخرى.",
       errorServer: "رفض الخادم الطلب",
-      errorConnection: "فشل الاتصال بالخادم"
+      errorConnection: "فشل الاتصال بالخادم",
     },
     notificationsPage: {
       title: "الإشعارات",
       subtitle: "ابقَ على اطلاع دائم بنشاطك.",
       markAllRead: "وضع علامة 'مقروء' على الكل",
       markRead: "وضع علامة 'مقروء'",
-      noNotifications: "لا توجد إشعارات بعد."
+      noNotifications: "لا توجد إشعارات بعد.",
     },
     referrals: {
       limitedOffer: "عرض لفترة محدودة",
@@ -3037,7 +3349,8 @@ export const translations = {
       heroSubtitle: "ووفر في الرسوم!",
       heroDescStart: "احصل على",
       heroDescPercent: "خصم 50%",
-      heroDescEnd: "على رسوم عمولتنا (تدفع 2.5% بدلاً من 5% كمستقل، بينما يحصل العميل على خصم 100% على عمولتنا) لكل مستخدم جديد يسجل باستخدام الرابط الخاص بك.",
+      heroDescEnd:
+        "على رسوم عمولتنا (تدفع 2.5% بدلاً من 5% كمستقل، بينما يحصل العميل على خصم 100% على عمولتنا) لكل مستخدم جديد يسجل باستخدام الرابط الخاص بك.",
       copy: "نسخ",
       copied: "تم النسخ!",
       statFriends: "الأصدقاء المحالون",
@@ -3046,23 +3359,29 @@ export const translations = {
       shareSocials: "شارك عبر وسائل التواصل",
       howItWorks: "كيف يعمل",
       step1Title: "شارك الرابط الخاص بك",
-      step1Desc: "انسخ الرابط الفريد الخاص بك أعلاه وأرسله إلى العملاء أو الأصدقاء الذين يحتاجون إلى إنجاز عمل.",
+      step1Desc:
+        "انسخ الرابط الفريد الخاص بك أعلاه وأرسله إلى العملاء أو الأصدقاء الذين يحتاجون إلى إنجاز عمل.",
       step2Title: "يقومون بالتسجيل",
-      step2Desc: "عندما يقومون بإنشاء حساب باستخدام الرابط الخاص بك، يحصلون تلقائيًا على خصم 100% على عمولة أول وظيفتين لهم.",
+      step2Desc:
+        "عندما يقومون بإنشاء حساب باستخدام الرابط الخاص بك، يحصلون تلقائيًا على خصم 100% على عمولة أول وظيفتين لهم.",
       step3Title: "تربح الخصم",
-      step3Desc: "مقابل كل إحالة نشطة، أنت كمستقل تدفع أيضًا عمولة 2.5% (بدلاً من 5%) على وظيفتك التالية!",
-      shareText: "انضم إليّ في AfriqGig! الطريقة الأكثر أمانًا لتوظيف المواهب الأفريقية. سجل وسنحصل كلانا على خصم 50% على رسوم العمولة! 🚀",
+      step3Desc:
+        "مقابل كل إحالة نشطة، أنت كمستقل تدفع أيضًا عمولة 2.5% (بدلاً من 5%) على وظيفتك التالية!",
+      shareText:
+        "انضم إليّ في AfriqGig! الطريقة الأكثر أمانًا لتوظيف المواهب الأفريقية. سجل وسنحصل كلانا على خصم 50% على رسوم العمولة! 🚀",
       give50get50: "امنح 50%، واحصل على 50%!",
       bannerDesc: "أحل صديقًا. كلاكما يوفر 50% على رسوم العمولة.",
       getLink: "احصل على الرابط",
       want50: "هل تريد خصم 50%؟",
-      modalText: "أحل عميلاً أو مستقلاً إلى AfriqGig. عند تسجيلهم، يحصل كلاكما على خصم 50% على رسوم المنصة لوظيفتك التالية!",
+      modalText:
+        "أحل عميلاً أو مستقلاً إلى AfriqGig. عند تسجيلهم، يحصل كلاكما على خصم 50% على رسوم المنصة لوظيفتك التالية!",
       inviteNow: "ادعُ الأصدقاء الآن",
-      remindLater: "ذكّرني لاحقًا"
+      remindLater: "ذكّرني لاحقًا",
     },
     support: {
       title: "مركز المساعدة",
-      subtitle: "ابحث عن الإجابات، واحصل على الدعم، وتعلّم كيف تنجح على AfriqGig.",
+      subtitle:
+        "ابحث عن الإجابات، واحصل على الدعم، وتعلّم كيف تنجح على AfriqGig.",
       faqTitle: "الأسئلة الشائعة",
       faqDesc: "إجابات فورية للأسئلة الشائعة حول المدفوعات والتوظيف.",
       contactTitle: "اتصل بالدعم",
@@ -3070,10 +3389,12 @@ export const translations = {
       communityTitle: "منتدى المجتمع",
       communityDesc: "اطلب النصائح والمشورة من زملائك المستقلين والعملاء.",
       stillNeedHelp: "هل ما زلت بحاجة إلى مساعدة؟",
-      helpText: "فريق الدعم لدينا متاح من الاثنين إلى الجمعة من الساعة 8 صباحًا حتى 6 مساءً بتوقيت غرب أفريقيا لمساعدتك في أي مشكلات.",
-      liveChat: "تحتاج إلى مساعدة؟ تحدث معنا مباشرة! انقر على أيقونة الدردشة في أسفل اليمين.",
+      helpText:
+        "فريق الدعم لدينا متاح من الاثنين إلى الجمعة من الساعة 8 صباحًا حتى 6 مساءً بتوقيت غرب أفريقيا لمساعدتك في أي مشكلات.",
+      liveChat:
+        "تحتاج إلى مساعدة؟ تحدث معنا مباشرة! انقر على أيقونة الدردشة في أسفل اليمين.",
       emailSupport: "الدعم عبر البريد الإلكتروني",
-      openTicket: "فتح تذكرة دعم"
+      openTicket: "فتح تذكرة دعم",
     },
     faq: {
       title: "كيف يمكننا المساعدة؟",
@@ -3125,62 +3446,75 @@ export const translations = {
       q16: "هل يمكنني تغيير اسم المستخدم الخاص بي؟",
       a16: "لأسباب أمنية، لا يمكن تغيير أسماء المستخدمين بمجرد إنشائها. يمكنك، مع ذلك، تحديث اسم العرض الخاص بك.",
       q17: "هل تقدمون استردادًا للأموال؟",
-      a17: "تتوفر استردادات للأموال المحتجزة في الضمان والتي لم يتم تحريرها للمستقل. رسوم الخدمة غير قابلة للاسترداد."
+      a17: "تتوفر استردادات للأموال المحتجزة في الضمان والتي لم يتم تحريرها للمستقل. رسوم الخدمة غير قابلة للاسترداد.",
     },
     privacy: {
       title: "سياسة الخصوصية",
       lastUpdated: "آخر تحديث: ديسمبر 2025",
-      
+
       section1Title: "1. المعلومات التي نجمعها",
-      section1Text: "نحن نجمع المعلومات التي تقدمها لنا مباشرة، مثل عند إنشاء أو تعديل حسابك، طلب خدمات عند الطلب، الاتصال بدعم العملاء، أو التواصل معنا بأي طريقة أخرى. قد تتضمن هذه المعلومات: الاسم، البريد الإلكتروني، رقم الهاتف، العنوان البريدي، صورة الملف الشخصي، طريقة الدفع، وغيرها من المعلومات التي تختار تقديمها.",
-      
+      section1Text:
+        "نحن نجمع المعلومات التي تقدمها لنا مباشرة، مثل عند إنشاء أو تعديل حسابك، طلب خدمات عند الطلب، الاتصال بدعم العملاء، أو التواصل معنا بأي طريقة أخرى. قد تتضمن هذه المعلومات: الاسم، البريد الإلكتروني، رقم الهاتف، العنوان البريدي، صورة الملف الشخصي، طريقة الدفع، وغيرها من المعلومات التي تختار تقديمها.",
+
       section2Title: "2. كيف نستخدم معلوماتك",
       section2Intro: "نستخدم المعلومات التي نجمعها من أجل:",
       section2Li1: "توفير خدماتنا وصيانتها وتحسينها.",
       section2Li2: "تسهيل المدفوعات والاتصالات بين العملاء والمستقلين.",
       section2Li3: "التحقق من هويتك ومنع الاحتيال.",
-      section2Li4: "إرسال الإيصالات والتحديثات والتنبيهات الأمنية ورسائل الدعم إليك.",
-      
+      section2Li4:
+        "إرسال الإيصالات والتحديثات والتنبيهات الأمنية ورسائل الدعم إليك.",
+
       section3Title: "3. أمان البيانات",
-      section3Text: "نحن ننفذ تدابير تقنية وتنظيمية مناسبة لحماية بياناتك الشخصية من المعالجة غير المصرح بها أو غير القانونية، أو الفقد العرضي، أو التدمير، أو الضرر. ومع ذلك، لا يوجد إرسال عبر الإنترنت آمن بنسبة 100%، ولا يمكننا ضمان الأمان المطلق.",
-      
+      section3Text:
+        "نحن ننفذ تدابير تقنية وتنظيمية مناسبة لحماية بياناتك الشخصية من المعالجة غير المصرح بها أو غير القانونية، أو الفقد العرضي، أو التدمير، أو الضرر. ومع ذلك، لا يوجد إرسال عبر الإنترنت آمن بنسبة 100%، ولا يمكننا ضمان الأمان المطلق.",
+
       section4Title: "4. حقوقك",
-      section4Text: "لديك الحق في الوصول إلى بياناتك الشخصية أو تصحيحها أو حذفها. يمكنك إدارة معلوماتك مباشرة من إعدادات ملفك الشخصي. لطلبات حذف البيانات، يرجى الاتصال بفريق الدعم لدينا."
+      section4Text:
+        "لديك الحق في الوصول إلى بياناتك الشخصية أو تصحيحها أو حذفها. يمكنك إدارة معلوماتك مباشرة من إعدادات ملفك الشخصي. لطلبات حذف البيانات، يرجى الاتصال بفريق الدعم لدينا.",
     },
     terms: {
       title: "شروط الخدمة",
       lastUpdated: "آخر تحديث: ديسمبر 2025",
-      
+
       section1Title: "1. مقدمة",
-      section1Text: "مرحبًا بك في AfriqGig. من خلال الوصول إلى موقعنا الإلكتروني أو استخدامه، فإنك توافق على الالتزام بشروط الخدمة هذه وسياسة الخصوصية الخاصة بنا. إذا كنت لا توافق على أي جزء من هذه الشروط، يجب عليك عدم استخدام منصتنا.",
-      
+      section1Text:
+        "مرحبًا بك في AfriqGig. من خلال الوصول إلى موقعنا الإلكتروني أو استخدامه، فإنك توافق على الالتزام بشروط الخدمة هذه وسياسة الخصوصية الخاصة بنا. إذا كنت لا توافق على أي جزء من هذه الشروط، يجب عليك عدم استخدام منصتنا.",
+
       section2Title: "2. حسابات المستخدمين",
-      section2Text: "للوصول إلى ميزات معينة، يجب عليك التسجيل للحصول على حساب. أنت توافق على تقديم معلومات دقيقة وحديثة وكاملة أثناء عملية التسجيل وتحديث هذه المعلومات للحفاظ عليها دقيقة وحديثة وكاملة.",
+      section2Text:
+        "للوصول إلى ميزات معينة، يجب عليك التسجيل للحصول على حساب. أنت توافق على تقديم معلومات دقيقة وحديثة وكاملة أثناء عملية التسجيل وتحديث هذه المعلومات للحفاظ عليها دقيقة وحديثة وكاملة.",
       section2Li1: "أنت مسؤول عن الحفاظ على سرية كلمة المرور الخاصة بك.",
-      section2Li2: "أنت توافق على عدم الكشف عن كلمة المرور الخاصة بك لأي طرف ثالث.",
-      section2Li3: "يجب عليك إخطارنا فورًا عند علمك بأي خرق أمني أو استخدام غير مصرح به لحسابك.",
-      
+      section2Li2:
+        "أنت توافق على عدم الكشف عن كلمة المرور الخاصة بك لأي طرف ثالث.",
+      section2Li3:
+        "يجب عليك إخطارنا فورًا عند علمك بأي خرق أمني أو استخدام غير مصرح به لحسابك.",
+
       section3Title: "3. التزامات المستقل والعميل",
       section3FreelancerLabel: "المستقلون:",
-      section3FreelancerText: "أنت توافق على أداء العمل بطريقة احترافية، والتسليم في الوقت المحدد، واحترام سرية العميل.",
+      section3FreelancerText:
+        "أنت توافق على أداء العمل بطريقة احترافية، والتسليم في الوقت المحدد، واحترام سرية العميل.",
       section3ClientLabel: "العملاء:",
-      section3ClientText: "أنت توافق على الدفع مقابل العمل بأمان عبر نظام الضمان الخاص بنا. يتم حجز الأموال حتى توافق على العمل أو يتم حل النزاع.",
-      
+      section3ClientText:
+        "أنت توافق على الدفع مقابل العمل بأمان عبر نظام الضمان الخاص بنا. يتم حجز الأموال حتى توافق على العمل أو يتم حل النزاع.",
+
       section4Title: "4. المدفوعات والضمان (Escrow)",
-      section4Text: "تستخدم AfriqGig نظام ضمان آمنًا. عند بدء العقد، يتم حجز المبلغ المتفق عليه من قبل AfriqGig. يتم تحرير الأموال للمستقل فقط عند الانتهاء من العمل بما يرضي العميل.",
-      
+      section4Text:
+        "تستخدم AfriqGig نظام ضمان آمنًا. عند بدء العقد، يتم حجز المبلغ المتفق عليه من قبل AfriqGig. يتم تحرير الأموال للمستقل فقط عند الانتهاء من العمل بما يرضي العميل.",
+
       section5Title: "5. تسوية النزاعات",
-      section5Text: "في حالة النزاع، يوافق المستخدمون على استخدام مركز تسوية النزاعات في AfriqGig. سيقوم فريق الدعم لدينا بمراجعة الأدلة المقدمة من كلا الطرفين واتخاذ قرار ملزم بناءً على شروط العقد."
+      section5Text:
+        "في حالة النزاع، يوافق المستخدمون على استخدام مركز تسوية النزاعات في AfriqGig. سيقوم فريق الدعم لدينا بمراجعة الأدلة المقدمة من كلا الطرفين واتخاذ قرار ملزم بناءً على شروط العقد.",
     },
     landing: {
       liveBadge: "مباشر: العمل الحر مُبسّط",
       heroTitleStart: "وظّف أفضل",
       heroTitleMiddle: "المواهب الأفريقية",
       heroTitleEnd: "لمشاريعك",
-      heroSubtitle: "تواصل مع مستقلين تم فحصهم عبر القارة. مدفوعات آمنة عبر الضمان (Escrow) وخدمة الأموال عبر الهاتف المحمول. عمل عالي الجودة، مضمون.",
+      heroSubtitle:
+        "تواصل مع مستقلين تم فحصهم عبر القارة. مدفوعات آمنة عبر الضمان (Escrow) وخدمة الأموال عبر الهاتف المحمول. عمل عالي الجودة، مضمون.",
       findTalent: "البحث عن مواهب",
       findWork: "البحث عن عمل",
-      
+
       step1Title: "1. انشر أو ابحث",
       step1Text: "ينشر العملاء الوظائف؛ ويبحث المستقلون عن عمل.",
       step2Title: "2. وظّف وتحقق",
@@ -3191,32 +3525,41 @@ export const translations = {
       step4Text: "احصل على أموالك فورًا عبر MOMO أو البنك.",
 
       missionTitle: "بُنيت من قبل الأفارقة، من أجل أفريقيا",
-      missionText1: "أدركنا أن العديد من الأفارقة، خاصة في الكاميرون، يجدون صعوبة في استخدام مهاراتهم وتحقيق الدخل منها على المنصات الغربية مثل Upwork و Fiverr بسبب حواجز الدفع والمنافسة العالمية الشديدة.",
-      missionText2: "وُلد لحل هذه المشكلة. نحن نبني منصة مصممة خصيصًا للسوق الأفريقية – تدعم طرق الدفع المحلية (MOMO)، وتسد فجوات الثقة من خلال التحقق من الهوية، وتربط العملاء بمواهب محلية متنوعة وعالية الجودة بأسعار معقولة.",
+      missionText1:
+        "أدركنا أن العديد من الأفارقة، خاصة في الكاميرون، يجدون صعوبة في استخدام مهاراتهم وتحقيق الدخل منها على المنصات الغربية مثل Upwork و Fiverr بسبب حواجز الدفع والمنافسة العالمية الشديدة.",
+      missionText2:
+        "وُلد لحل هذه المشكلة. نحن نبني منصة مصممة خصيصًا للسوق الأفريقية – تدعم طرق الدفع المحلية (MOMO)، وتسد فجوات الثقة من خلال التحقق من الهوية، وتربط العملاء بمواهب محلية متنوعة وعالية الجودة بأسعار معقولة.",
 
       topTalentTitle: "أعلى المواهب تقييمًا",
       topTalentDesc: "وظّف محترفين تحققنا منهم، ولديهم سجلات أداء مثبتة.",
 
       whyUsTitle: "بُني من أجل الثقة في أفريقيا",
       whyUsDesc: "نظام بيئي آمن حيث الجودة هي المعيار.",
-      
+
       card1Title: "مدفوعات الضمان الآمنة",
-      card1Text: "نحن نحتفظ بالأموال بأمان حتى يتم الموافقة على العمل. يحصل العملاء على ما يدفعون مقابله، ويتم دفع أجر المستقلين في الوقت المحدد. لا مزيد من عمليات الاحتيال، فقط معاملات آمنة.",
-      
+      card1Text:
+        "نحن نحتفظ بالأموال بأمان حتى يتم الموافقة على العمل. يحصل العملاء على ما يدفعون مقابله، ويتم دفع أجر المستقلين في الوقت المحدد. لا مزيد من عمليات الاحتيال، فقط معاملات آمنة.",
+
       card2Title: "هويات متحققة",
       card2Text: "نتحقق من الهويات حتى تعرف بالضبط مع من تعمل.",
-      
+
       card4Title: "المجتمع أولاً",
-      card4Text: "نحن أكثر من مجرد سوق. انضم إلى منتدياتنا المجتمعية، وشارك المعرفة، واحصل على إرشاد، وطوّر مسيرتك المهنية مع زملائك الأفارقة.",
+      card4Text:
+        "نحن أكثر من مجرد سوق. انضم إلى منتدياتنا المجتمعية، وشارك المعرفة، واحصل على إرشاد، وطوّر مسيرتك المهنية مع زملائك الأفارقة.",
 
       testiTitle: "قصص من مستخدمينا",
-      testi1: "جعلت AfriqGig من السهل جدًا العثور على مطور يفهم سياقي المحلي. الدفع عبر MOMO كان منقذًا!",
-      testi2: "أخيرًا، منصة تقدر المستقلين الأفارقة. تم توظيفي في غضون يومين ونظام الضمان يجعلني أشعر بالأمان.",
-      testi3: "منحتني عملية التحقق الثقة. أعلم أنني أوظف أشخاصًا حقيقيين، وليس روبوتات.",
-      testi4: "بصفتي كاميرونيًا، كان الحصول على الأموال دوليًا أمرًا صعبًا. حلت AfriqGig هذه المشكلة بالمدفوعات المحلية.",
+      testi1:
+        "جعلت AfriqGig من السهل جدًا العثور على مطور يفهم سياقي المحلي. الدفع عبر MOMO كان منقذًا!",
+      testi2:
+        "أخيرًا، منصة تقدر المستقلين الأفارقة. تم توظيفي في غضون يومين ونظام الضمان يجعلني أشعر بالأمان.",
+      testi3:
+        "منحتني عملية التحقق الثقة. أعلم أنني أوظف أشخاصًا حقيقيين، وليس روبوتات.",
+      testi4:
+        "بصفتي كاميرونيًا، كان الحصول على الأموال دوليًا أمرًا صعبًا. حلت AfriqGig هذه المشكلة بالمدفوعات المحلية.",
 
       ctaTitle: "هل أنت مستعد للبدء؟",
-      ctaText: "انضم إلى الآلاف من المستقلين والشركات التي تبني مستقبل أفريقيا اليوم.",
+      ctaText:
+        "انضم إلى الآلاف من المستقلين والشركات التي تبني مستقبل أفريقيا اليوم.",
       card3Title: "المدفوعات المحلية",
       card3Text: "معالجة مدفوعات آمنة عبر أكثر من 26 دولة أفريقية.",
       card3List1: "Mobile Money (MTN, Orange, M-Pesa)",
@@ -3235,24 +3578,29 @@ export const translations = {
       // FAQ SECTION
       faqTitle: "الأسئلة المتداولة",
       faqSubtitle: "كل ما تحتاج لمعرفته حول المنصة.",
-        
+
       // FAQ ITEMS (Q&A)
       faq1q: "هل أموالي آمنة مع AfriqGig؟",
-      faq1a: "بالتأكيد. نحن نستخدم نظام الضمان (Escrow). عندما تقوم بتوظيف مستقل، يتم الاحتفاظ بأموالك بأمان من قبلنا. نقوم بتحرير الدفع للمستقل فقط بمجرد موافقتك على عمله.",
-        
+      faq1a:
+        "بالتأكيد. نحن نستخدم نظام الضمان (Escrow). عندما تقوم بتوظيف مستقل، يتم الاحتفاظ بأموالك بأمان من قبلنا. نقوم بتحرير الدفع للمستقل فقط بمجرد موافقتك على عمله.",
+
       faq2q: "كيف أسحب أرباحي؟",
-      faq2a: "نحن ندعم عمليات السحب المحلية في أكثر من 26 دولة أفريقية مباشرة إلى Mobile Money (MTN، Orange، M-Pesa)، أو التحويل المصرفي، أو البطاقات الافتراضية.",
-        
+      faq2a:
+        "نحن ندعم عمليات السحب المحلية في أكثر من 26 دولة أفريقية مباشرة إلى Mobile Money (MTN، Orange، M-Pesa)، أو التحويل المصرفي، أو البطاقات الافتراضية.",
+
       faq3q: "كيف يعمل التحقق؟",
-      faq3a: "لضمان السلامة، نتحقق من الهويات باستخدام بطاقات الهوية الصادرة عن الحكومة. هذا يمنع الاحتيال ويبني الثقة. تستغرق العملية أقل من 24 ساعة.",
-        
+      faq3a:
+        "لضمان السلامة، نتحقق من الهويات باستخدام بطاقات الهوية الصادرة عن الحكومة. هذا يمنع الاحتيال ويبني الثقة. تستغرق العملية أقل من 24 ساعة.",
+
       faq4q: "هل يمكنني استخدام AfriqGig خارج أفريقيا؟",
-      faq4a: "نعم! يمكن للعملاء من أي مكان (الولايات المتحدة الأمريكية، أوروبا، آسيا) توظيف المواهب الأفريقية باستخدام بطاقات الائتمان/الخصم. نحن نتولى تحويل العملات.",
+      faq4a:
+        "نعم! يمكن للعملاء من أي مكان (الولايات المتحدة الأمريكية، أوروبا، آسيا) توظيف المواهب الأفريقية باستخدام بطاقات الائتمان/الخصم. نحن نتولى تحويل العملات.",
       faq5q: "هل يمكن للمستقلين نشر وظائف؟",
-      faq5a: "نعم! يمكن للمستقلين تبديل الأدوار ليصبحوا عملاء. ببساطة، استخدم زر 'نشر وظيفة' في لوحة التحكم الخاصة بك لتوظيف مواهب أخرى.",
+      faq5a:
+        "نعم! يمكن للمستقلين تبديل الأدوار ليصبحوا عملاء. ببساطة، استخدم زر 'نشر وظيفة' في لوحة التحكم الخاصة بك لتوظيف مواهب أخرى.",
 
       // MISC
-      viewAllTalent: "عرض جميع المواهب"
+      viewAllTalent: "عرض جميع المواهب",
     },
     feedback: {
       title: "ساعدنا في تحسين AfriqGig",
@@ -3260,15 +3608,16 @@ export const translations = {
       placeholder: "أعتقد أن المنصة يجب أن...",
       send: "إرسال الملاحظات",
       thankYou: "شكرًا لك!",
-      successMessage: "ملاحظاتك تساعدنا في بناء منصة أفضل لأفريقيا."
+      successMessage: "ملاحظاتك تساعدنا في بناء منصة أفضل لأفريقيا.",
     },
     footer: {
-      slogan: "العمل الحر المُبسّط لأفريقيا. ربط المواهب بالفرص عبر أدوات محلية وآمنة.",
+      slogan:
+        "العمل الحر المُبسّط لأفريقيا. ربط المواهب بالفرص عبر أدوات محلية وآمنة.",
       platform: "المنصة",
       company: "الشركة",
       suggestFeature: "اقتراح ميزة",
       rightsReserved: "جميع الحقوق محفوظة.",
-      builtWithLove: "بُنيت بحب في أفريقيا، من أجل العالم."
+      builtWithLove: "بُنيت بحب في أفريقيا، من أجل العالم.",
     },
     liveChat: {
       support: "الدعم",
@@ -3298,35 +3647,42 @@ export const translations = {
       checkHistory: "يمكنك إعادة فتح هذه المحادثة من علامة تبويب السجل.",
     },
   },
-  sw: { // Swahili
+  sw: {
+    // Swahili
     nav: {
-      home: "Nyumbani",
+      home: "Mwanzo",
       search: "Tafuta",
-      inbox: "Ujumbe",
+      inbox: "Kikasha",
       profile: "Wasifu",
       dashboard: "Dashibodi",
       jobs: "Kazi Zangu",
       wallet: "Pochi",
-      logout: "Toka",
       postJob: "Chapisha Kazi",
-      community: "Jumuiya",
+      community: "Jamii",
       findWork: "Tafuta Kazi",
       contracts: "Mikataba",
       overview: "Muhtasari",
-      disputes: "Migogoro",
+      disputes: "Mizozo",
       users: "Watumiaji",
-      financials: "Mambo ya Kifedha",
+      financials: "Kifedha",
+      // ✅ NEW: for sidebar entries that previously had no translation key
+      referrals: "Marejeleo",
+      withdrawals: "Utoaji Fedha",
+      analytics: "Uchanganuzi",
+      feedback: "Maoni",
+      contact: "Ujumbe wa Mawasiliano",
       menu: "Menyu",
       general: "Jumla",
       settings: "Mipangilio",
       support: "Msaada na Usaidizi",
       about: "Kuhusu Sisi",
-      legal: "Sheria na Faragha",
+      legal: "Kisheria na Faragha",
       howItWorks: "Inavyofanya Kazi",
-      whyUs: "Kwa Nini Utuchague",
+      whyUs: "Kwa Nini Sisi",
       mission: "Dhamira Yetu",
       login: "Ingia",
       join: "Jiunge Sasa",
+      logout: "Ondoka",
     },
     dashboard: {
       welcome: "Karibu",
@@ -3338,7 +3694,8 @@ export const translations = {
       posted: "Imechapishwa",
       remote: "Kijijini",
       findTalent: "Tafuta Vipaji",
-      discover: "Gundua wafanyakazi huru wenye viwango vya juu kwa miradi yako.",
+      discover:
+        "Gundua wafanyakazi huru wenye viwango vya juu kwa miradi yako.",
       searchPlaceholder: "Tafuta kwa jina, ujuzi, au cheo...",
       filter: "Chuja",
       noFreelancers: "Hakuna wafanyakazi huru waliopatikana.",
@@ -3363,12 +3720,14 @@ export const translations = {
       jobCountMiddle: "kazi zinazowezekana",
       jobCountEnd: "leo.",
       verifyTitle: "Thibitishwa na Ongeza Uaminifu Wako",
-      verifyText: "Wafanyakazi huru waliothibitishwa wana uwezekano wa kuajiriwa mara 3 zaidi. Pakia Kitambulisho chako ili kupata beji ya bluu na kufungua kazi za hali ya juu.",
+      verifyText:
+        "Wafanyakazi huru waliothibitishwa wana uwezekano wa kuajiriwa mara 3 zaidi. Pakia Kitambulisho chako ili kupata beji ya bluu na kufungua kazi za hali ya juu.",
       verifyBtn: "Thibitisha Sasa",
-      adjustFilters: "Jaribu kurekebisha vichungi vyako au angalia tena baadaye.",
+      adjustFilters:
+        "Jaribu kurekebisha vichungi vyako au angalia tena baadaye.",
       match: "Inalingana",
       applied: "Umetuma Maombi ✓",
-      tryAgain: "Jaribu Tena"
+      tryAgain: "Jaribu Tena",
     },
     roles: {
       client: "Mteja",
@@ -3404,7 +3763,8 @@ export const translations = {
       errorMomo: "Ingiza namba halali ya MOMO.",
       errorGeneric: "Muamala Umeshindikana. Jaribu tena.",
       securityTitle: "Linda Mkoba Wako",
-      securityText: "Akaunti yako kwa sasa inatumia nenosiri pekee. Washa Uthibitishaji wa Hatua Mbili (2FA) ili kuzuia utoaji usioidhinishwa.",
+      securityText:
+        "Akaunti yako kwa sasa inatumia nenosiri pekee. Washa Uthibitishaji wa Hatua Mbili (2FA) ili kuzuia utoaji usioidhinishwa.",
       enable2fa: "Washa 2FA Sasa",
       depositDesc: "Weka kiasi cha kuweka kupitia Mobile Money au Kadi.",
     },
@@ -3437,7 +3797,8 @@ export const translations = {
       accountCreated: "Akaunti Imeundwa!",
       signInNew: "Tafadhali ingia kwa kutumia vitambulisho vyako vipya.",
       invalidCreds: "Vitambulisho batili. Tafadhali angalia ulichoingiza.",
-      unexpectedError: "Hitilafu isiyotarajiwa imetokea. Tafadhali jaribu tena.",
+      unexpectedError:
+        "Hitilafu isiyotarajiwa imetokea. Tafadhali jaribu tena.",
       errorTerms: "Lazima ukubali Sheria na Masharti na Sera ya Faragha.",
       errorCountry: "Tafadhali taja nchi yako.",
       errorSkills: "Tafadhali chagua angalau ujuzi mmoja.",
@@ -3447,19 +3808,22 @@ export const translations = {
       and: "na",
       privacy: "Sera ya Faragha",
       joinRevolution: "Jiunge na Mapinduzi",
-      joinDesc: "Unda wasifu wako, onyesha ujuzi wako, na uanze kujipatia kipato kwenye soko kuu la wafanyakazi huru la Afrika.",
+      joinDesc:
+        "Unda wasifu wako, onyesha ujuzi wako, na uanze kujipatia kipato kwenye soko kuu la wafanyakazi huru la Afrika.",
       resetDesc: "Weka barua pepe yako ili upokee kiungo cha kuweka upya.",
       sendResetLink: "Tuma Kiungo cha Kuweka Upya",
       backToLogin: "Rudi Kwenye Kuingia",
       checkEmail: "Angalia barua pepe yako",
-      resetSent: "Ikiwa kuna akaunti iliyopo kwa barua pepe hii, tumetuma kiungo cha kuweka upya.",
+      resetSent:
+        "Ikiwa kuna akaunti iliyopo kwa barua pepe hii, tumetuma kiungo cha kuweka upya.",
       resetPassword: "Weka Nenosiri Jipya",
       newPassword: "Nenosiri Jipya",
       confirmPassword: "Thibitisha Nenosiri",
       updatePassword: "Sasisha Nenosiri",
       passwordMismatch: "Nywila hazilingani",
       resetSuccessTitle: "Mafanikio!",
-      resetSuccessDesc: "Nenosiri lako limewekwa upya. Inakuelekeza kwenye kuingia...",
+      resetSuccessDesc:
+        "Nenosiri lako limewekwa upya. Inakuelekeza kwenye kuingia...",
       address: "Anwani ya Mtaa / Mji",
       passLength: "Herufi 8+",
       passUpper: "Herufi Kubwa",
@@ -3468,7 +3832,8 @@ export const translations = {
       passSpecial: "Alama Maalum",
       passWeak: "Nenosiri ni dhaifu mno. Tafadhali zingatia mahitaji yote.",
       chooseFieldMax: "Upeo wa 5",
-      chooseFieldText: "Chagua maeneo makuu unayobobea. Hii inatusaidia kupendekeza ujuzi sahihi.",
+      chooseFieldText:
+        "Chagua maeneo makuu unayobobea. Hii inatusaidia kupendekeza ujuzi sahihi.",
     },
     proposal: {
       applyTitle: "Omba Kazi Hii",
@@ -3527,7 +3892,8 @@ export const translations = {
       deleteJob: "Futa Kazi",
       deleteTitle: "Futa Kazi Hii?",
       deleteConfirmStart: "Una uhakika unataka kufuta",
-      deleteConfirmEnd: "Kitendo hiki hakiwezi kutenduliwa na mapendekezo yote yatapotea.",
+      deleteConfirmEnd:
+        "Kitendo hiki hakiwezi kutenduliwa na mapendekezo yote yatapotea.",
       deleteError: "Imeshindwa kufuta kazi",
       deleting: "Inafuta...",
       delete: "Futa",
@@ -3536,7 +3902,8 @@ export const translations = {
       history: "Historia",
       noActiveContracts: "Hakuna mikataba inayoendelea iliyopatikana.",
       noHistory: "Bado hakuna historia iliyokamilika.",
-      selectJobToInvite: "Chagua kazi iliyo wazi ya kumwalika mfanyakazi huyu huru:",
+      selectJobToInvite:
+        "Chagua kazi iliyo wazi ya kumwalika mfanyakazi huyu huru:",
       noOpenJobs: "Hakuna kazi zilizo wazi zilizopatikana.",
     },
     community: {
@@ -3592,12 +3959,15 @@ export const translations = {
       markComplete: "Tia alama imekamilika",
       paymentReleased: "Malipo Yameachiliwa",
       contractNotFound: "Mkataba Haujapatikana",
-      contractNotFoundDesc: "Inaonekana bado hakuna mkataba ulioandaliwa kwa kazi hii.",
+      contractNotFoundDesc:
+        "Inaonekana bado hakuna mkataba ulioandaliwa kwa kazi hii.",
       started: "Imeanza",
       paymentProtection: "Ulinzi wa Malipo Unaendelea",
-      paymentProtectionDesc: "Pesa zinashikiliwa kwa usalama katika amana. Ikiwa una matatizo yoyote, tumia kitufe cha 'Ripoti Tatizo'.",
+      paymentProtectionDesc:
+        "Pesa zinashikiliwa kwa usalama katika amana. Ikiwa una matatizo yoyote, tumia kitufe cha 'Ripoti Tatizo'.",
       underReview: "Mkataba Unapitiwa",
-      underReviewDesc: "Mzozo umewasilishwa. Pesa zimegandishwa wakati msimamizi anakagua kesi.",
+      underReviewDesc:
+        "Mzozo umewasilishwa. Pesa zimegandishwa wakati msimamizi anakagua kesi.",
       originalFiles: "Faili Asili za Kazi",
       noFiles: "Hakuna faili zilizopakiwa.",
       approved: "IMEIDHINISHWA",
@@ -3605,14 +3975,16 @@ export const translations = {
       uploadFiles: "Pakia Faili (Nyingi)",
       addNote: "Ongeza dokezo...",
       submittedSuccess: "Imewasilishwa kwa Mafanikio!",
-      previewUnavailable: "Onyesho la kukagua halipatikani kwa aina hii ya faili.",
+      previewUnavailable:
+        "Onyesho la kukagua halipatikani kwa aina hii ya faili.",
       downloadFile: "Pakua Faili",
       releasePayment: "Achilia Malipo?",
       releasePaymentDesc: "Hii itaweka alama ya kazi kama imekamilika.",
       disputeFiled: "Mzozo Umewasilishwa",
       disputeFiledDesc: "Msimamizi ameonywa. Pesa zimegandishwa.",
       reportProblem: "Ripoti Tatizo",
-      disputeWarning: "Kuwakilisha mzozo kutagandisha mara moja pesa za mkataba. Msimamizi atapitia historia ya mazungumzo na kazi zilizowasilishwa.",
+      disputeWarning:
+        "Kuwakilisha mzozo kutagandisha mara moja pesa za mkataba. Msimamizi atapitia historia ya mazungumzo na kazi zilizowasilishwa.",
       reason: "Sababu",
       reasonNoSubmission: "Hakuna Uwasilishaji / Kutoweka",
       reasonPoorQuality: "Kazi ya Ubora Mbaya",
@@ -3640,15 +4012,18 @@ export const translations = {
       uploading: "Inapakia...",
       importantInfo: "Taarifa Muhimu",
       fillAllFields: "Tafadhali jaza sehemu zote.",
-      compressionWarning: "Picha (.jpg, .png) zitabanwa kwa ajili ya kutazamwa kwenye wavuti.",
-      zipTip: "Ili kudumisha ubora halisi au kupakia Video bila kubanwa, tafadhali ziweke kwenye faili la .ZIP.",
+      compressionWarning:
+        "Picha (.jpg, .png) zitabanwa kwa ajili ya kutazamwa kwenye wavuti.",
+      zipTip:
+        "Ili kudumisha ubora halisi au kupakia Video bila kubanwa, tafadhali ziweke kwenye faili la .ZIP.",
     },
     chat: {
       title: "Ujumbe",
       search: "Tafuta mazungumzo...",
       type: "Andika ujumbe...",
       online: "Yuko hewani",
-      safety: "Kwa usalama wako, usishiriki nambari za simu au kulipa nje ya AfriqGig.",
+      safety:
+        "Kwa usalama wako, usishiriki nambari za simu au kulipa nje ya AfriqGig.",
       noConversations: "Bado hakuna mazungumzo.",
       select: "Chagua mazungumzo ili kuanza",
       new: "Mazungumzo Mapya",
@@ -3661,7 +4036,8 @@ export const translations = {
       micError: "Ufikiaji wa maikrofoni hautumiki au umekataliwa.",
       sendingVoice: "Inatuma ujumbe wa sauti...",
       securityTitle: "Onyo la Usalama wa Akaunti",
-      securityText: "USISHIRIKI namba za simu, barua pepe, au viungo vya nje (WhatsApp, Telegram, n.k). Ugunduzi wowote utasababisha akaunti yako kufungwa mara moja. Weka mawasiliano yote ndani ya AfriqGig kwa ulinzi wako.",
+      securityText:
+        "USISHIRIKI namba za simu, barua pepe, au viungo vya nje (WhatsApp, Telegram, n.k). Ugunduzi wowote utasababisha akaunti yako kufungwa mara moja. Weka mawasiliano yote ndani ya AfriqGig kwa ulinzi wako.",
     },
     profile: {
       title: "Wasifu Wangu",
@@ -3725,15 +4101,18 @@ export const translations = {
       idVerify: "Uthibitishaji wa Kitambulisho",
       verified: "Imethibitishwa",
       verifyFailed: "Uthibitishaji Umeshindikana",
-      verifyFailDesc: "Tafadhali pakia hati zilizo wazi zinazolingana na maelezo ya wasifu wako.",
-      verifyTip: "Hakikisha jina kwenye hati yako linafanana na wasifu wako haswa.",
+      verifyFailDesc:
+        "Tafadhali pakia hati zilizo wazi zinazolingana na maelezo ya wasifu wako.",
+      verifyTip:
+        "Hakikisha jina kwenye hati yako linafanana na wasifu wako haswa.",
       docType: "Aina ya Hati",
       frontBack: "Mbele na Nyuma (ikiwa inafaa)",
       docsOnFile: "Nyaraka zilizo kwenye faili",
       submitVerify: "Wasilisha kwa Uthibitishaji",
       resubmit: "Wasilisha Uthibitishaji Tena",
       verificationSent: "Uthibitishaji umeombwa! Hati zimewasilishwa.",
-      reviewTime: "Hati zako zinakaguliwa kwa sasa. Hii kwa kawaida huchukua masaa 24-48.",
+      reviewTime:
+        "Hati zako zinakaguliwa kwa sasa. Hii kwa kawaida huchukua masaa 24-48.",
       appLang: "Lugha ya Programu",
       contentLang: "Lugha ya Yaliyomo",
       autoplay: "Cheza Video Moja kwa Moja",
@@ -3741,7 +4120,8 @@ export const translations = {
       dangerZone: "Eneo la Hatari",
       deactivate: "Zima Akaunti",
       twoFa: "Uthibitishaji wa Hatua Mbili (2FA)",
-      twoFaDesc: "Ongeza safu ya ziada ya usalama kupitia Programu ya Uthibitishaji.",
+      twoFaDesc:
+        "Ongeza safu ya ziada ya usalama kupitia Programu ya Uthibitishaji.",
       enabled: "Imewashwa",
       setup: "Sanidi",
       pushNotif: "Arifa za Sukumo",
@@ -3753,45 +4133,61 @@ export const translations = {
       onlineStatus: "Onyesha Hali ya Mtandaoni",
       dataPrivacy: "Data na Faragha",
       dataDownload: "Upakuaji wa Data Binafsi",
-      dataDownloadDesc: "Pata nakala ya data yako ikiwa ni pamoja na wasifu wako, historia ya kazi, na ujumbe.",
-      archiveRequested: "Hati ya kumbukumbu imeombwa. Angalia barua pepe hivi karibuni.",
+      dataDownloadDesc:
+        "Pata nakala ya data yako ikiwa ni pamoja na wasifu wako, historia ya kazi, na ujumbe.",
+      archiveRequested:
+        "Hati ya kumbukumbu imeombwa. Angalia barua pepe hivi karibuni.",
       requestArchive: "Omba Hati ya Kumbukumbu",
       allowData: "Ruhusu Ukusanyaji wa Data",
-      allowDataDesc: "Tusaidie kuboresha AfriqGig kwa kushiriki data ya matumizi.",
+      allowDataDesc:
+        "Tusaidie kuboresha AfriqGig kwa kushiriki data ya matumizi.",
       searchVis: "Muonekano wa Utafutaji",
-      searchVisDesc: "Ruhusu injini za utafutaji (Google, Bing) kuorodhesha wasifu wako.",
+      searchVisDesc:
+        "Ruhusu injini za utafutaji (Google, Bing) kuorodhesha wasifu wako.",
       deactivateTitle: "Zima Akaunti?",
-      deactivateDesc: "Hii itaficha wasifu wako na kazi zinazoendelea. Unaweza kuamilisha tena kwa kuingia wakati wowote.",
+      deactivateDesc:
+        "Hii itaficha wasifu wako na kazi zinazoendelea. Unaweza kuamilisha tena kwa kuingia wakati wowote.",
       typeDelete: "Andika",
       toConfirm: "hapa chini ili kuthibitisha",
       scanQr: "Changanua Msimbo wa QR",
-      scanQrDesc: "Fungua programu yako ya Uthibitishaji (Google/Microsoft) na uchanganue msimbo huu ili kuwezesha 2FA.",
+      scanQrDesc:
+        "Fungua programu yako ya Uthibitishaji (Google/Microsoft) na uchanganue msimbo huu ili kuwezesha 2FA.",
       verifyEnable: "Thibitisha na Washa",
       twoFaSuccess: "2FA Imewashwa kwa Mafanikio!",
       errorSave: "Imeshindwa kuhifadhi mipangilio.",
       errorNoDoc: "Tafadhali pakia Hati halali ya Kitambulisho.",
       enterCode: "Weka Nambari ya Tarakimu 6",
       twoFaInvalid: "Nambari Batili. Tafadhali jaribu tena.",
+      enableHiring: "Pia Unataka Kuajiri Wataalamu?",
+      enableHiringDesc:
+        "Washa hii ili kuchapisha kazi na kuajiri wafanyakazi huru wengine, bila kufungua akaunti tofauti ya mteja.",
     },
     about: {
       heroTitle: "Kuimarisha Vipaji vya Afrika",
-      heroSubtitle: "Tuna dhamira ya kuziba pengo kati ya akili angavu zaidi za Afrika na uchumi wa dunia, tukitengeneza mfumo salama ambapo uaminifu ndio sarafu.",
+      heroSubtitle:
+        "Tuna dhamira ya kuziba pengo kati ya akili angavu zaidi za Afrika na uchumi wa dunia, tukitengeneza mfumo salama ambapo uaminifu ndio sarafu.",
       storyTitle: "Hadithi Yetu",
-      storyText1: "Imeanza kwa uchunguzi rahisi: Wafanyakazi huru wa Kiafrika wana vipaji vya ajabu lakini mara nyingi hutengwa kwenye soko la kimataifa kutokana na vikwazo vya malipo na masuala ya uaminifu.",
+      storyText1:
+        "Imeanza kwa uchunguzi rahisi: Wafanyakazi huru wa Kiafrika wana vipaji vya ajabu lakini mara nyingi hutengwa kwenye soko la kimataifa kutokana na vikwazo vya malipo na masuala ya uaminifu.",
       storyText2: "Ilianzishwa nchini Kamerun,",
-      storyText3: "imejengwa kutatua hili. Tumeunganisha njia za malipo za ndani kama Mobile Money na kujenga mfumo mkali wa uhakiki ili kuunda jukwaa ambalo linahisi kama nyumbani, lakini linafanya kazi kama biashara ya kimataifa.",
+      storyText3:
+        "imejengwa kutatua hili. Tumeunganisha njia za malipo za ndani kama Mobile Money na kujenga mfumo mkali wa uhakiki ili kuunda jukwaa ambalo linahisi kama nyumbani, lakini linafanya kazi kama biashara ya kimataifa.",
       valuesTitle: "Maadili Yetu Makuu",
       value1Title: "Ujumuishaji",
-      value1Text: "Fursa haipaswi kuwa na mipaka. Tunajenga zana zinazofaa kila mtu, kila mahali, bila kujali hali ya kibenki.",
+      value1Text:
+        "Fursa haipaswi kuwa na mipaka. Tunajenga zana zinazofaa kila mtu, kila mahali, bila kujali hali ya kibenki.",
       value2Title: "Uaminifu",
-      value2Text: "Tunathibitisha vitambulisho na kulinda malipo kupitia Escrow ili uweze kuzingatia kazi, na sio hatari.",
+      value2Text:
+        "Tunathibitisha vitambulisho na kulinda malipo kupitia Escrow ili uweze kuzingatia kazi, na sio hatari.",
       value3Title: "Ubunifu",
       backHome: "Rudi Nyumbani",
-      value3Text: "Tunaendeleza teknolojia yetu kila wakati kutatua changamoto za kipekee za soko la Afrika."
+      value3Text:
+        "Tunaendeleza teknolojia yetu kila wakati kutatua changamoto za kipekee za soko la Afrika.",
     },
     contact: {
       title: "Wasiliana Nasi",
-      subtitle: "Una maswali kuhusu jukwaa, malipo, au ushirikiano? Tuko hapa kukusaidia.",
+      subtitle:
+        "Una maswali kuhusu jukwaa, malipo, au ushirikiano? Tuko hapa kukusaidia.",
       emailTitle: "Tutume Barua Pepe",
       emailText: "Timu yetu rafiki iko hapa kukusaidia.",
       visitTitle: "Tutembelee",
@@ -3807,7 +4203,7 @@ export const translations = {
       messagePlaceholder: "Tunawezaje kukusaidia?",
       sendBtn: "Tuma Ujumbe",
       sending: "Inatuma...",
-      error: "Imeshindwa kutuma ujumbe. Tafadhali jaribu tena."
+      error: "Imeshindwa kutuma ujumbe. Tafadhali jaribu tena.",
     },
     admin: {
       backToDashboard: "Rudi kwenye Dashibodi",
@@ -3834,7 +4230,7 @@ export const translations = {
       deadline: "Tarehe ya Mwisho",
       nextStep: "Hatua Inayofuata",
       postNow: "Chapisha Kazi Sasa",
-      
+
       // Errors
       errorTitle: "Tafadhali ingiza kichwa cha kazi.",
       errorCategory: "Tafadhali chagua kategoria.",
@@ -3844,14 +4240,14 @@ export const translations = {
       errorDeadline: "Tafadhali chagua tarehe ya mwisho.",
       errorLogin: "Tafadhali ingia tena.",
       errorServer: "Seva imekataa ombi",
-      errorConnection: "Imeshindwa kuunganisha kwenye seva"
+      errorConnection: "Imeshindwa kuunganisha kwenye seva",
     },
     notificationsPage: {
       title: "Arifa",
       subtitle: "Endelea kufahamu kuhusu shughuli zako.",
       markAllRead: "Weka alama zote zimesomwa",
       markRead: "Weka alama imesomwa",
-      noNotifications: "Bado hakuna arifa."
+      noNotifications: "Bado hakuna arifa.",
     },
     referrals: {
       limitedOffer: "OFA YA MUDA MCHACHE",
@@ -3859,7 +4255,8 @@ export const translations = {
       heroSubtitle: "Okoa Kwenye Ada!",
       heroDescStart: "Pata",
       heroDescPercent: "PUNGUZO LA 50%",
-      heroDescEnd: "kwenye ada zetu za tume (unalipa 2.5% badala ya 5% kama Mfanyakazi Huru, wakati Mteja anapata 100% ya punguzo kwenye tume yetu) kwa kila mtumiaji mpya anayejisajili na kiungo chako.",
+      heroDescEnd:
+        "kwenye ada zetu za tume (unalipa 2.5% badala ya 5% kama Mfanyakazi Huru, wakati Mteja anapata 100% ya punguzo kwenye tume yetu) kwa kila mtumiaji mpya anayejisajili na kiungo chako.",
       copy: "Nakili",
       copied: "Imenakiliwa!",
       statFriends: "Marafiki Waliorejewa",
@@ -3868,38 +4265,50 @@ export const translations = {
       shareSocials: "Shiriki kupitia Mitandao ya Kijamii",
       howItWorks: "Inavyofanya Kazi",
       step1Title: "Shiriki Kiungo Chako",
-      step1Desc: "Nakili kiungo chako cha kipekee hapo juu na umpelekee wateja au marafiki wanaohitaji kazi ifanywe.",
+      step1Desc:
+        "Nakili kiungo chako cha kipekee hapo juu na umpelekee wateja au marafiki wanaohitaji kazi ifanywe.",
       step2Title: "Wanajisajili",
-      step2Desc: "Wanapounda akaunti kwa kutumia kiungo chako, wanapata moja kwa moja 100% ya punguzo kwenye tume kwa kazi zao 2 za kwanza.",
+      step2Desc:
+        "Wanapounda akaunti kwa kutumia kiungo chako, wanapata moja kwa moja 100% ya punguzo kwenye tume kwa kazi zao 2 za kwanza.",
       step3Title: "Unapata Punguzo",
-      step3Desc: "Kwa kila mrejeleaji anayeendelea, wewe kama Mfanyakazi Huru pia unalipa tume ya 2.5% (badala ya 5%) kwenye kazi yako inayofuata!",
-      shareText: "Njoo ujiunge nami kwenye AfriqGig! Njia salama zaidi ya kuajiri vipaji vya Afrika. Jisajili na sote tupate 50% ya punguzo kwenye ada za tume! 🚀",
+      step3Desc:
+        "Kwa kila mrejeleaji anayeendelea, wewe kama Mfanyakazi Huru pia unalipa tume ya 2.5% (badala ya 5%) kwenye kazi yako inayofuata!",
+      shareText:
+        "Njoo ujiunge nami kwenye AfriqGig! Njia salama zaidi ya kuajiri vipaji vya Afrika. Jisajili na sote tupate 50% ya punguzo kwenye ada za tume! 🚀",
       give50get50: "Toa 50%, Pata 50%!",
       bannerDesc: "Rejea rafiki. Wote wawili mnaokoa 50% kwenye ada za tume.",
       getLink: "Pata Kiungo",
       want50: "Unataka Punguzo la 50%?",
-      modalText: "Mrejee mteja au mfanyakazi huru kwa AfriqGig. Wanapojisajili, NYOTE wawili mnapata punguzo la 50% kwenye ada za jukwaa kwa kazi yako inayofuata!",
+      modalText:
+        "Mrejee mteja au mfanyakazi huru kwa AfriqGig. Wanapojisajili, NYOTE wawili mnapata punguzo la 50% kwenye ada za jukwaa kwa kazi yako inayofuata!",
       inviteNow: "Alika Marafiki Sasa",
-      remindLater: "Nikumbushe baadaye"
+      remindLater: "Nikumbushe baadaye",
     },
     support: {
       title: "Kituo cha Usaidizi",
-      subtitle: "Pata majibu, pata usaidizi, na ujifunze jinsi ya kufanikiwa kwenye AfriqGig.",
+      subtitle:
+        "Pata majibu, pata usaidizi, na ujifunze jinsi ya kufanikiwa kwenye AfriqGig.",
       faqTitle: "Maswali Yanayoulizwa Mara kwa Mara (FAQs)",
-      faqDesc: "Majibu ya papo hapo kwa maswali ya kawaida kuhusu malipo na kuajiri.",
+      faqDesc:
+        "Majibu ya papo hapo kwa maswali ya kawaida kuhusu malipo na kuajiri.",
       contactTitle: "Wasiliana na Usaidizi",
-      contactDesc: "Wasiliana na timu yetu moja kwa moja kwa msaada wa kibinafsi.",
+      contactDesc:
+        "Wasiliana na timu yetu moja kwa moja kwa msaada wa kibinafsi.",
       communityTitle: "Jukwaa la Jumuiya",
-      communityDesc: "Waulize wafanyakazi huru wenzako na wateja kwa vidokezo na ushauri.",
+      communityDesc:
+        "Waulize wafanyakazi huru wenzako na wateja kwa vidokezo na ushauri.",
       stillNeedHelp: "Bado unahitaji usaidizi?",
-      helpText: "Timu yetu ya usaidizi inapatikana Jumatatu-Ijumaa kuanzia saa 2 asubuhi hadi saa 12 jioni WAT kukusaidia kwa masuala yoyote.",
-      liveChat: "Unahitaji msaada? Ongea nasi moja kwa moja! Bofya ikoni ya gumzo upande wa kulia chini.",
+      helpText:
+        "Timu yetu ya usaidizi inapatikana Jumatatu-Ijumaa kuanzia saa 2 asubuhi hadi saa 12 jioni WAT kukusaidia kwa masuala yoyote.",
+      liveChat:
+        "Unahitaji msaada? Ongea nasi moja kwa moja! Bofya ikoni ya gumzo upande wa kulia chini.",
       emailSupport: "Usaidizi kwa Barua Pepe",
-      openTicket: "Fungua Tiketi"
+      openTicket: "Fungua Tiketi",
     },
     faq: {
       title: "Tunawezaje kukusaidia?",
-      subtitle: "Tafuta katika hifadhidata yetu ya maarifa au chunguza kategoria zifuatazo.",
+      subtitle:
+        "Tafuta katika hifadhidata yetu ya maarifa au chunguza kategoria zifuatazo.",
       searchPlaceholder: "Tafuta majibu (mfano 'malipo', 'thibitisha')...",
       catGeneral: "Jumla",
       catFreelancers: "Kwa Wafanyakazi Huru",
@@ -3947,62 +4356,76 @@ export const translations = {
       q16: "Je, ninaweza kubadilisha jina langu la mtumiaji?",
       a16: "Kwa sababu za kiusalama, majina ya watumiaji hayawezi kubadilishwa mara tu yanapoundwa. Hata hivyo, unaweza kusasisha jina lako la kuonyesha.",
       q17: "Mnapeana marejesho ya pesa?",
-      a17: "Marejesho yanapatikana kwa pesa zilizoshikiliwa kwenye Amana ambazo hazijatolewa kwa mfanyakazi huru. Ada za huduma hazirejeshwi."
+      a17: "Marejesho yanapatikana kwa pesa zilizoshikiliwa kwenye Amana ambazo hazijatolewa kwa mfanyakazi huru. Ada za huduma hazirejeshwi.",
     },
     privacy: {
       title: "Sera ya Faragha",
       lastUpdated: "Imesasishwa Mwisho: Desemba 2025",
-      
+
       section1Title: "1. Taarifa Tunazokusanya",
-      section1Text: "Tunakusanya taarifa unazotupatia moja kwa moja, kama vile unapounda au kurekebisha akaunti yako, kuomba huduma za papo hapo, kuwasiliana na usaidizi wa wateja, au kuwasiliana nasi kwa njia nyingine. Taarifa hizi zinaweza kujumuisha: jina, barua pepe, nambari ya simu, anwani ya posta, picha ya wasifu, njia ya malipo, na taarifa nyingine unazochagua kutoa.",
-      
+      section1Text:
+        "Tunakusanya taarifa unazotupatia moja kwa moja, kama vile unapounda au kurekebisha akaunti yako, kuomba huduma za papo hapo, kuwasiliana na usaidizi wa wateja, au kuwasiliana nasi kwa njia nyingine. Taarifa hizi zinaweza kujumuisha: jina, barua pepe, nambari ya simu, anwani ya posta, picha ya wasifu, njia ya malipo, na taarifa nyingine unazochagua kutoa.",
+
       section2Title: "2. Jinsi Tunavyotumia Taarifa Zako",
       section2Intro: "Tunatumia taarifa tunazokusanya ili:",
       section2Li1: "Kutoa, kudumisha, na kuboresha Huduma zetu.",
-      section2Li2: "Kuwezesha malipo na mawasiliano kati ya Wateja na Wafanyakazi Huru.",
+      section2Li2:
+        "Kuwezesha malipo na mawasiliano kati ya Wateja na Wafanyakazi Huru.",
       section2Li3: "Kuthibitisha utambulisho wako na kuzuia ulaghai.",
-      section2Li4: "Kukutumia risiti, masasisho, arifa za usalama, na jumbe za usaidizi.",
-      
+      section2Li4:
+        "Kukutumia risiti, masasisho, arifa za usalama, na jumbe za usaidizi.",
+
       section3Title: "3. Usalama wa Data",
-      section3Text: "Tunatumia hatua zinazofaa za kiufundi na shirika ili kulinda data yako ya kibinafsi dhidi ya uchakataji usioidhinishwa au usio halali, upotevu wa bahati mbaya, uharibifu, au uharibifu. Hata hivyo, hakuna upitishaji wa mtandao ulio salama kwa 100%, na hatuwezi kuhakikisha usalama kamili.",
-      
+      section3Text:
+        "Tunatumia hatua zinazofaa za kiufundi na shirika ili kulinda data yako ya kibinafsi dhidi ya uchakataji usioidhinishwa au usio halali, upotevu wa bahati mbaya, uharibifu, au uharibifu. Hata hivyo, hakuna upitishaji wa mtandao ulio salama kwa 100%, na hatuwezi kuhakikisha usalama kamili.",
+
       section4Title: "4. Haki Zako",
-      section4Text: "Una haki ya kufikia, kurekebisha, au kufuta data yako ya kibinafsi. Unaweza kudhibiti taarifa zako moja kwa moja kutoka kwa Mipangilio ya Wasifu wako. Kwa maombi ya kufuta data, tafadhali wasiliana na timu yetu ya usaidizi."
+      section4Text:
+        "Una haki ya kufikia, kurekebisha, au kufuta data yako ya kibinafsi. Unaweza kudhibiti taarifa zako moja kwa moja kutoka kwa Mipangilio ya Wasifu wako. Kwa maombi ya kufuta data, tafadhali wasiliana na timu yetu ya usaidizi.",
     },
     terms: {
       title: "Sheria na Masharti",
       lastUpdated: "Imesasishwa Mwisho: Desemba 2025",
-      
+
       section1Title: "1. Utangulizi",
-      section1Text: "Karibu AfriqGig. Kwa kufikia au kutumia tovuti yetu, unakubali kufungwa na Sheria na Masharti haya na Sera yetu ya Faragha. Ikiwa hukubaliani na sehemu yoyote ya masharti haya, hupaswi kutumia jukwaa letu.",
-      
+      section1Text:
+        "Karibu AfriqGig. Kwa kufikia au kutumia tovuti yetu, unakubali kufungwa na Sheria na Masharti haya na Sera yetu ya Faragha. Ikiwa hukubaliani na sehemu yoyote ya masharti haya, hupaswi kutumia jukwaa letu.",
+
       section2Title: "2. Akaunti za Mtumiaji",
-      section2Text: "Ili kufikia vipengele fulani, lazima ujisajili kwa akaunti. Unakubali kutoa taarifa sahihi, za sasa, na kamili wakati wa mchakato wa usajili na kusasisha taarifa hizo ili kuziweka sahihi, za sasa, na kamili.",
+      section2Text:
+        "Ili kufikia vipengele fulani, lazima ujisajili kwa akaunti. Unakubali kutoa taarifa sahihi, za sasa, na kamili wakati wa mchakato wa usajili na kusasisha taarifa hizo ili kuziweka sahihi, za sasa, na kamili.",
       section2Li1: "Wewe unawajibika kwa kulinda nenosiri lako.",
-      section2Li2: "Unakubali kutofichua nenosiri lako kwa mtu mwingine yeyote.",
-      section2Li3: "Lazima utuarifu mara moja unapogundua ukiukaji wowote wa usalama au matumizi yasiyoidhinishwa ya akaunti yako.",
-      
+      section2Li2:
+        "Unakubali kutofichua nenosiri lako kwa mtu mwingine yeyote.",
+      section2Li3:
+        "Lazima utuarifu mara moja unapogundua ukiukaji wowote wa usalama au matumizi yasiyoidhinishwa ya akaunti yako.",
+
       section3Title: "3. Wajibu wa Mfanyakazi Huru na Mteja",
       section3FreelancerLabel: "Wafanyakazi Huru:",
-      section3FreelancerText: "Unakubali kufanya kazi kwa njia ya kitaaluma, kuwasilisha kwa wakati, na kuheshimu usiri wa mteja.",
+      section3FreelancerText:
+        "Unakubali kufanya kazi kwa njia ya kitaaluma, kuwasilisha kwa wakati, na kuheshimu usiri wa mteja.",
       section3ClientLabel: "Wateja:",
-      section3ClientText: "Unakubali kulipia kazi kwa usalama kupitia mfumo wetu wa Amana (Escrow). Pesa hushikiliwa hadi uidhinishe kazi au mzozo utatuliwe.",
-      
+      section3ClientText:
+        "Unakubali kulipia kazi kwa usalama kupitia mfumo wetu wa Amana (Escrow). Pesa hushikiliwa hadi uidhinishe kazi au mzozo utatuliwe.",
+
       section4Title: "4. Malipo na Amana",
-      section4Text: "AfriqGig hutumia mfumo salama wa Amana. Mkataba unapoanzishwa, kiasi kilichokubaliwa hushikiliwa na AfriqGig. Pesa hutolewa kwa Mfanyakazi Huru tu baada ya kukamilika kwa kazi kwa kuridhika kwa Mteja.",
-      
+      section4Text:
+        "AfriqGig hutumia mfumo salama wa Amana. Mkataba unapoanzishwa, kiasi kilichokubaliwa hushikiliwa na AfriqGig. Pesa hutolewa kwa Mfanyakazi Huru tu baada ya kukamilika kwa kazi kwa kuridhika kwa Mteja.",
+
       section5Title: "5. Usuluhishi wa Migogoro",
-      section5Text: "Katika tukio la mzozo, watumiaji wanakubali kutumia Kituo cha Usuluhishi cha AfriqGig. Timu yetu ya usaidizi itakagua ushahidi uliotolewa na pande zote mbili na kutoa uamuzi wa lazima kulingana na masharti ya mkataba."
+      section5Text:
+        "Katika tukio la mzozo, watumiaji wanakubali kutumia Kituo cha Usuluhishi cha AfriqGig. Timu yetu ya usaidizi itakagua ushahidi uliotolewa na pande zote mbili na kutoa uamuzi wa lazima kulingana na masharti ya mkataba.",
     },
     landing: {
       liveBadge: "Mubashara: Ufanyakazi Huru Umerahisishwa",
       heroTitleStart: "Ajiri",
       heroTitleMiddle: "Kipaji Bora cha Afrika",
       heroTitleEnd: "kwa miradi yako",
-      heroSubtitle: "Ungana na wafanyakazi huru waliokaguliwa kote barani. Malipo salama kupitia Amana (Escrow) na Mobile Money. Kazi ya ubora, imehakikishwa.",
+      heroSubtitle:
+        "Ungana na wafanyakazi huru waliokaguliwa kote barani. Malipo salama kupitia Amana (Escrow) na Mobile Money. Kazi ya ubora, imehakikishwa.",
       findTalent: "Tafuta Vipaji",
       findWork: "Tafuta Kazi",
-      
+
       step1Title: "1. Chapisha au Tafuta",
       step1Text: "Wateja wanachapisha kazi; Wafanyakazi Huru wanatafuta kazi.",
       step2Title: "2. Ajiri na Thibitisha",
@@ -4013,33 +4436,44 @@ export const translations = {
       step4Text: "Lipwa papo hapo kupitia MOMO au Benki.",
 
       missionTitle: "Imejengwa na Waafrika, kwa ajili ya Afrika",
-      missionText1: "Tuligundua kuwa Waafrika wengi, hasa nchini Kamerun, wanapata shida kutumia na kupata kipato kutokana na ujuzi wao kwenye majukwaa ya Magharibi kama vile Upwork na Fiverr kutokana na vikwazo vya malipo na ushindani mkali wa kimataifa.",
-      missionText2: "ilikuja kutatua hili. Tunajenga jukwaa ambalo limeundwa mahsusi kwa soko la Afrika—linalounga mkono njia za malipo za ndani (MOMO), kuziba mapengo ya uaminifu kwa uthibitishaji wa Kitambulisho, na kuunganisha wateja na vipaji vya ndani tofauti, vya hali ya juu kwa bei nafuu.",
+      missionText1:
+        "Tuligundua kuwa Waafrika wengi, hasa nchini Kamerun, wanapata shida kutumia na kupata kipato kutokana na ujuzi wao kwenye majukwaa ya Magharibi kama vile Upwork na Fiverr kutokana na vikwazo vya malipo na ushindani mkali wa kimataifa.",
+      missionText2:
+        "ilikuja kutatua hili. Tunajenga jukwaa ambalo limeundwa mahsusi kwa soko la Afrika—linalounga mkono njia za malipo za ndani (MOMO), kuziba mapengo ya uaminifu kwa uthibitishaji wa Kitambulisho, na kuunganisha wateja na vipaji vya ndani tofauti, vya hali ya juu kwa bei nafuu.",
 
       topTalentTitle: "Vipaji Vilivyo na Ukadiriaji wa Juu",
-      topTalentDesc: "Ajiri wataalamu waliothibitishwa na sisi, na rekodi za utendaji zilizothibitishwa.",
+      topTalentDesc:
+        "Ajiri wataalamu waliothibitishwa na sisi, na rekodi za utendaji zilizothibitishwa.",
 
       whyUsTitle: "Imejengwa kwa Uaminifu Barani Afrika",
       whyUsDesc: "Mfumo salama ambapo ubora ni kiwango.",
-      
+
       card1Title: "Malipo Salama ya Amana",
-      card1Text: "Tunashikilia pesa kwa usalama hadi kazi iidhinishwe. Wateja wanapata kile wanacholipa, na wafanyakazi huru wanalipwa kwa wakati. Hakuna tena utapeli, bali miamala salama tu.",
-      
+      card1Text:
+        "Tunashikilia pesa kwa usalama hadi kazi iidhinishwe. Wateja wanapata kile wanacholipa, na wafanyakazi huru wanalipwa kwa wakati. Hakuna tena utapeli, bali miamala salama tu.",
+
       card2Title: "Vitambulisho Vilivyothibitishwa",
-      card2Text: "Tunakagua Vitambulisho ili ujue ni nani hasa unayefanya naye kazi.",
- 
+      card2Text:
+        "Tunakagua Vitambulisho ili ujue ni nani hasa unayefanya naye kazi.",
+
       card4Title: "Jumuiya Kwanza",
-      card4Text: "Sisi ni zaidi ya soko. Jiunge na majukwaa yetu ya jumuiya, shiriki maarifa, pata ushauri, na ukuze kazi yako pamoja na Waafrika wenzako.",
+      card4Text:
+        "Sisi ni zaidi ya soko. Jiunge na majukwaa yetu ya jumuiya, shiriki maarifa, pata ushauri, na ukuze kazi yako pamoja na Waafrika wenzako.",
 
       testiTitle: "Hadithi Kutoka kwa Watumiaji Wetu",
-      testi1: "AfriqGig ilirahisisha sana kupata msanidi ambaye alielewa muktadha wangu wa ndani. Malipo kupitia MOMO yalikuwa uokozi!",
-      testi2: "Mwishowe, jukwaa ambalo linawathamini wafanyakazi huru wa Afrika. Niliajiriwa ndani ya siku 2 na mfumo wa amana unanifanya nijisikie salama.",
-      testi3: "Mchakato wa uthibitishaji ulinipa ujasiri. Najua ninaajiri watu halisi, si roboti.",
-      testi4: "Kama Mkameruni, kulipwa kimataifa ilikuwa ngumu. AfriqGig ilitatua hili kwa malipo ya ndani.",
+      testi1:
+        "AfriqGig ilirahisisha sana kupata msanidi ambaye alielewa muktadha wangu wa ndani. Malipo kupitia MOMO yalikuwa uokozi!",
+      testi2:
+        "Mwishowe, jukwaa ambalo linawathamini wafanyakazi huru wa Afrika. Niliajiriwa ndani ya siku 2 na mfumo wa amana unanifanya nijisikie salama.",
+      testi3:
+        "Mchakato wa uthibitishaji ulinipa ujasiri. Najua ninaajiri watu halisi, si roboti.",
+      testi4:
+        "Kama Mkameruni, kulipwa kimataifa ilikuwa ngumu. AfriqGig ilitatua hili kwa malipo ya ndani.",
 
       ctaTitle: "Uko Tayari Kuanza?",
-      ctaText: "Jiunge na maelfu ya wafanyakazi huru na biashara zinazojenga mustakabali wa Afrika leo.",
-            // ECOSYSTEM SECTION
+      ctaText:
+        "Jiunge na maelfu ya wafanyakazi huru na biashara zinazojenga mustakabali wa Afrika leo.",
+      // ECOSYSTEM SECTION
       ecosystemTitle: "Jinsi AfriqGig Inavyofanya Kazi",
       ecosystemDesc: "Mfumo salama unaounganisha vipaji na biashara.",
       clientTitle: "Mteja",
@@ -4052,29 +4486,35 @@ export const translations = {
       // FAQ SECTION
       faqTitle: "Maswali Yanayoulizwa Mara Kwa Mara",
       faqSubtitle: "Kila kitu unachohitaji kujua kuhusu jukwaa.",
-        
+
       // FAQ ITEMS (Q&A)
       faq1q: "Je, pesa yangu iko salama na AfriqGig?",
-      faq1a: "Kabisa. Tunatumia mfumo wa Dhamana (Escrow). Unapoajiri mfanyakazi huru, pesa zako huhifadhiwa salama na sisi. Tunatoa malipo kwa mfanyakazi huru tu baada ya kuidhinisha kazi yake.",
-        
+      faq1a:
+        "Kabisa. Tunatumia mfumo wa Dhamana (Escrow). Unapoajiri mfanyakazi huru, pesa zako huhifadhiwa salama na sisi. Tunatoa malipo kwa mfanyakazi huru tu baada ya kuidhinisha kazi yake.",
+
       faq2q: "Ninawezaje kutoa mapato yangu?",
-      faq2a: "Tunaunga mkono utoaji wa ndani ya nchi katika nchi zaidi ya 26 za Afrika moja kwa moja kwa Mobile Money (MTN, Orange, M-Pesa), Uhamisho wa Benki, au Kadi za Mtandaoni.",
-        
+      faq2a:
+        "Tunaunga mkono utoaji wa ndani ya nchi katika nchi zaidi ya 26 za Afrika moja kwa moja kwa Mobile Money (MTN, Orange, M-Pesa), Uhamisho wa Benki, au Kadi za Mtandaoni.",
+
       faq3q: "Uthibitishaji unafanyaje kazi?",
-      faq3a: "Ili kuhakikisha usalama, tunathibitisha vitambulisho kwa kutumia vitambulisho vilivyotolewa na serikali. Hii huzuia ulaghai na kujenga uaminifu. Mchakato huchukua chini ya masaa 24.",
-        
+      faq3a:
+        "Ili kuhakikisha usalama, tunathibitisha vitambulisho kwa kutumia vitambulisho vilivyotolewa na serikali. Hii huzuia ulaghai na kujenga uaminifu. Mchakato huchukua chini ya masaa 24.",
+
       faq4q: "Je, ninaweza kutumia AfriqGig nje ya Afrika?",
-      faq4a: "Ndiyo! Wateja kutoka popote (Marekani, Ulaya, Asia) wanaweza kuajiri vipaji vya Kiafrika kwa kutumia kadi za mkopo/debit. Tunashughulikia ubadilishaji wa sarafu.",
+      faq4a:
+        "Ndiyo! Wateja kutoka popote (Marekani, Ulaya, Asia) wanaweza kuajiri vipaji vya Kiafrika kwa kutumia kadi za mkopo/debit. Tunashughulikia ubadilishaji wa sarafu.",
       faq5q: "Je, wafanyakazi huru wanaweza kuchapisha kazi?",
-      faq5a: "Ndiyo! Wafanyakazi huru wanaweza kubadilisha majukumu na kuwa wateja. Tumia tu kitufe cha 'Chapisha Kazi' kwenye dashibodi yako ili kuajiri vipaji vingine.",
+      faq5a:
+        "Ndiyo! Wafanyakazi huru wanaweza kubadilisha majukumu na kuwa wateja. Tumia tu kitufe cha 'Chapisha Kazi' kwenye dashibodi yako ili kuajiri vipaji vingine.",
 
       // MISC
       viewAllTalent: "Tazama Vipaji Vyote",
       card3Title: "Malipo ya Ndani",
-      card3Text: "Uchakataji salama wa malipo katika nchi zaidi ya 26 za Afrika.",
+      card3Text:
+        "Uchakataji salama wa malipo katika nchi zaidi ya 26 za Afrika.",
       card3List1: "Mobile Money (MTN, Orange, M-Pesa)",
       card3List2: "Uhamisho wa Benki za Ndani na Kadi",
-      card3List3: "Ulinzi wa Usalama wa 2FA"
+      card3List3: "Ulinzi wa Usalama wa 2FA",
     },
     feedback: {
       title: "Tusaidie kuboresha AfriqGig",
@@ -4082,15 +4522,17 @@ export const translations = {
       placeholder: "Nafikiri jukwaa linapaswa...",
       send: "Tuma Maoni",
       thankYou: "Asante!",
-      successMessage: "Maoni yako yanatusaidia kujenga jukwaa bora kwa ajili ya Afrika."
+      successMessage:
+        "Maoni yako yanatusaidia kujenga jukwaa bora kwa ajili ya Afrika.",
     },
     footer: {
-      slogan: "Ufanyakazi Huru Umerahisishwa kwa Afrika. Kuunganisha kipaji na fursa kupitia zana salama, za ndani.",
+      slogan:
+        "Ufanyakazi Huru Umerahisishwa kwa Afrika. Kuunganisha kipaji na fursa kupitia zana salama, za ndani.",
       platform: "Jukwaa",
       company: "Kampuni",
       suggestFeature: "Pendekeza Kipengele",
       rightsReserved: "Haki zote zimehifadhiwa.",
-      builtWithLove: "Imejengwa kwa upendo barani Afrika, kwa ajili ya Dunia."
+      builtWithLove: "Imejengwa kwa upendo barani Afrika, kwa ajili ya Dunia.",
     },
     liveChat: {
       support: "Usaidizi",
@@ -4112,12 +4554,15 @@ export const translations = {
       experience: "Uzoefu wako ulikuwaje?",
       feedback: "Maoni yoyote? (Si lazima)",
       sessionExpired: "Kikao kimeisha. Tafadhali anza gumzo upya.",
-      leaveReviewPrompt: "Kipindi chako kimeisha. Tafadhali kadiria uzoefu wako.",
+      leaveReviewPrompt:
+        "Kipindi chako kimeisha. Tafadhali kadiria uzoefu wako.",
       history: "Historia",
       newChat: "Soga Mpya",
       reopen: "Fungua tena Soga",
-      chatClosedInactivity: "Soga imefungwa kwa sababu ya kutokuwa na shughuli.",
-      checkHistory: "Unaweza kufungua tena mazungumzo haya kwenye kichupo cha Historia.",
+      chatClosedInactivity:
+        "Soga imefungwa kwa sababu ya kutokuwa na shughuli.",
+      checkHistory:
+        "Unaweza kufungua tena mazungumzo haya kwenye kichupo cha Historia.",
     },
-  }
+  },
 };

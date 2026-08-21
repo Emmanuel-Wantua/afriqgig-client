@@ -76,32 +76,28 @@ export default function JobDetailsContent({ id }: { id: string }) {
             return;
         }
 
-        const freelancerId = selectedProposal.freelancer._id || selectedProposal.freelancer;
-
+        // The server re-derives the price from the proposal and funds escrow
+        // itself, so it only needs to know which job and which proposal.
         const res = await fetch("/api/contracts/create", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 jobId: job._id,
-                freelancerId: freelancerId,
-                clientId: job.client._id,
-                amount: contractAmount,
                 proposalId: selectedProposal._id
             }),
         });
 
-        if (!res.ok) throw new Error("Failed to hire");
+        // 402 is the server's authoritative "not enough funds" — the balance
+        // check above is only a UX shortcut and can be out of date.
+        if (res.status === 402) {
+            setHiringStatus("idle");
+            setFundErrorDetails({ required: contractAmount, available: availableBalance });
+            setShowHireModal(false);
+            setShowFundModal(true);
+            return;
+        }
 
-        await fetch("/api/wallet", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                userId: job.client._id,
-                type: "payment_hold",
-                amount: contractAmount,
-                method: "ESCROW"
-            })
-        });
+        if (!res.ok) throw new Error("Failed to hire");
 
         setHiringStatus("success");
         setTimeout(() => {

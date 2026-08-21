@@ -158,7 +158,16 @@ export default function Footer() {
               
               {/* --- BOTTOM SECTION: Copyright --- */}
               <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-blue-100/40">
-                  <p>&copy; {new Date().getFullYear()} AfriqGig. {t.footer.rightsReserved}</p>
+                  <p className="flex items-center gap-4 flex-wrap justify-center md:justify-start">
+                      <span>&copy; {new Date().getFullYear()} AfriqGig. {t.footer.rightsReserved}</span>
+                      <span className="inline-flex items-center gap-2 font-mono">
+                          <span className="relative flex h-1.5 w-1.5">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+                          </span>
+                          All systems operational
+                      </span>
+                  </p>
                   <p className="flex items-center gap-1">{t.footer.builtWithLove}</p>
               </div>
           </div>

@@ -1,125 +1,207 @@
 import mongoose from "mongoose";
 
-const UserSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  phone: { type: String },
-  password: { 
-      type: String, 
-      required: function(this: any) { return !this.authProvider; } 
-  },
-  twoFactorEnabled: { type: Boolean, default: false },
-  twoFactorSecret: { type: String },
-  resetPasswordToken: { type: String },
-  resetPasswordExpires: { type: Date },
-  
-  // FIX: New fields for Social Login
-  authProvider: { type: String, default: null }, 
-  authProviderId: { type: String, default: null },
+const UserSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    phone: { type: String },
+    password: {
+      type: String,
+      required: function (this: any) {
+        return !this.authProvider;
+      },
+    },
+    twoFactorEnabled: { type: Boolean, default: false },
+    twoFactorSecret: { type: String },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date },
 
-  isOnline: { type: Boolean, default: false },
-  lastSeen: { type: Date, default: Date.now },
-  
-  role: { type: String, enum: ["client", "freelancer", "admin"], required: true },
+    // ✅ FIX: These were being written by register/verify-email routes but never
+    // existed on the schema, so Mongoose silently dropped them and email
+    // verification could never succeed.
+    verificationToken: { type: String },
+    verificationTokenExpiry: { type: Date },
 
-  status: { 
-      type: String, 
-      default: "active", 
-      enum: ["active", "suspended", "deactivated"] 
-  },
-  
-  // Identity
-  avatar: { type: String },
-  coverPhoto: { type: String },
-  isVerified: { type: Boolean, default: false },
-  identityDocuments: { type: [String], default: [] },
-  identityDocType: { type: String, default: "national_id" },
-  
-  // Professional Details
-  title: { type: String },
-  bio: { type: String },
-  country: { type: String, default: "Cameroon" }, 
-  address: { type: String },
-  categories: { type: [String], default: [] },
-  languages: [{ name: String, level: String }],
-  externalPortfolio: { type: String },
+    // FIX: New fields for Social Login
+    authProvider: { type: String, default: null },
+    authProviderId: { type: String, default: null },
 
-  // --- RICH PROFILE DATA ---
-  experience: [{
-      role: String,
-      company: String,
-      year: String, 
-      description: String
-  }],
-  education: [{
-      degree: String,
-      school: String,
-      year: String 
-  }],
-  certifications: [{
-      name: String,
-      issuer: String,
-      year: String
-  }],
-  
-  // Freelancer Specifics
-  skills: [String],
-  interests: [String],
-  rateType: { type: String, enum: ["hourly", "negotiated"], default: "hourly" },
-  hourlyRate: { type: Number, default: 0 },
-  
-  // Portfolios
-  portfolio: [{
-    title: String,
-    link: String,
-    images: [String],
-    description: String
-  }],
-  
-  // Stats
-  rating: { type: Number, default: 0 },
-  reviewsCount: { type: Number, default: 0 },
-  jobsCompleted: { type: Number, default: 0 },
+    isOnline: { type: Boolean, default: false },
+    lastSeen: { type: Date, default: Date.now },
 
-  // --- REFERRAL ENGINE ---
-  referralCode: { type: String, unique: true, sparse: true }, // e.g. "AFQ-8X29"
-  referredBy: { type: String }, // Code of the referrer
-  wallet: {
+    role: {
+      type: String,
+      enum: ["client", "freelancer", "admin"],
+      required: true,
+    },
+
+    // ✅ NEW: Lets a freelancer post jobs too, without a second account.
+    // Off by default — freelancer opts in from Settings.
+    canHire: { type: Boolean, default: false },
+
+    status: {
+      type: String,
+      default: "active",
+      enum: ["active", "suspended", "deactivated"],
+    },
+
+    // Identity
+    avatar: { type: String },
+    coverPhoto: { type: String },
+    isVerified: { type: Boolean, default: false },
+    identityDocuments: { type: [String], default: [] },
+    identityDocType: { type: String, default: "national_id" },
+
+    // ✅ NEW: KYC (Didit) — gates dashboard access for freelancers post-signup
+    kyc: {
+      status: {
+        type: String,
+        enum: ["none", "pending", "verified", "rejected"],
+        default: "none",
+      },
+      provider: { type: String, default: "didit" },
+      sessionId: { type: String },
+      verifiedAt: { type: Date },
+      rejectionReason: { type: String },
+    },
+
+    // ✅ NEW: Skill vetting — gates dashboard access after KYC passes
+    vetting: {
+      status: {
+        type: String,
+        enum: [
+          "none",
+          "pending",
+          "submitted",
+          "in_review",
+          "approved",
+          "rejected",
+        ],
+        default: "none",
+      },
+      categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
+      submissionUrl: { type: String },
+      deadline: { type: Date },
+      tier: {
+        type: String,
+        enum: ["none", "basic", "medium", "pro"],
+        default: "none",
+      },
+      reviewedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      reviewNotes: { type: String },
+    },
+
+    // Professional Details
+    title: { type: String },
+    bio: { type: String },
+    country: { type: String, default: "Cameroon" },
+    address: { type: String },
+    categories: { type: [String], default: [] },
+    languages: [{ name: String, level: String }],
+    externalPortfolio: { type: String },
+
+    // --- RICH PROFILE DATA ---
+    experience: [
+      {
+        role: String,
+        company: String,
+        year: String,
+        description: String,
+      },
+    ],
+    education: [
+      {
+        degree: String,
+        school: String,
+        year: String,
+      },
+    ],
+    certifications: [
+      {
+        name: String,
+        issuer: String,
+        year: String,
+      },
+    ],
+
+    // Freelancer Specifics
+    skills: [String],
+    interests: [String],
+    rateType: {
+      type: String,
+      enum: ["hourly", "negotiated"],
+      default: "hourly",
+    },
+    hourlyRate: { type: Number, default: 0 },
+
+    // Portfolios
+    portfolio: [
+      {
+        title: String,
+        link: String,
+        images: [String],
+        description: String,
+      },
+    ],
+
+    // Stats
+    rating: { type: Number, default: 0 },
+    reviewsCount: { type: Number, default: 0 },
+    jobsCompleted: { type: Number, default: 0 },
+
+    // --- REFERRAL ENGINE ---
+    referralCode: { type: String, unique: true, sparse: true }, // e.g. "AFQ-8X29"
+    referredBy: { type: String }, // Code of the referrer
+    wallet: {
       credits: { type: Number, default: 0 }, // Discount tokens (50% off)
-      balance: { type: Number, default: 0 }  // Actual cash balance (future use)
-  },
+      balance: { type: Number, default: 0 }, // Actual cash balance (future use)
+    },
 
-  // --- SETTINGS ---
-  settings: {
-    // 1. Account & Preferences
-    theme: { type: String, enum: ["light", "dark", "system"], default: "light" },
-    language: { type: String, default: "en" }, 
-    currency: { type: String, default: "XAF" }, 
-    verificationStatus: { type: String, enum: ["none", "pending", "verified", "rejected"], default: "none" },
-    
-    // 2. General
-    contentLanguage: { type: String, default: "en" },
-    autoplayVideo: { type: Boolean, default: true },
-    reduceAnimations: { type: Boolean, default: false },
-    soundEffects: { type: Boolean, default: true },
-    
-    // 3. Visibility
-    profileVisibility: { type: String, enum: ["public", "clients_only", "private"], default: "public" },
-    showOnlineStatus: { type: Boolean, default: true },
-    allowDataCollection: { type: Boolean, default: true },
-    
-    // 4. Notifications
-    notifications: {
+    // --- SETTINGS ---
+    settings: {
+      // 1. Account & Preferences
+      theme: {
+        type: String,
+        enum: ["light", "dark", "system"],
+        default: "light",
+      },
+      language: { type: String, default: "en" },
+      currency: { type: String, default: "XAF" },
+      verificationStatus: {
+        type: String,
+        enum: ["none", "pending", "verified", "rejected"],
+        default: "none",
+      },
+
+      // 2. General
+      contentLanguage: { type: String, default: "en" },
+      autoplayVideo: { type: Boolean, default: true },
+      reduceAnimations: { type: Boolean, default: false },
+      soundEffects: { type: Boolean, default: true },
+
+      // 3. Visibility
+      profileVisibility: {
+        type: String,
+        enum: ["public", "clients_only", "private"],
+        default: "public",
+      },
+      showOnlineStatus: { type: Boolean, default: true },
+      allowDataCollection: { type: Boolean, default: true },
+
+      // 4. Notifications
+      notifications: {
         email: { type: Boolean, default: true },
         sms: { type: Boolean, default: false },
         push: { type: Boolean, default: true },
         inApp: { type: Boolean, default: true },
-        marketing: { type: Boolean, default: false }
-    }
+        marketing: { type: Boolean, default: false },
+      },
+    },
+
+    isActive: { type: Boolean, default: true },
+    createdAt: { type: Date, default: Date.now },
   },
-  
-  isActive: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now }
-}, { timestamps: true });
+  { timestamps: true },
+);
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

@@ -3,13 +3,19 @@ import { connectToDB } from "@/lib/db";
 import Transaction from "@/models/Transaction";
 import User from "@/models/User";
 import Notification from "@/models/Notification";
-import { sendEmail } from "@/lib/email"; 
+import { sendEmail } from "@/lib/email";
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 // GET: Fetch Transactions (Supports 'all' for Finance Page, default 'pending' for Withdrawals)
 export async function GET(req: Request) {
   try {
+    // Platform-wide financial history — admins only.
+    if (!(await requireAdmin())) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
     const { searchParams } = new URL(req.url);
     const filter = searchParams.get("filter"); // 'all' or undefined
 
@@ -38,7 +44,12 @@ export async function GET(req: Request) {
 // PATCH: Approve or Reject
 export async function PATCH(req: Request) {
     try {
-        const { transactionId, action, reason } = await req.json(); 
+        // Approving or rejecting a withdrawal moves real money.
+        if (!(await requireAdmin())) {
+            return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+        }
+
+        const { transactionId, action, reason } = await req.json();
         await connectToDB();
 
         const tx = await Transaction.findById(transactionId);

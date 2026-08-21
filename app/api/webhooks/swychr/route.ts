@@ -1,18 +1,39 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 import { connectToDB } from "@/lib/db";
 import Transaction from "@/models/Transaction";
 import User from "@/models/User";
 import Notification from "@/models/Notification";
 import { sendEmail } from "@/lib/email";
 
+function isValidSecret(provided: string | null): boolean {
+  const expected = process.env.SWYCHR_WEBHOOK_SECRET;
+  if (!expected || !provided) return false;
+  const a = Buffer.from(provided);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) return false;
+  return crypto.timingSafeEqual(a, b);
+}
+
+interface SwychrWebhookAttributes {
+  transaction_id: string;
+  status: number;
+  amount?: number;
+  net_payable?: number;
+}
+
 export async function POST(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    if (!isValidSecret(searchParams.get("secret"))) {
+      console.warn("🚫 [Webhook] Rejected request with invalid/missing secret");
+      return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
+    }
+
     const body = await req.json();
     console.log("🔔 [Swychr Webhook] Received:", JSON.stringify(body, null, 2));
 
-    // 1. Extract Data safely from the nested structure
-    // Schema: { data: { data: { attributes: { transaction_id, status, ... } } } }
-    const attributes = body?.data?.data?.attributes;
+    const attributes: SwychrWebhookAttributes | undefined = body?.data?.data?.attributes;
 
     if (!attributes) {
       console.error("❌ [Webhook] Invalid Payload Structure");
@@ -21,10 +42,8 @@ export async function POST(req: Request) {
 
     const { transaction_id, status, amount, net_payable } = attributes;
 
-    // 2. Connect to DB
     await connectToDB();
 
-    // 3. Find the Transaction (using the reference we sent as transaction_id)
     const transaction = await Transaction.findOne({ reference: transaction_id });
 
     if (!transaction) {
@@ -32,31 +51,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Transaction not found" }, { status: 404 });
     }
 
-    // 4. Check Idempotency (Prevent double crediting)
     if (transaction.status === "completed") {
       console.log(`⚠️ [Webhook] Transaction ${transaction_id} already processed.`);
       return NextResponse.json({ message: "Already processed" }, { status: 200 });
     }
 
-    // 5. Handle Status Updates
-    // Status 1 = Success (Paid)
+    if (typeof amount === "number" && amount !== transaction.amount) {
+      console.warn(
+        `⚠️ [Webhook] Amount mismatch for ${transaction_id}: expected ${transaction.amount}, payload said ${amount}`
+      );
+    }
+
     if (status === 1) {
       console.log(`💰 [Webhook] Payment Success for ${transaction_id}`);
 
-      // A. Update Transaction Record
       transaction.status = "completed";
-      transaction.amountPaid = net_payable || amount; // Track actual amount paid if available
+      transaction.amountPaid = net_payable || amount;
       transaction.updatedAt = new Date();
       await transaction.save();
 
-      // B. Credit User Wallet
       const user = await User.findByIdAndUpdate(
         transaction.user,
-        { $inc: { "wallet.balance": transaction.amount } }, // Add the original requested amount
+        { $inc: { "wallet.balance": transaction.amount } },
         { new: true }
       );
 
-      // C. Notify User (In-App)
       await Notification.create({
         user: transaction.user,
         type: "payment",
@@ -66,23 +85,20 @@ export async function POST(req: Request) {
         isRead: false
       });
 
-      // D. Send Email
       if (user && user.email) {
         sendEmail(
           user.email,
-          "DEPOSIT", // Ensure you have this template in src/lib/email.ts
+          "DEPOSIT",
           { amount: `${transaction.amount.toLocaleString()} XAF` },
           user._id
         );
       }
 
     } else if (status === 2) {
-      // Status 2 = Failed
       console.log(`❌ [Webhook] Payment Failed for ${transaction_id}`);
       transaction.status = "failed";
       await transaction.save();
-      
-      // Notify User of Failure
+
       await Notification.create({
         user: transaction.user,
         type: "system",
@@ -95,7 +111,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ message: "Webhook processed" }, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("🔥 [Webhook] Error:", error);
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }

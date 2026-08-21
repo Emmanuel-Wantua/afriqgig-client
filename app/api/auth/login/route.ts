@@ -7,11 +7,16 @@ export async function POST(req: Request) {
   try {
     const { email, password } = await req.json();
 
+    if (!email || typeof password !== "string" || password.length === 0) {
+        return NextResponse.json({ message: "Email and password are required" }, { status: 400 });
+    }
+
     // 1. Connect to DB
     await connectToDB();
 
     // 2. Find the user (and ask Mongoose to give us the password too)
-    const user = await User.findOne({ email }).select("+password");
+    // Email is normalised at registration, so look it up the same way.
+    const user = await User.findOne({ email: String(email).trim().toLowerCase() }).select("+password");
 
     if (!user) {
         return NextResponse.json({ message: "Invalid credentials" }, { status: 400 });
@@ -28,6 +33,12 @@ export async function POST(req: Request) {
         return NextResponse.json({ 
             message: "Account deactivated." 
         }, { status: 403 });
+    }
+
+    // Social-login accounts have no password hash. `bcrypt.compare` throws on
+    // an undefined hash, which would surface as a 500 — reject cleanly instead.
+    if (!user.password) {
+        return NextResponse.json({ message: "Invalid email or password" }, { status: 401 });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);

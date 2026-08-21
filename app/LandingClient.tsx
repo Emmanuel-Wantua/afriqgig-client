@@ -73,6 +73,42 @@ export default function LandingContent() {
   const ecosystemVideoRef = useRef<HTMLVideoElement>(null);
   const [isEcosystemVideoReady, setIsEcosystemVideoReady] = useState(false);
 
+  // NEW: Robust mobile autoplay. Two things commonly break autoplay on mobile
+  // that don't show up in desktop testing: (1) React's `muted` JSX prop can
+  // lag behind the actual DOM property on first paint, which silently blocks
+  // autoplay on iOS/Android even though the attribute is technically set —
+  // fixing this means setting `.muted` imperatively; (2) mobile browsers often
+  // pause/defer offscreen video regardless of the `autoPlay` attribute, so we
+  // retry play() via IntersectionObserver once the section actually scrolls
+  // into view.
+  useEffect(() => {
+    const videoEl = ecosystemVideoRef.current;
+    if (!videoEl) return;
+
+    videoEl.muted = true;
+    videoEl.defaultMuted = true;
+
+    const tryPlay = () => {
+      videoEl.play().catch(() => {
+        // Autoplay blocked by the browser — poster image stays visible as the fallback
+      });
+    };
+
+    if (videoEl.readyState >= 3) tryPlay();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) tryPlay();
+        });
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(videoEl);
+
+    return () => observer.disconnect();
+  }, []);
+
   // Derived Data
   const TESTIMONIALS = [
       { text: t.landing.testi1, author: "Chinedu, Business Owner", role: "Client" },
@@ -368,8 +404,10 @@ export default function LandingContent() {
       {/* --- PLATFORM ECOSYSTEM GRAPHIC --- */}
       <section className="py-24 px-6 bg-white overflow-hidden">
           <div className="max-w-7xl mx-auto">
-              {/* Full-viewport video (image shows immediately, video fades in once it can play through) */}
-              <div className="mb-16 relative w-screen h-screen left-1/2 right-1/2 -mx-[50vw] overflow-hidden shadow-2xl group">
+              {/* Video: full viewport width/height on desktop (md+), contained
+                  fixed-size box on mobile so it doesn't dominate the screen.
+                  Image shows immediately, video fades in once it can play through. */}
+              <div className="mb-16 relative w-full h-64 sm:h-80 md:w-screen md:h-screen md:left-1/2 md:right-1/2 md:-mx-[50vw] rounded-[2rem] md:rounded-none overflow-hidden shadow-2xl group">
                   <div className="absolute inset-0 bg-navy/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
 
                   {/* Poster image: visible immediately, fades out once video is ready */}
@@ -390,7 +428,10 @@ export default function LandingContent() {
                     muted
                     playsInline
                     preload="auto"
-                    onCanPlayThrough={() => setIsEcosystemVideoReady(true)}
+                    onCanPlayThrough={() => {
+                      setIsEcosystemVideoReady(true);
+                      ecosystemVideoRef.current?.play().catch(() => {});
+                    }}
                     className={`absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-all duration-1000 ${isEcosystemVideoReady ? 'opacity-100' : 'opacity-0'}`}
                   >
                       <source src="/assets/video/workflow.mp4" type="video/mp4" />

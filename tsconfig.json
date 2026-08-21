@@ -13,6 +13,10 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    // ✅ NEW: makes jest's globals (describe/it/expect/jest) resolve.
+    // Without this, TypeScript's auto-detection of @types/* packages was
+    // silently not picking up @types/jest.
+    "types": ["node", "jest"],
     "plugins": [
       {
         "name": "next"

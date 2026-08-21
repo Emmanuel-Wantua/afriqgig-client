@@ -1,11 +1,16 @@
 import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/db";
 import Analytics from "@/models/Analytics";
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
   try {
+    if (!(await requireAdmin())) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
     await connectToDB();
 
     // 1. Generate last 30 days dates

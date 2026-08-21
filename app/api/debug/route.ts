@@ -3,12 +3,19 @@ import { connectToDB } from "@/lib/db";
 import Job from "@/models/Job";
 import User from "@/models/User";
 import mongoose from "mongoose";
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 // --- EXISTING GET HANDLER (Database Diagnostics) ---
 export async function GET() {
   try {
+    // This response names the database host, the database itself and dumps
+    // sample records — reconnaissance material if left public.
+    if (!(await requireAdmin())) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
     await connectToDB();
     
     // Get Connection Details

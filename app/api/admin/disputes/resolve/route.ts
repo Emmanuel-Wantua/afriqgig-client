@@ -7,23 +7,54 @@ import Notification from "@/models/Notification";
 import Job from "@/models/Job";
 import User from "@/models/User";
 import { sendEmail } from "@/lib/email";
+import { requireAdmin } from "@/lib/auth";
 
 export async function POST(req: Request) {
   try {
-    const { disputeId, resolution, adminId } = await req.json();
-    
+    // This endpoint decides who gets the escrowed money, so it must be
+    // admin-only. The acting admin is taken from the verified session — the
+    // request body's `adminId` is not trusted for the audit record.
+    const admin = await requireAdmin();
+    if (!admin) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
+    const { disputeId, resolution } = await req.json();
+
     // resolution options: "refund_client" | "release_freelancer"
+    if (!["refund_client", "release_freelancer"].includes(resolution)) {
+      return NextResponse.json({ message: "Invalid resolution" }, { status: 400 });
+    }
 
     await connectToDB();
     const dispute = await Dispute.findById(disputeId).populate("contract");
     if (!dispute) return NextResponse.json({ message: "Dispute not found" }, { status: 404 });
 
+    // Resolving twice would pay out twice — a dispute settles once.
+    if (dispute.status !== "open") {
+      return NextResponse.json({ message: "Dispute is already resolved" }, { status: 409 });
+    }
+
     const contract = await Contract.findById(dispute.contract._id).populate("job"); // Ensure job is populated for title
     if (!contract) return NextResponse.json({ message: "Contract not found" }, { status: 404 });
+
+    if (contract.paymentStatus === "released" || contract.paymentStatus === "refunded") {
+      return NextResponse.json(
+        { message: "Escrow for this contract has already been settled" },
+        { status: 409 }
+      );
+    }
 
     // --- EXECUTE FINANCIAL DECISION ---
     if (resolution === "refund_client") {
         const clientId = contract.client._id || contract.client;
+
+        // Credit the spendable balance, not just the ledger row — otherwise
+        // the refund shows in history but can never be withdrawn.
+        await User.findByIdAndUpdate(clientId, {
+            $inc: { "wallet.balance": contract.amount }
+        });
+
         await Transaction.create({
             user: clientId, 
             type: "refund",
@@ -43,8 +74,12 @@ export async function POST(req: Request) {
     } else {
         const freelancerId = contract.freelancer._id || contract.freelancer;
         const totalAmount = contract.amount;
-        const fee = totalAmount * 0.05;
+        const fee = Math.ceil(totalAmount * 0.05);
         const net = totalAmount - fee;
+
+        await User.findByIdAndUpdate(freelancerId, {
+            $inc: { "wallet.balance": net }
+        });
 
         await Transaction.create({
             user: freelancerId,
@@ -67,7 +102,7 @@ export async function POST(req: Request) {
     // --- UPDATE DISPUTE RECORD ---
     dispute.status = "resolved";
     dispute.resolution = resolution;
-    dispute.admin = adminId;
+    dispute.admin = admin.userId;
     await dispute.save();
 
     // --- NOTIFY PARTIES (IN-APP) ---

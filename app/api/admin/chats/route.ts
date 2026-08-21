@@ -2,12 +2,18 @@ import { NextResponse } from "next/server";
 import { connectToDB } from "@/lib/db";
 import GuestChat from "@/models/GuestChat";
 import User from "@/models/User"; // ✅ Import User model
+import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 // GET: Fetch all active chats & Enrich with Real User Data
 export async function GET() {
   try {
+    // Support-inbox contents are private to admins.
+    if (!(await requireAdmin())) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
     await connectToDB();
     
     // 1. Fetch chats (Plain JavaScript objects with .lean() for better performance)
@@ -42,6 +48,11 @@ export async function GET() {
 // POST: Admin sends a reply (Kept mostly the same, just ensured robust saving)
 export async function POST(req: Request) {
   try {
+    // Replies here are posted as the platform's support team.
+    if (!(await requireAdmin())) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
     const { chatId, content, imageUrl, type } = await req.json();
     await connectToDB();
 

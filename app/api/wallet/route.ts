@@ -5,15 +5,22 @@ import Contract from "@/models/Contract";
 import User from "@/models/User";
 import Notification from "@/models/Notification";
 import { sendEmail } from "@/lib/email";
+import { getIdentity } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 // GET: Fetch Wallet Data
 export async function GET(req: Request) {
   try {
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
-    
+    // A wallet is only ever readable by its owner. The `userId` query param
+    // is ignored — honouring it would let anyone enumerate other people's
+    // balances and full transaction history.
+    const identity = await getIdentity();
+    if (!identity) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const userId = identity.userId;
+
     await connectToDB();
 
     // 1. Fetch Transaction History

@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import { randomBytes } from "crypto";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectToDB } from "@/lib/db";
 import Transaction from "@/models/Transaction";
 import User from "@/models/User";
@@ -6,58 +9,63 @@ import { createDepositLink } from "@/lib/swychr";
 
 export async function POST(req: Request) {
   try {
-    const { userId, amount } = await req.json();
+    const session = await getServerSession(authOptions);
+    const userId = session?.user?._id;
 
-    if (!userId || !amount || amount < 100) {
+    if (!userId) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const { amount } = await req.json();
+
+    const depositAmount = Number(amount);
+
+    // `Number.isFinite` first — NaN fails every `<` comparison, so a junk
+    // amount like "100abc" would otherwise pass a bare minimum check.
+    if (!Number.isFinite(depositAmount) || depositAmount < 100) {
       return NextResponse.json({ message: "Invalid amount (Min: 100 XAF)" }, { status: 400 });
     }
 
     await connectToDB();
 
-    // 1. Verify User
     const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    // 2. Generate a Unique Transaction ID (Reference)
-    // Format: DEP-{Timestamp}-{Random4Chars}
-    const reference = `DEP-${Date.now()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+    const reference = `DEP-${Date.now()}-${randomBytes(4).toString("hex").toUpperCase()}`;
 
-    // 3. Create "Pending" Record in MongoDB
-    // We create this BEFORE calling Swychr so we have a record of the attempt
     const newTx = await Transaction.create({
       user: userId,
       type: 'deposit',
-      amount: Number(amount),
-      status: 'pending', // Waiting for Webhook
+      amount: depositAmount,
+      status: 'pending',
       paymentMethod: 'SWYCHR_LINK',
       description: 'Wallet Top-up (Pending)',
       reference: reference
     });
 
-    // 4. Generate the Payment Link via Swychr Engine
     try {
-        const swychrData = await createDepositLink(user, Number(amount), reference);
-        
-        // 5. Success! Return the link to the frontend
-        return NextResponse.json({ 
-            message: "Payment link created", 
-            url: swychrData.payment_link, // The URL to redirect the user to
-            transactionId: newTx._id 
+        const swychrData = await createDepositLink(user, depositAmount, reference);
+
+        return NextResponse.json({
+            message: "Payment link created",
+            url: swychrData.payment_link,
+            transactionId: newTx._id
         }, { status: 200 });
 
-    } catch (swychrError: any) {
-        // If Swychr fails, mark our local record as failed
+    } catch (swychrError: unknown) {
+        const message = swychrError instanceof Error ? swychrError.message : "Unknown error";
         newTx.status = 'failed';
-        newTx.description = `Failed to generate link: ${swychrError.message}`;
+        newTx.description = `Failed to generate link: ${message}`;
         await newTx.save();
-        
-        throw swychrError; // Re-throw to be caught below
+
+        throw swychrError;
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Deposit API Error:", error);
-    return NextResponse.json({ message: error.message || "Failed to initiate deposit" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Failed to initiate deposit";
+    return NextResponse.json({ message }, { status: 500 });
   }
 }

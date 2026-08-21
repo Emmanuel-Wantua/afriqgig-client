@@ -4,136 +4,189 @@ import Contract from "@/models/Contract";
 import Job from "@/models/Job";
 import Proposal from "@/models/Proposal";
 import Notification from "@/models/Notification";
+import Transaction from "@/models/Transaction";
 import User from "@/models/User";
-import mongoose from "mongoose";
 import { sendEmail } from "@/lib/email";
-import { sendMobileNotification } from "@/lib/twilio"; // <--- 1. IMPORT ADDED
+import { sendMobileNotification } from "@/lib/twilio";
+import { getIdentity } from "@/lib/auth";
 
+/**
+ * Hire a freelancer: create the contract and move the money into escrow.
+ *
+ * Everything financial here is derived server-side. The request body supplies
+ * only *which* job and *which* proposal — never the price, never the payer.
+ * A client that POSTs `amount: 1` is ignored; the figure comes from the
+ * accepted proposal's stored bid.
+ */
 export async function POST(req: Request) {
-  let session = null;
-
   try {
-    const body = await req.json();
-    console.log("[API] Starting Hiring Transaction...", body);
-    
-    const { jobId, freelancerId, clientId, amount, proposalId } = body;
+    const identity = await getIdentity();
+    if (!identity) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const clientId = identity.userId;
 
-    // 1. Connect & Start Session
-    const conn = await connectToDB();
-    session = await conn.startSession();
-    session.startTransaction();
+    const { jobId, proposalId } = await req.json();
 
-    // 2. CHECK FOR CLIENT REFERRAL CREDITS
-    const clientUser = await User.findById(clientId).session(session);
-    let discountApplied = false;
-    let amountToPay = amount; 
-
-    if (clientUser && clientUser.wallet.credits > 0) {
-        console.log(`[DISCOUNT] Client ${clientUser.name} has credits. Applying 5% off.`);
-        amountToPay = amount * 0.95; 
-        clientUser.wallet.credits -= 1;
-        await clientUser.save({ session });
-        discountApplied = true;
+    if (!jobId || !proposalId) {
+      return NextResponse.json(
+        { message: "jobId and proposalId are required" },
+        { status: 400 }
+      );
     }
 
-    // 3. Create Contract
-    const [newContract] = await Contract.create([{
-      job: jobId,
-      client: clientId,
-      freelancer: freelancerId,
-      amount: amount, 
-      amountPaid: amountToPay, 
-      discountApplied: discountApplied, 
-      paymentStatus: "pending", 
-      status: "active",
-      startDate: new Date()
-    }], { session });
+    await connectToDB();
 
-    // 4. Update Job Status
-    const updatedJob = await Job.findByIdAndUpdate(jobId, { 
-      status: "hired",
-      hiredFreelancer: freelancerId
-    }, { session, new: true });
-
-    if (!updatedJob) {
-        throw new Error("Job not found. Transaction aborted.");
+    // 1. The job must exist and belong to the caller. This is the
+    //    authorization chain — the browser doesn't get to name the payer.
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return NextResponse.json({ message: "Job not found" }, { status: 404 });
     }
 
-    // 5. Update Proposal Status
-    if (proposalId) {
-        await Proposal.findByIdAndUpdate(proposalId, { status: "accepted" }, { session });
+    if (String(job.client) !== clientId) {
+      return NextResponse.json(
+        { message: "You can only hire on your own job" },
+        { status: 403 }
+      );
     }
 
-    // 6. Create Notification (Freelancer)
-    await Notification.create([{
+    if (job.status !== "open") {
+      return NextResponse.json(
+        { message: "This job is no longer open for hiring" },
+        { status: 409 }
+      );
+    }
+
+    // 2. The proposal must belong to this job. The freelancer and the price
+    //    both come from it, not from the request.
+    const proposal = await Proposal.findById(proposalId);
+    if (!proposal || String(proposal.job) !== String(job._id)) {
+      return NextResponse.json(
+        { message: "Proposal not found for this job" },
+        { status: 404 }
+      );
+    }
+
+    const freelancerId = String(proposal.freelancer);
+    const amount = Number(proposal.bidAmount);
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return NextResponse.json({ message: "Proposal has an invalid bid amount" }, { status: 400 });
+    }
+
+    if (freelancerId === clientId) {
+      return NextResponse.json({ message: "You cannot hire yourself" }, { status: 400 });
+    }
+
+    // 3. Referral discount — also server-side, read from the stored credits.
+    const clientUser = await User.findById(clientId);
+    if (!clientUser) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    const hasCredit = (clientUser.wallet?.credits || 0) > 0;
+    const amountToPay = hasCredit ? Math.ceil(amount * 0.95) : amount;
+
+    // 4. Move the money into escrow atomically. The filter doubles as the
+    //    balance check, so two concurrent hires can't both pass on the same
+    //    funds. A client-side "you have enough balance" check is advisory
+    //    only — this is the one that counts.
+    const debitUpdate: Record<string, number> = { "wallet.balance": -amountToPay };
+    if (hasCredit) debitUpdate["wallet.credits"] = -1;
+
+    const debitedClient = await User.findOneAndUpdate(
+      { _id: clientId, "wallet.balance": { $gte: amountToPay } },
+      { $inc: debitUpdate },
+      { new: true }
+    );
+
+    if (!debitedClient) {
+      return NextResponse.json(
+        { message: "Insufficient wallet balance to fund this contract" },
+        { status: 402 }
+      );
+    }
+
+    try {
+      const newContract = await Contract.create({
+        job: jobId,
+        client: clientId,
+        freelancer: freelancerId,
+        amount: amount,
+        amountPaid: amountToPay,
+        discountApplied: hasCredit,
+        paymentStatus: "held",
+        status: "active",
+        startDate: new Date()
+      });
+
+      await Transaction.create({
+        user: clientId,
+        type: "payment_hold",
+        amount: amountToPay,
+        status: "completed",
+        paymentMethod: "ESCROW",
+        description: `Escrow funded for: ${job.title}`,
+        reference: `HOLD-${newContract._id}`
+      });
+
+      const updatedJob = await Job.findByIdAndUpdate(
+        jobId,
+        { status: "hired", hiredFreelancer: freelancerId },
+        { new: true }
+      );
+
+      await Proposal.findByIdAndUpdate(proposalId, { status: "accepted" });
+
+      await Notification.create({
         user: freelancerId,
         type: "hired",
         title: "You're Hired!",
-        message: `You have been hired for "${updatedJob.title}"`,
+        message: `You have been hired for "${updatedJob?.title || job.title}"`,
         link: `/dashboard/contracts/${newContract._id}`,
         isRead: false
-    }], { session });
+      });
 
-    // --- 📧 EMAIL & 📱 MOBILE NOTIFICATIONS ---
-    // Fetch freelancer details to send alerts
-    const freelancerUser = await User.findById(freelancerId).session(session);
-    
-    if (freelancerUser) {
-        // A. Send Email
-        sendEmail(
-            freelancerUser.email, 
-            "HIRED", 
-            { jobTitle: updatedJob.title }, 
-            freelancerId
+      const freelancerUser = await User.findById(freelancerId);
+      if (freelancerUser?.email) {
+        sendEmail(freelancerUser.email, "HIRED", { jobTitle: job.title }, freelancerId);
+
+        sendMobileNotification(freelancerId, "HIRED", [clientUser.name, job.title]).catch(
+          (err: unknown) => console.error("Mobile Notif Failed:", err)
         );
+      }
 
-        // B. Send WhatsApp/SMS (New Feature)
-        // We use the client's name in the message for context
-        const clientName = clientUser ? clientUser.name : "A Client";
-        
-        // This runs asynchronously so it doesn't block the transaction commit
-        sendMobileNotification(
-            freelancerId, 
-            "HIRED", 
-            [clientName, updatedJob.title]
-        ).catch(err => console.error("Mobile Notif Failed:", err));
+      if (hasCredit) {
+        await Notification.create({
+          user: clientId,
+          type: "system",
+          title: "Discount Applied! 🎉",
+          message: `Referral credit used. You saved ${amount - amountToPay} XAF on this hire.`,
+          link: `/dashboard/wallet`,
+          isRead: false
+        });
+      }
+
+      return NextResponse.json({
+        message: "Contract created successfully",
+        contractId: newContract._id,
+        amount,
+        amountPaid: amountToPay,
+        discountApplied: hasCredit
+      }, { status: 201 });
+
+    } catch (creationError: unknown) {
+      // The debit already landed. If anything downstream failed, hand the
+      // money back rather than leaving the client short with no contract.
+      await User.findByIdAndUpdate(clientId, { $inc: { "wallet.balance": amountToPay } });
+      console.error("❌ Hiring failed after debit — refunded client:", creationError);
+      throw creationError;
     }
-    // ------------------------------------------
 
-    // 7. Create Notification (Client - Confirming Discount)
-    if (discountApplied) {
-        await Notification.create([{
-            user: clientId,
-            type: "system",
-            title: "Discount Applied! 🎉",
-            message: `Referral credit used. You saved ${amount - amountToPay} XAF on this hire.`,
-            link: `/dashboard/wallet`,
-            isRead: false
-        }], { session });
-    }
-
-    // --- COMMIT TRANSACTION ---
-    await session.commitTransaction();
-    console.log("✅ Hiring Transaction Committed. Contract ID:", newContract._id);
-
-    return NextResponse.json({ 
-      message: "Contract created successfully", 
-      contractId: newContract._id,
-      discountApplied
-    }, { status: 201 });
-
-  } catch (error: any) {
-    console.error("❌ Hiring Transaction Failed:", error);
-    
-    if (session) {
-        await session.abortTransaction();
-        console.log("⚠️ Transaction Aborted.");
-    }
-    
-    return NextResponse.json({ message: error.message || "Internal Server Error" }, { status: 500 });
-  } finally {
-    if (session) {
-        session.endSession();
-    }
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "Internal Server Error";
+    console.error("❌ Hiring Failed:", error);
+    return NextResponse.json({ message }, { status: 500 });
   }
 }

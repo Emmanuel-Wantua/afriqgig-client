@@ -3,12 +3,17 @@ import { connectToDB } from "@/lib/db";
 import Contract from "@/models/Contract";
 import Notification from "@/models/Notification";
 import Transaction from "@/models/Transaction";
-import Job from "@/models/Job"; 
-import User from "@/models/User"; 
+import Job from "@/models/Job";
+import User from "@/models/User";
 import mongoose from "mongoose";
 import { sendEmail } from "@/lib/email";
+import { getIdentity } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
+
+/** Platform commission. Server-side constants — never read from a request. */
+const STANDARD_FEE = 0.05;
+const DISCOUNTED_FEE = 0.025;
 
 const findContractFast = async (id: string) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return null;
@@ -16,39 +21,63 @@ const findContractFast = async (id: string) => {
     return await Contract.findOne({ $or: [{ _id: objId }, { job: objId }] })
     .populate("client", "name avatar email title isVerified rating reviewsCount")
     .populate("freelancer", "name avatar email title isVerified rating reviewsCount")
-    .populate("job", "title description attachments status currency"); 
+    .populate("job", "title description attachments status currency");
 };
+
+/** Normalises a populated-or-raw ObjectId reference to a string. */
+function idOf(ref: unknown): string {
+    if (!ref) return "";
+    if (typeof ref === "object" && ref !== null && "_id" in ref) {
+        return String((ref as { _id: unknown })._id);
+    }
+    return String(ref);
+}
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const identity = await getIdentity();
+    if (!identity) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
     const { id } = await params;
     await connectToDB();
     const contract = await findContractFast(id);
-    
+
     if (!contract) return NextResponse.json({ message: "Contract not found" }, { status: 404 });
+
+    // A contract is private to its two parties (and admins).
+    const isParty =
+      idOf(contract.client) === identity.userId ||
+      idOf(contract.freelancer) === identity.userId;
+
+    if (!isParty && identity.role !== "admin") {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
 
     // --- SELF-HEALING LOGIC ---
     if (contract.status === "completed" && contract.job?.status !== "completed") {
-        console.log(`[API FIX] Auto-correcting Job Status for: ${contract.job.title}`);
         await Job.findByIdAndUpdate(contract.job._id, { status: "completed" });
-        contract.job.status = "completed"; 
+        contract.job.status = "completed";
     }
 
     return NextResponse.json(contract, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    console.error("Contract GET Error:", error);
     return NextResponse.json({ message: "Server Error" }, { status: 500 });
   }
 }
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
+        const identity = await getIdentity();
+        if (!identity) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+
         const { id } = await params;
         const body = await req.json();
         await connectToDB();
-
-        // 🔍 DEBUG: Log Entry
-        console.log(`\n--- [SERVER] PATCH /api/contracts/${id} ---`);
-        console.log("[SERVER] Payload Received:", JSON.stringify(body));
 
         // 1. Fetch Contract (Robust Lookup)
         let existingContract = await Contract.findById(id)
@@ -57,7 +86,6 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
             .populate("job");
 
         if (!existingContract) {
-            console.log("[SERVER] Contract not found by ID. Checking via Job ID...");
             existingContract = await Contract.findOne({ job: id })
                 .populate("client")
                 .populate("freelancer")
@@ -65,67 +93,92 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
         }
 
         if (!existingContract) {
-            console.error("[SERVER] ❌ Contract Not Found.");
             return NextResponse.json({ message: "Contract not found" }, { status: 404 });
         }
 
-        // ✅ FIX: Handle Client adding extra files (WITH LOGS)
+        const clientId = idOf(existingContract.client);
+        const freelancerId = idOf(existingContract.freelancer);
+        const isClient = clientId === identity.userId;
+        const isFreelancer = freelancerId === identity.userId;
+
+        if (!isClient && !isFreelancer) {
+            return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+        }
+
+        // 2. Client attaching an extra file to the brief.
         if (body.newAttachment) {
-            console.log("📎 [SERVER] Processing New Attachment...");
+            if (!isClient) {
+                return NextResponse.json(
+                    { message: "Only the client can add attachments" },
+                    { status: 403 }
+                );
+            }
 
             if (existingContract.job) {
-                // 1. Update Job
                 await Job.findByIdAndUpdate(existingContract.job._id, {
                     $push: { attachments: body.newAttachment }
                 });
-                console.log("✅ [SERVER] Job Attachment Saved.");
 
-                // 2. Notify Freelancer
-                try {
-                    // Robust ID Extraction (Handle populated object vs string ID)
-                    const freelancerObj = existingContract.freelancer;
-                    const freelancerId = freelancerObj?._id || freelancerObj;
-
-                    console.log(`[SERVER] Targeting Freelancer ID: ${freelancerId}`);
-
-                    if (freelancerId) {
-                        const newNotif = await Notification.create({
-                            user: freelancerId,
-                            type: "job_update", 
-                            title: "New File Added 📎",
-                            message: `The client added a new file to the contract: ${existingContract.job.title}`,
-                            link: `/dashboard/contracts/${existingContract._id}`,
-                            isRead: false
-                        });
-                        console.log(`✅ [SERVER] Notification Created (ID: ${newNotif._id})`);
-                    } else {
-                        console.warn("⚠️ [SERVER] Freelancer ID is missing! Cannot send notification.");
-                    }
-                } catch (e) {
-                    console.error("🔥 [SERVER] Notification Failed:", e);
+                if (freelancerId) {
+                    await Notification.create({
+                        user: freelancerId,
+                        type: "job_update",
+                        title: "New File Added 📎",
+                        message: `The client added a new file to the contract: ${existingContract.job.title}`,
+                        link: `/dashboard/contracts/${existingContract._id}`,
+                        isRead: false
+                    });
                 }
-                
-                // If only uploading a file, return success now
+
                 if (Object.keys(body).length === 1) {
                     return NextResponse.json({ message: "File added successfully" }, { status: 200 });
                 }
-            } else {
-                console.error("❌ [SERVER] Contract has no associated Job.");
             }
         }
 
-        // Clean Payload
-        const updatePayload = { ...body };
-        delete updatePayload.newAttachment;
+        // 3. Build the update from an ALLOW-LIST.
+        //
+        // The route used to `$set` the raw request body, so a caller could
+        // PATCH `{ amount: 999999 }` or `{ paymentStatus: "released" }` and
+        // rewrite the contract's financial terms. Money fields are never
+        // client-writable; `paymentStatus` is set by the release logic below.
+        const updatePayload: Record<string, unknown> = {};
 
-        // 1. Update Contract
+        if (body.submission !== undefined) {
+            if (!isFreelancer) {
+                return NextResponse.json(
+                    { message: "Only the freelancer can submit work" },
+                    { status: 403 }
+                );
+            }
+            updatePayload.submission = body.submission;
+        }
+
+        if (body.status !== undefined) {
+            const ALLOWED_STATUSES = ["active", "completed", "cancelled", "disputed"];
+            if (!ALLOWED_STATUSES.includes(body.status)) {
+                return NextResponse.json({ message: "Invalid status" }, { status: 400 });
+            }
+            // Approving the work releases the escrow, so only the paying
+            // client may mark a contract completed.
+            if (body.status === "completed" && !isClient) {
+                return NextResponse.json(
+                    { message: "Only the client can approve and complete a contract" },
+                    { status: 403 }
+                );
+            }
+            updatePayload.status = body.status;
+        }
+
+        if (body.endDate !== undefined) updatePayload.endDate = body.endDate;
+
         const updatedContract = await Contract.findByIdAndUpdate(
-            existingContract._id, 
-            { $set: updatePayload }, 
+            existingContract._id,
+            { $set: updatePayload },
             { new: true }
         ).populate("job").populate("client").populate("freelancer");
 
-        // 2. Handle Notifications for Submission (Freelancer -> Client)
+        // 4. Work submitted → notify the client.
         if (body.submission) {
             const clientUser = existingContract.client;
             const freelancerUser = existingContract.freelancer;
@@ -144,8 +197,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
                     sendEmail(
                         clientUser.email,
                         "JOB_SUBMITTED",
-                        { 
-                            freelancerName: freelancerUser.name, 
+                        {
+                            freelancerName: freelancerUser.name,
                             jobTitle: existingContract.job.title,
                             jobId: existingContract.job._id
                         },
@@ -155,38 +208,51 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
             }
         }
 
-        // 3. SYNC JOB STATUS & RELEASE PAYMENT (Client -> Freelancer)
+        // 5. Completion → release escrow to the freelancer.
         if (body.status === "completed") {
-            const jobId = updatedContract.job._id || updatedContract.job;
+            const jobId = idOf(updatedContract.job);
             await Job.findByIdAndUpdate(jobId, { status: "completed" });
 
-            if (existingContract.paymentStatus !== "released") {
-                const totalAmount = updatedContract.amount;
-                let feePercentage = 0.05; 
-                
-                const freelancerId = updatedContract.freelancer._id || updatedContract.freelancer;
+            // Idempotency guard: release exactly once, however many times the
+            // client clicks "approve".
+            const claimed = await Contract.findOneAndUpdate(
+                { _id: existingContract._id, paymentStatus: { $ne: "released" } },
+                { $set: { paymentStatus: "released" } },
+                { new: true }
+            );
+
+            if (claimed) {
+                // The amount comes from the stored contract, never the request.
+                const totalAmount = Number(existingContract.amount);
                 const freelancerUser = await User.findById(freelancerId);
 
-                if (freelancerUser && freelancerUser.wallet?.credits > 0) {
-                    feePercentage = 0.025;
-                    freelancerUser.wallet.credits -= 1;
-                    await freelancerUser.save();
+                let feePercentage = STANDARD_FEE;
+                if (freelancerUser && (freelancerUser.wallet?.credits || 0) > 0) {
+                    feePercentage = DISCOUNTED_FEE;
+                    await User.findByIdAndUpdate(freelancerId, {
+                        $inc: { "wallet.credits": -1 }
+                    });
                 }
 
-                const platformFee = totalAmount * feePercentage; 
-                const freelancerPay = totalAmount - platformFee; 
+                const platformFee = Math.ceil(totalAmount * feePercentage);
+                const freelancerPay = totalAmount - platformFee;
+
+                // Actually move the money. Previously only a Transaction row
+                // was written, so the freelancer's spendable balance never
+                // changed and the earnings could not be withdrawn.
+                await User.findByIdAndUpdate(freelancerId, {
+                    $inc: { "wallet.balance": freelancerPay }
+                });
 
                 await Transaction.create({
                     user: freelancerId,
                     type: "payment_release",
-                    amount: freelancerPay, 
+                    amount: freelancerPay,
                     status: "completed",
                     paymentMethod: "ESCROW",
                     description: `Payment released: ${updatedContract.job?.title}`,
                     reference: `REL-${updatedContract._id}`
                 });
-
-                await Contract.findByIdAndUpdate(existingContract._id, { paymentStatus: "released" });
 
                 await Notification.create({
                     user: freelancerId,
@@ -197,13 +263,13 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
                     isRead: false
                 });
 
-                if (freelancerUser && freelancerUser.email) {
+                if (freelancerUser?.email) {
                     sendEmail(
                         freelancerUser.email,
                         "PAYMENT_RELEASED",
-                        { 
-                            jobTitle: updatedContract.job.title, 
-                            amount: `${freelancerPay.toLocaleString()} XAF` 
+                        {
+                            jobTitle: updatedContract.job?.title,
+                            amount: `${freelancerPay.toLocaleString()} XAF`
                         },
                         freelancerId
                     );
@@ -213,8 +279,9 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
 
         return NextResponse.json(updatedContract, { status: 200 });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Server Error";
         console.error("Contract Update Error:", error);
-        return NextResponse.json({ message: error.message }, { status: 500 });
+        return NextResponse.json({ message }, { status: 500 });
     }
 }
